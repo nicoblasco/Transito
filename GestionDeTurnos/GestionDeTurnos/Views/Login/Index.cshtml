@@ -1,0 +1,86 @@
+﻿@model GestionDeTurnos.ViewModel.LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Guardia Comunal - Municipalidad de Florencio Varela</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+
+<body>
+    @using (Html.BeginForm("Autenticar", "Login", FormMethod.Post, new { id = "loginform" }))
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Inicie Sesión</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form role="form">
+                                <fieldset>
+                                    <div class="form-group">
+                                        @*<img src="../Images/Logo.png" />*@
+                                        <img src="~/Images/Logo.png" runat="server" />
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.TextBoxFor(x => x.NombreDeUsuario, new { placeholder = "Usuario", @class = "form-control", autofocus = "autofocus" })
+                                        @Html.ValidationMessageFor(x => x.NombreDeUsuario, null, new { @class = "label label-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Password" name="Password" type="password" value="">
+                                        @Html.ValidationMessageFor(x => x.Password, null, new { @class = "label label-danger" })
+                                    </div>
+                                    <!-- Change this to a button or input when using this as a form -->
+                                    <button data-ajax="true" type="submit" class="btn btn-lg btn-success btn-block">Ingresar</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    }
+    @*<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
+            <p style="position: absolute; color: White; top: 35%; left: 45%;">
+                <img src="~/Images/loading.gif" alt="Loading..." />
+            </p>
+        </div>*@
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/js")
+
+
+    @*<script>
+            $("#loginform").submit(function (e) {
+                $("#divLoading").show();
+            });
+        </script>*@
+
+
+
+</body>
+
+</html>

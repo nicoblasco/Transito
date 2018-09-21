@@ -1,0 +1,133 @@
+﻿@model IEnumerable<GestionDeTurnos.Models.Audit>
+@using GestionDeTurnos.Helpers
+@using GestionDeTurnos.ViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="/Content/jquery.dataTables.css" rel="stylesheet" />
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Auditoria</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Detalle
+                </div>
+                <div class="panel-body">
+                    <table id="example" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Fecha</th>
+                                <th>Usuario</th>
+                                <th>Modulo</th>
+                                <th>Pantalla</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-wrapper -->
+
+@section scripts {
+
+    <script>
+        $(document).ready(function () {
+
+            var table = $('#example').DataTable({
+              "ajax":
+                  {
+                      url: "@Url.Action("GetAudits", "Audits")",
+                      type: "post",
+                      dataSrc: ""
+                  },
+                "columns": [
+                    {
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": '',
+                        "render": function () {
+                            return '<i class="fa fa-plus-square" aria-hidden="true"></i>';
+                        },
+                        width: "15px"
+                    },
+                   {
+                       "data": "Fecha",
+                       render: function (data, type, row) {
+                           if (type === "sort" || type === "type") {
+                               return data;
+                           }
+                           return moment(data).format("DD-MM-YYYY HH:mm");
+                       }
+                   },
+                    { "data": "User.Nombreusuario" },
+                    { "data": "Window.Module.Descripcion" },
+                    { "data": "Window.Descripcion" },
+                    { "data": "Accion" }
+                ],
+                "order": [[1, 'asc']]
+            });
+
+            function format(d) {
+
+                // `d` is the original data object for the row
+                return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                    '<tr>' +
+                    '<td>Usuario:</td>' +
+                    '<td>' + d.User.Nombreusuario + '</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Entidad:</td>' +
+                    '<td>' + d.Entidad + '</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Clave:</td>' +
+                    '<td>' + d.Clave + '</td>' +
+                    '</tr>' +
+                    '</table>';
+            }
+
+            // Add event listener for opening and closing details
+            $('#example tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var tdi = tr.find("i.fa");
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                    tdi.first().removeClass('fa-minus-square');
+                    tdi.first().addClass('fa-plus-square');
+                }
+                else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                    tdi.first().removeClass('fa-plus-square');
+                    tdi.first().addClass('fa-minus-square');
+                }
+            });
+
+            table.on("user-select", function (e, dt, type, cell, originalEvent) {
+                if ($(cell.node()).hasClass("details-control")) {
+                    e.preventDefault();
+                }
+            });
+
+
+        });
+
+    </script>
+}
