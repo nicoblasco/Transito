@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Guardia Comunal - Municipalidad de Florencio Varela</title>
+    <title>Dirección de Transito - Municipalidad de Florencio Varela</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -96,100 +96,64 @@
                             </div>
                             <!-- /input-group -->
                         </li>
-                        @*<li>
-                            <a style="color: whitesmoke" href="#"><i class="fa fa-pencil-square-o fa-fw"></i> Actas<span class="fa arrow"></span></a>
+                        <li>
+                            <a style="color: whitesmoke" href="#"><i class="fa fa-dashboard fa-fw"></i> Menu Principal<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Actas", "Altas")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Monitoreo")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Create", "Acts")">Altas</a>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Turns")">Monitoreo</a>
                                     </li>
                                 }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Actas", "Altas")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Atencion")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Acts")">Busquedas</a>
+                                        <a style="color: whitesmoke" href="@Url.Action("Create", "Turns")">Atención al cliente</a>
+                                    </li>
+                                }
+
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Busqueda")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Search", "Turns")">Busquedas</a>
                                     </li>
                                 }
                             </ul>
-                             /.nav-second-level 
-                        </li>*@
-                        @*<li>
+                        </li>
+
+                        <li>
+                            @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Contravenciones")))
+                            {
+                                <a style="color: whitesmoke" href="@Url.Action("Index", "Licenses")"><i class="fa fa-credit-card"></i>  Licencias<span class="fa arrow"></span></a>
+                            }
+                            </li>
+                        
+                        <li>
                             <a style="color: whitesmoke" href="#"><i class="fa fa-hdd-o fa-fw"></i> AMB Maestros<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Contravenciones")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Tipos de Licencia")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Contraventions")">Contravenciones</a>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "TypesLicenses")">Tipos de Licencia</a>
                                     </li>
                                 }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Observaciones")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Sectores")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Observations")">Observaciones</a>
-                                    </li>
-                                }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Lugar de Liberacion")))
-                                {
-                                    <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "LiberationPlaces")">Lugares de Liberación</a>
-                                    </li>
-                                }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Inspectores")))
-                                {
-                                    <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Inspectors")">Inspectores</a>
-                                    </li>
-                                }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Policias")))
-                                {
-                                    <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Police")">Policías</a>
+                                        <a style="color: whitesmoke" href="#">Sectores <span class="fa arrow"></span></a>
+                                        <ul class="nav nav-third-level">
+                                            <li>
+                                                <a style="color: whitesmoke" href="@Url.Action("Create", "Sectors")">Alta</a>
+                                            </li>
+                                            <li>
+                                                <a style="color: whitesmoke" href="@Url.Action("Index", "Sectors")">Flujo de trabajo</a>
+                                            </li>
+                                        </ul>
+                                        <!-- /.nav-third-level -->
                                     </li>
                                 }
                             </ul>
-                             /.nav-second-level 
-                        </li>*@
-                        @*<li>
-                            <a style="color: whitesmoke" href="#"><i class="fa fa-car fa-fw"></i> Vehículos<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Vehiculos", "Tipos")))
-                                {
-                                    <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "VehicleTypes")">Tipos</a>
-                                    </li>
-                                }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Vehiculos", "Marcas")))
-                                {
-                                    <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "VehicleBrands")">Marcas</a>
-                                    </li>
-                                }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Vehiculos", "Modelos")))
-                                {
-                                    <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "VehicleModels")">Modelos</a>
-                                    </li>
-                                }
-                            </ul>
-                        </li>*@
-                        @*<li>
-                                <a style="color: whitesmoke" href="#"><i class="fa fa-file-text-o fa-fw"></i> Reportes<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a style="color: whitesmoke" href="#">Reporte 1</a>
-                                    </li>
-                                    <li>
-                                        <a style="color: whitesmoke" href="#">Reporte 2</a>
-                                    </li>
-                                    <li>
-                                        <a style="color: whitesmoke" href="#">Reporte 3</a>
-                                    </li>
-                                    <li>
-                                        <a style="color: whitesmoke" href="#">Reporte 4</a>
-                                    </li>
-                                </ul>
-                            </li>*@
+                        </li>
                         <li>
                             <a style="color: whitesmoke" href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">

@@ -39,5 +39,7 @@ namespace GestionDeTurnos.Models
             //.Map(m => m.MapKey("ClaimId"));
 
         }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.TypesLicense> TypesLicenses { get; set; }
     }
 }

@@ -1,0 +1,65 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Transito - Municipalidad de Florencio Varela</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+
+<body>
+    <a href="@Url.Action("Index", "Home")">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="login-panel panel panel-green">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Bienvenido</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form role="form">
+                                <fieldset class="text-center">
+                                    <div class="form-group">
+                                        <img src=@Url.Content("~/Images/Logo.png")>
+                                    </div>
+                                    <div class="form-group">
+                                        <p style="font-weight:bold;">
+                                            Usted No posee nigun turno el día de hoy. Por favor comuniquese al 0800-999-1234 de lun. a vier. de 8 a 20 hs. para mas información.
+                                            Muchas Gracias
+                                        </p>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/js")
+
+    <script>
+       //Espero 10 segundo y lo vuelvo a Index
+       window.setTimeout(function () {
+           window.location='@Url.Action("Index","Home")';
+       }, 10000);
+    </script>
+</body>
+</html>

@@ -17,7 +17,7 @@ namespace GestionDeTurnos
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Login", action = "Index", id = UrlParameter.Optional }
-            );
+            );//Inicia en Home-Index
         }
     }
 }

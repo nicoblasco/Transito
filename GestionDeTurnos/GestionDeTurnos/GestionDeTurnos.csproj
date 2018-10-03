@@ -164,6 +164,7 @@
     <Compile Include="Controllers\ModulesController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\RolsController.cs" />
+    <Compile Include="Controllers\TypesLicensesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\WindowsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -180,11 +181,13 @@
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\Rol.cs" />
+    <Compile Include="Models\TypesLicense.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\Window.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tags\AutenticadoAttribute.cs" />
     <Compile Include="Validations\DateGreaterThanAttribute.cs" />
+    <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
   </ItemGroup>
@@ -482,6 +485,9 @@
     <Content Include="Views\Rols\Index.cshtml" />
     <Content Include="Views\Usuarios\Index.cshtml" />
     <Content Include="Views\Windows\Index.cshtml" />
+    <Content Include="Views\Home\Ingreso.cshtml" />
+    <Content Include="Views\Home\AccesoDenegado.cshtml" />
+    <Content Include="Views\TypesLicenses\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />
