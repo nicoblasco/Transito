@@ -41,5 +41,15 @@ namespace GestionDeTurnos.Models
         }
 
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.TypesLicense> TypesLicenses { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.Sector> Sectors { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.Workflow> Workflows { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.SectorWorkflow> SectorWorkflows { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.Turn> Turns { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.Person> People { get; set; }
     }
 }

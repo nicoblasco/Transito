@@ -1,0 +1,195 @@
+﻿@model IEnumerable<GestionDeTurnos.Models.Workflow>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<link href="@Url.Content("~/Content/jquery.multiselect.css")" rel="stylesheet" type="text/css" />*@
+<link href="@Url.Content("~/Content/multi-select.css")" rel="stylesheet" type="text/css" />
+<style type="text/css">
+    #Sectores {
+        height: 270px;
+        width: 240px;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Flujo de Trabajo</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <form class="form-horizontal">
+                        <div class="form-inline">
+                            <label style="display: initial" class="control-label">Tipo de Tramite</label>
+                            @Html.DropDownList("TypesLicenseID", null, "--Seleccione--", htmlAttributes: new { @class = "form-control ddlTypesLicense", @style = "height: 30px", @onchange = "updateSelect(this)" })
+
+                        </div>
+                    </form>
+                </div>
+                <div class="alert alert-success alert-dismissable" style="margin-bottom: 0px;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    Seleccione el orden del flujo de trabajo</a>.
+                </div>
+                <div class="alert alert-warning alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    Aquellos que no se seleccionen no perteneceran al flujo de trabajo</a>.
+                </div>
+                <div class="panel-body">
+                    <select id="Sectores" multiple="multiple"></select>
+
+                </div>
+                @if (ViewBag.AltaModificacion)
+                {
+                    <button type="button" class="btn btn-primary">
+                        Guardar
+                    </button> 
+                }
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+<!-- Progress Loader -->
+<div id="div-loader" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
+    <p style="position: absolute; color: White; top: 35%; left: 45%;">
+        <img src=@Url.Content("~/Images/loading.gif") alt="Loading...">
+    </p>
+</div>
+
+
+@section scripts {
+
+    @*<script src="@Url.Content("~/Scripts/jquery.multiselect.js")"></script>*@
+    <script src="@Url.Content("~/Scripts/jquery.multi-select.js")"></script>
+    @*http://loudev.com/#project*@
+    <script>
+        var arr = [];
+        i = 0;
+
+        jQuery(function () {
+            //jQuery("#Sectores").gs_multiselect();
+            $("#Sectores").multiSelect();
+          //  $('#Sectores').multiSelect('addOption', { index: 0 });
+        });
+
+
+        $('#Sectores').multiSelect({
+            afterSelect: function (values) {
+                //setWorkflow(value, orden);
+                var orden = $('.ms-selection > ul >li:visible').length
+                //alert("Orden: " + orden);
+           //     setWorkflow(values[0], orden);
+            },
+            afterDeselect: function (values) {
+                alert("Deselect value: " + values);
+            }
+        });
+
+
+        function setWorkflow(value, orden) {
+            $("#div-loader").show();
+            var object = new Object();
+            object.TypesLicenseID = $(".ddlTypesLicense").val();
+            object.SectorID = value;
+            object.Orden = orden;
+            var data = JSON.stringify(object);
+
+
+                 $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CreateWorflow")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $('#nuevoModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+
+
+        }
+
+        function updateSelect(obj) {
+          var jsUrl = '@Url.Action("GetSectores", "Workflows")'; // ## is the token
+
+
+          if ($(obj).val() == '')
+            {
+                return;
+            }
+          src = $(obj);
+
+            // find a control with id=Model (you need to add this to your view)
+            tgt = $("#Sectores");
+
+            // Get new model dataset via ajax
+            // based on manufacturer
+            // The url parameter points at your web method
+            $.ajax({
+                url: jsUrl,
+                    type: 'POST',
+                    data: JSON.stringify({
+                        "IdTipo": src.val()
+                    }),
+                    contentType: 'application/json; charset=utf-8;',
+                // success is called when dataset returns
+                success: function (p) {
+                    $('#Sectores').empty();
+                    $.each(p, function (i, pr) {
+                        if (pr.Selected) {
+                            $('#Sectores').append(
+                                '<option value="' + pr.Id + '" selected>' +
+                                pr.Descripcion + '</option>'
+                            );
+                        }
+                        else {
+                            $('#Sectores').append(
+                                '<option value="' + pr.Id + '">' +
+                                pr.Descripcion + '</option>'
+                            );
+                        }
+
+
+                    })
+
+                    $('#Sectores').multiSelect('refresh');
+                }
+            });
+
+
+
+        }
+
+    </script>
+}

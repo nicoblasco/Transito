@@ -122,31 +122,31 @@
                         </li>
 
                         <li>
-                            @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Contravenciones")))
+                            @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Licencias", "Licencias")))
                             {
-                                <a style="color: whitesmoke" href="@Url.Action("Index", "Licenses")"><i class="fa fa-credit-card"></i>  Licencias<span class="fa arrow"></span></a>
+                                <a style="color: whitesmoke" href="@Url.Action("Licenses", "Turns")"><i class="fa fa-credit-card"></i>  Licencias<span class="fa arrow"></span></a>
                             }
                             </li>
                         
                         <li>
                             <a style="color: whitesmoke" href="#"><i class="fa fa-hdd-o fa-fw"></i> AMB Maestros<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Tipos de Licencia")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("ABM Maestros", "Tipos de Licencia")))
                                 {
                                     <li>
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "TypesLicenses")">Tipos de Licencia</a>
                                     </li>
                                 }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("AMB Maestros", "Sectores")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("ABM Maestros", "Sectores")))
                                 {
                                     <li>
                                         <a style="color: whitesmoke" href="#">Sectores <span class="fa arrow"></span></a>
                                         <ul class="nav nav-third-level">
                                             <li>
-                                                <a style="color: whitesmoke" href="@Url.Action("Create", "Sectors")">Alta</a>
+                                                <a style="color: whitesmoke" href="@Url.Action("Index", "Sectors")">Alta</a>
                                             </li>
                                             <li>
-                                                <a style="color: whitesmoke" href="@Url.Action("Index", "Sectors")">Flujo de trabajo</a>
+                                                <a style="color: whitesmoke" href="@Url.Action("Index", "Workflows")">Flujo de trabajo</a>
                                             </li>
                                         </ul>
                                         <!-- /.nav-third-level -->

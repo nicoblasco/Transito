@@ -9,8 +9,7 @@ insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Aud
 
 
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Tipos de Licencia',1,'TypesLicenses',1,(select Id from [dbo].[Modules] where Descripcion='ABM Maestros'))
-
-select * from [dbo].[Windows]
+insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Sectores',1,'Sectors',1,(select Id from [dbo].[Modules] where Descripcion='ABM Maestros'))
 
 
 

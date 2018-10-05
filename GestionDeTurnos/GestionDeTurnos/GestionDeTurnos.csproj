@@ -164,9 +164,12 @@
     <Compile Include="Controllers\ModulesController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\RolsController.cs" />
+    <Compile Include="Controllers\SectorsController.cs" />
+    <Compile Include="Controllers\TurnsController.cs" />
     <Compile Include="Controllers\TypesLicensesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\WindowsController.cs" />
+    <Compile Include="Controllers\WorkflowsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -179,17 +182,24 @@
     <Compile Include="Models\Audit.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\Permission.cs" />
+    <Compile Include="Models\Person.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\Rol.cs" />
+    <Compile Include="Models\Sector.cs" />
+    <Compile Include="Models\SectorWorkflow.cs" />
+    <Compile Include="Models\Turn.cs" />
     <Compile Include="Models\TypesLicense.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\Window.cs" />
+    <Compile Include="Models\Workflow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tags\AutenticadoAttribute.cs" />
     <Compile Include="Validations\DateGreaterThanAttribute.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
+    <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
+    <Compile Include="ViewModel\WorkflowIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-datetimepicker.css" />
@@ -203,9 +213,11 @@
     <Content Include="Content\jquery.dataTables.css" />
     <Content Include="Content\jquery.dataTables.min.css" />
     <Content Include="Content\jquery.datetimepicker.min.css" />
+    <Content Include="Content\jquery.multiselect.css" />
     <Content Include="Content\lobibox.css" />
     <Content Include="Content\metisMenu.css" />
     <Content Include="Content\metisMenu.min.css" />
+    <Content Include="Content\multi-select.css" />
     <Content Include="Content\sb-admin-2.css" />
     <Content Include="Content\sb-admin-2.min.css" />
     <Content Include="Content\select2.css" />
@@ -233,6 +245,7 @@
     <Content Include="Images\sort_both.png" />
     <Content Include="Images\sort_desc.png" />
     <Content Include="Images\sort_desc_disabled.png" />
+    <Content Include="Images\switch.png" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -406,6 +419,8 @@
     <Content Include="Scripts\jquery.dataTables.js" />
     <Content Include="Scripts\jquery.datetimepicker.full.min.js" />
     <Content Include="Scripts\jquery.form.js" />
+    <Content Include="Scripts\jquery.multi-select.js" />
+    <Content Include="Scripts\jquery.multiselect.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.date.js" />
@@ -488,6 +503,18 @@
     <Content Include="Views\Home\Ingreso.cshtml" />
     <Content Include="Views\Home\AccesoDenegado.cshtml" />
     <Content Include="Views\TypesLicenses\Index.cshtml" />
+    <Content Include="Views\Sectors\Index.cshtml" />
+    <Content Include="Views\Workflows\Create.cshtml" />
+    <Content Include="Views\Workflows\Delete.cshtml" />
+    <Content Include="Views\Workflows\Details.cshtml" />
+    <Content Include="Views\Workflows\Index.cshtml" />
+    <Content Include="Views\Turns\Create.cshtml" />
+    <Content Include="Views\Turns\Delete.cshtml" />
+    <Content Include="Views\Turns\Details.cshtml" />
+    <Content Include="Views\Turns\Edit.cshtml" />
+    <Content Include="Views\Turns\Index.cshtml" />
+    <Content Include="Views\Turns\Search.cshtml" />
+    <Content Include="Views\Turns\Licenses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

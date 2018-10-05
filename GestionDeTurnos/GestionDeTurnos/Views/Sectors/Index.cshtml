@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GestionDeTurnos.Models.TypesLicense>
+﻿@model IEnumerable<GestionDeTurnos.Models.Sector>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,7 +8,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Tipos de Licencias</h1>
+            <h1 class="page-header">Sectores</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -43,7 +43,6 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Descripción</th>
-                                <th>Abreviación</th>
                             </tr>
                         </thead>
                     </table>
@@ -75,17 +74,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Nuevo Tipo de Licencia</h4>
+                    <h4 class="modal-title">Nuevo Sector</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form">
                         <div class="form-group">
                             <label>Descripción</label>
                             <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Abreviación</label>
-                            <input id="input-Abreviacion" name="inputAbreviacion" class="form-control" autocomplete="off">
                         </div>
                     </form>
                 </div>
@@ -105,7 +100,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Editar Tipo de Licencia</h4>
+                    <h4 class="modal-title">Editar Sector</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form">
@@ -119,11 +114,6 @@
                         <div class="form-group">
                             <label>Descripción</label>
                             <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Perfil</label>
-                            <input id="input-Abreviacion" name="inputAbreviacion" class="form-control" autocomplete="off">
                         </div>
                     </form>
                 </div>
@@ -151,14 +141,13 @@
         $('#dataTables-Index').DataTable({
               "ajax":
                   {
-                      url: "@Url.Action("GetTipos", "TypesLicenses")",
+                      url: "@Url.Action("GetSectores", "Sectors")",
                       type: "post",
                       dataSrc: ""
                   },
            "columns": [
                { "data": "Id" },
-               { "data": "Descripcion" },
-               { "data": "Codigo" }
+               { "data": "Descripcion" }
            ],
            responsive: true
        });
@@ -186,7 +175,7 @@
 
         Lobibox.confirm({
             title: 'Atención',
-            msg: "¿Esta seguro que desea eliminar el Tipo de Licencia?",
+            msg: "¿Esta seguro que desea eliminar el Sector?",
             callback: function ($this, type, ev) {
                 if (type === 'yes') {
                     Delete();
@@ -204,7 +193,7 @@
             //var id = $("#dataTables-Index").dataTable().$("tr.selected").attr('id');
             var id =$('#dataTables-Index').find('tr.selected>td').first().text();
             $.ajax({
-                    url: '@Url.Action("DeleteTipo", "TypesLicenses")',
+                    url: '@Url.Action("DeleteSector", "Sectors")',
                     type: 'POST',
                     data: JSON.stringify({
                         "id": id
@@ -231,15 +220,9 @@
 
     $("#form-create").validate({
         rules: {
-            inputPerfil: { required: true, minlength: 2, maxlength: 64 },
-            inputAbreviacion: { required: true, minlength: 1, maxlength: 64 }
+            inputPerfil: { required: true, minlength: 2, maxlength: 64 }
         },
         messages: {
-            inputAbreviacion: {
-                required: "Este campo es requerido.",
-                minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 64 caracteres."
-            },
             inputDescripcion: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
@@ -249,7 +232,6 @@
         submitHandler: function (form) {
             $("#div-loader").show();
             var object = new Object();
-            object.Codigo = $("#input-Abreviacion").val();
             object.Descripcion = $("#input-Descripcion").val();
             var data = JSON.stringify(object);
 
@@ -261,7 +243,7 @@
                 $("#div-loader").hide();
                 Lobibox.notify('warning', {
                     title: 'Cuidado',
-                    msg: 'El tipo de licencia ya existe, debe asignar otro nombre.'
+                    msg: 'El sector ya existe, debe asignar otro nombre.'
                 });
 
                 return;
@@ -270,7 +252,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("CreateTipo")',
+                url: '@Url.Action("CreateSector")',
                     data: data,
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
@@ -307,15 +289,9 @@
 
     $("#form-edit").validate({
         rules: {
-            inputAbreviacion: { required: true, minlength: 1, maxlength: 64 },
             inputDescripcion: { required: true, minlength: 2, maxlength: 64 }
         },
         messages: {
-            inputAbreviacion: {
-                required: "Este campo es requerido.",
-                minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 64 caracteres."
-            },
             inputDescripcion: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
@@ -327,7 +303,6 @@
 
             var object = new Object();
             object.Id = $('#editarModal').find('input#input-Id').val();
-            object.Codigo = $('#editarModal').find('input#input-Abreviacion').val();
             object.Descripcion = $('#editarModal').find('input#input-Descripcion').val();
             var data = JSON.stringify(object);
 
@@ -339,7 +314,7 @@
                 $("#div-loader").hide();
                 Lobibox.notify('warning', {
                     title: 'Cuidado',
-                    msg: 'El tipo de licencia ya existe, debe asignar otro nombre.'
+                    msg: 'El sector ya existe, debe asignar otro nombre.'
                 });
 
                 return;
@@ -347,7 +322,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("EditTipo")',
+                url: '@Url.Action("EditSector")',
                     data: data,
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
@@ -389,14 +364,13 @@
 
         $.ajax({
             type: 'POST',
-            url: '@Url.Action("GetTipo", "TypesLicenses")',
+            url: '@Url.Action("GetSector", "Sectors")',
             data: {
                 id: idTipo
             },
             cache: false,
             success: function (result) {
                 $('#editarModal').find('input#input-Id').val(result.Id);
-                $('#editarModal').find('input#input-Abreviacion').val(result.Codigo);
                 $('#editarModal').find('input#input-Descripcion').val(result.Descripcion);
             },
             error: function (response) {
@@ -425,10 +399,10 @@
             $.ajax({
                 type: 'GET',
                 async: false ,
-            url: '@Url.Action("GetDuplicates", "TypesLicenses")',
+            url: '@Url.Action("GetDuplicates", "Sectors")',
             data: {
                 id: pid,
-                tipo: pParam
+                descripcion: pParam
             },
             cache: false,
             success: function (result) {

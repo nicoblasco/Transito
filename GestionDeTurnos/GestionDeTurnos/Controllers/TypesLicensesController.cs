@@ -162,7 +162,7 @@ namespace GestionDeTurnos.Controllers
             db.SaveChanges();
 
             //Audito
-            AuditHelper.Auditar("Alta", id.ToString(), "TypesLicense", ModuleDescription, WindowDescription);
+            AuditHelper.Auditar("Baja", id.ToString(), "TypesLicense", ModuleDescription, WindowDescription);
 
             var responseObject = new
             {
