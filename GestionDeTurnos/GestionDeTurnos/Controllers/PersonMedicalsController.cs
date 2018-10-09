@@ -69,6 +69,7 @@ namespace GestionDeTurnos.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             PersonMedical personMedical = db.PersonMedicals.Find(id);
+            //Prueba
             if (personMedical == null)
             {
                 return HttpNotFound();
