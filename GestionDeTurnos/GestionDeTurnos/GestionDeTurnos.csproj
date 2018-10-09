@@ -163,6 +163,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ModulesController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
+    <Compile Include="Controllers\PersonMedicalsController.cs" />
     <Compile Include="Controllers\RolsController.cs" />
     <Compile Include="Controllers\SectorsController.cs" />
     <Compile Include="Controllers\TerminalsController.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\PersonMedical.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Sector.cs" />
@@ -522,6 +524,11 @@
     <Content Include="Views\Turns\Search.cshtml" />
     <Content Include="Views\Turns\Licenses.cshtml" />
     <Content Include="Views\Terminals\Index.cshtml" />
+    <Content Include="Views\PersonMedicals\Create.cshtml" />
+    <Content Include="Views\PersonMedicals\Delete.cshtml" />
+    <Content Include="Views\PersonMedicals\Details.cshtml" />
+    <Content Include="Views\PersonMedicals\Edit.cshtml" />
+    <Content Include="Views\PersonMedicals\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

@@ -53,5 +53,7 @@ namespace GestionDeTurnos.Models
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.Person> People { get; set; }
 
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.Terminal> Terminals { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.PersonMedical> PersonMedicals { get; set; }
     }
 }
