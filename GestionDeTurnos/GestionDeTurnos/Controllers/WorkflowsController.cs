@@ -65,6 +65,30 @@ namespace GestionDeTurnos.Controllers
             }
         }
 
+        //public ActionResult Create()
+
+        //{
+        //    ViewBag.TypesLicenseID = new SelectList(db.TypesLicenses, "Id", "Descripcion");
+        //    //            ViewBag.SectorID = new SelectList(db.TypesLicenses, "Id", "Descripcion");
+        //    ViewBag.AltaModificacion = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+        //    return View();
+        //}
+
+        //// POST: /Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create([Bind(Include = "Id,Descripcion,Enable,Url,Orden")] Window window)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Windows.Add(window);
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View(window);
+        //}
+
 
         public JsonResult CreateWorflow(WorkflowIndexViewModel workflowIndex)
         {
@@ -73,12 +97,7 @@ namespace GestionDeTurnos.Controllers
                 return Json(new { responseCode = "-10" });
             }
 
-
-
-           
-            SectorWorkflow sectorWorkflow = new SectorWorkflow();
-            sectorWorkflow.SectorID = workflowIndex.SectorID;
-            sectorWorkflow.Orden = workflowIndex.Orden;
+            
             Workflow workflow = db.Workflows.Where(x => x.TypesLicenseID == workflowIndex.TypesLicenseID).FirstOrDefault();
             
             if (workflow == null)
@@ -90,21 +109,27 @@ namespace GestionDeTurnos.Controllers
                 db.Workflows.Add(workflow);
                 db.SaveChanges();
 
-                if (workflow.Id>0)
-                {
-                    sectorWorkflow.WorkflowID = workflow.Id;
-                }
 
             }
             else
             {
-                sectorWorkflow.SectorID = workflowIndex.SectorID;
-                sectorWorkflow.Orden = workflowIndex.Orden;
-                sectorWorkflow.WorkflowID = workflow.Id;
+                //Primero borro todos los sectores
+                db.SectorWorkflows.RemoveRange(db.SectorWorkflows.Where(x => x.WorkflowID == workflow.Id));
 
             }
 
-            db.SectorWorkflows.Add(sectorWorkflow);
+
+
+            //Ahora grabo los sectores
+            for (int i = 0; i < workflowIndex.Sectores.Length ; i++)
+            {
+                SectorWorkflow sectorWorkflow = new SectorWorkflow();
+                sectorWorkflow.WorkflowID = workflow.Id;
+                sectorWorkflow.SectorID = workflowIndex.Sectores[i];
+                sectorWorkflow.Orden = i + 1;
+                db.SectorWorkflows.Add(sectorWorkflow);
+            }
+            
             db.SaveChanges();
 
 

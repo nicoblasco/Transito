@@ -10,8 +10,9 @@ namespace GestionDeTurnos.ViewModel
         public int Id { get; set; }
         public int TypesLicenseID { get; set; }
 
-        public int SectorID { get; set; }
+        public int[] Sectores { get; set; }
+    //public int SectorID { get; set; }
 
-        public int Orden { get; set; }
-    }
+    //public int Orden { get; set; }
+}
 }

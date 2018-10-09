@@ -102,13 +102,13 @@
                                 @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Monitoreo")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Turns")">Monitoreo</a>
+                                        <a style="color: whitesmoke" href="@Url.Action("Create", "Turns")">Monitoreo</a>
                                     </li>
                                 }
                                 @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Atencion")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Create", "Turns")">Atención al cliente</a>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Turns")">Atención al cliente</a>
                                     </li>
                                 }
 
@@ -150,6 +150,13 @@
                                             </li>
                                         </ul>
                                         <!-- /.nav-third-level -->
+                                    </li>
+                                }
+
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("ABM Maestros", "Terminales")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Terminals")">Terminales</a>
                                     </li>
                                 }
                             </ul>

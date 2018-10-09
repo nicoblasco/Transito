@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GestionDeTurnos.Models.Usuario>
+﻿@model IEnumerable<GestionDeTurnos.Models.Terminal>
 
 
 @{
@@ -9,7 +9,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Usuario</h1>
+            <h1 class="page-header">Terminal</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -43,10 +43,9 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Usuario</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Rol</th>
+                                <th>Descripcion</th>
+                                <th>IP</th>
+                                <th>Sector</th>
                             </tr>
                         </thead>
                     </table>
@@ -78,32 +77,22 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Nuevo Usuario</h4>
+                    <h4 class="modal-title">Nueva Terminal</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" autocomplete="off">
 
                         <div class="form-group">
-                            <label>Usuario</label>
-                            <input id="username" style="opacity: 0;position: absolute;" type="text" name="fakeusernameremembered">
-                            <input id="input-Usuario-Create" name="inputNombreUsuario" class="form-control" autocomplete="nope">
+                            <label>Descripcion</label>
+                            <input id="input-Descripcion-Create" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label>Contraseña</label>
-                            <input id="password" style="opacity: 0;position: absolute;" class="cp-password_stub" type="password" name="fakepasswordremembered">
-                            <input type="password" id="input-Contraseña-Create" name="inputPassword" class="form-control" autocomplete="new-password">
+                            <label>IP</label>
+                            <input id="input-IP-Create" name="inputIP" class="form-control" autocomplete="off" value="@(ViewBag.terminalName)" disabled>
                         </div>
                         <div class="form-group">
-                            <label>Nombre</label>
-                            <input id="input-Nombre-Create" name="inputNombre" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Apellido</label>
-                            <input id="input-Apellido-Create" name="inputApellido" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Rol</label>
-                            @Html.DropDownList("selectRolCreate", new SelectList(ViewBag.listaRoles, "RolId", "Nombre"), new { @class = "form-control" })
+                            <label>Sector</label>
+                            @Html.DropDownList("selectSectorCreate", new SelectList(ViewBag.listaSectores, "Id", "Descripcion"), new { @class = "form-control" })
 
                         </div>
                     </form>
@@ -124,35 +113,27 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Editar Usuario</h4>
+                    <h4 class="modal-title">Editar Terminal </h4>
                 </div>
                 <div class="modal-body">
                     <form role="form">
 
                         <div class="form-group">
                             <label>Id</label>
-                            <input id="input-Id-Edit" name="inputPerfil" class="form-control" disabled>
+                            <input id="input-Id-Edit" name="inputId" class="form-control" disabled>
                         </div>
 
                         <div class="form-group">
-                            <label>Usuario</label>
-                            <input id="input-Usuario-Edit" name="inputNombreUsuario" class="form-control" autocomplete="off">
+                            <label>Descripcion</label>
+                            <input id="input-Descripcion-Edit" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label>Contraseña</label>
-                            <input type="password" id="input-Contraseña-Edit" name="inputPassword" class="form-control" autocomplete="off">
+                            <label>IP</label>
+                            <input id="input-IP-Edit" name="inputIP" class="form-control" autocomplete="off"  disabled>
                         </div>
                         <div class="form-group">
-                            <label>Nombre</label>
-                            <input id="input-Nombre-Edit" name="inputNombre" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Apellido</label>
-                            <input id="input-Apellido-Edit" name="inputApellido" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Rol</label>
-                            @Html.DropDownList("selectRolEdit", new SelectList(ViewBag.listaRoles, "RolId", "Nombre"), new { @class = "form-control" })
+                            <label>Sector</label>
+                            @Html.DropDownList("selectSectorEdit", new SelectList(ViewBag.listaSectores, "Id", "Descripcion"), new { @class = "form-control" })
 
                         </div>
                     </form>
@@ -181,16 +162,15 @@
         $('#dataTables-Index').DataTable({
               "ajax":
                   {
-                      url: "@Url.Action("GetUsuarios", "Usuarios")",
+                      url: "@Url.Action("GetTerminales", "Terminals")",
                       type: "post",
                       dataSrc: ""
                   },
            "columns": [
-               { "data": "UsuarioId" },
-               { "data": "Nombreusuario" },
-               { "data": "Nombre" },
-               { "data": "Apellido" },
-               { "data": "Rol.Nombre" }
+               { "data": "Id" },
+               { "data": "Descripcion" },
+               { "data": "IP" },
+               { "data": "Sector.Descripcion" }
 
            ],
            responsive: true
@@ -217,7 +197,7 @@
     $('#btnBorrar').click(function () {
         Lobibox.confirm({
             title: 'Atención',
-            msg: "¿Esta seguro que desea eliminar el Usuario?",
+            msg: "¿Esta seguro que desea eliminar la Terminal?",
             callback: function ($this, type, ev) {
                 if (type === 'yes') {
                     Delete();
@@ -233,7 +213,7 @@
         $("#div-loader").show();
             var id =$('#dataTables-Index').find('tr.selected>td').first().text();
             $.ajax({
-                    url: '@Url.Action("DeleteUsuario", "Usuarios")',
+                    url: '@Url.Action("DeleteTerminal", "Terminals")',
                     type: 'POST',
                     data: JSON.stringify({
                         "id": id
@@ -260,44 +240,42 @@
 
     $("#form-create").validate({
         rules: {
-            inputNombreUsuario: { required: true, minlength: 2, maxlength: 64 },
-            inputPassword: { required: true, minlength: 2, maxlength: 64 },
-            inputRol: { required: true}
+            inputDescripcion: { required: true, minlength: 2, maxlength: 64 },
+            inputIP: { required: true, minlength: 2, maxlength: 64 },
+            selectSectorCreate: { required: true}
         },
         messages: {
-            inputNombreUsuario: {
+            inputDescripcion: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
             },
-            inputPassword: {
+            inputIP: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
             },
-            inputRol: {
+            selectSectorCreate: {
                 required: "Este campo es requerido."
             }
         },
         submitHandler: function (form) {
             $("#div-loader").show();
             var object = new Object();
-            object.Nombre = $("#input-Nombre-Create").val();
-            object.Apellido = $("#input-Apellido-Create").val();
-            object.Nombreusuario = $("#input-Usuario-Create").val();
-            object.Contraseña = $("#input-Contraseña-Create").val();
-            object.RolId = $("#selectRolCreate option:selected").val();
+            object.Descripcion = $("#input-Descripcion-Create").val();
+            object.IP = $("#input-IP-Create").val();
+            object.SectorId = $("#selectSectorCreate option:selected").val();
             var data = JSON.stringify(object);
 
 
-            //Antes de editar, verifico que no este duplicando el Rol
-            var isDuplicate = getDuplicates(0, object.Nombreusuario);
+            //Antes de editar, verifico que no este duplicando la IP
+            var isDuplicate = getDuplicates(0, object.IP);
 
             if (isDuplicate) {
                 $("#div-loader").hide();
                 Lobibox.notify('warning', {
                     title: 'Cuidado',
-                    msg: 'El usuario ya existe, debe asignar otro nombre de usuario.'
+                    msg: 'La terminal ya existe'
                 });
 
                 return;
@@ -306,7 +284,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("CreateUsuario")',
+                url: '@Url.Action("CreateTerminal")',
                     data: data,
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
@@ -343,22 +321,22 @@
 
     $("#form-edit").validate({
         rules: {
-            inputNombreUsuario: { required: true, minlength: 2, maxlength: 64 },
-            inputPassword: { required: true, minlength: 2, maxlength: 64 },
-            inputRol: { required: true }
+            inputDescripcion: { required: true, minlength: 2, maxlength: 64 },
+            inputIP: { required: true, minlength: 2, maxlength: 64 },
+            selectSectorEdit: { required: true }
         },
         messages: {
-            inputNombreUsuario: {
+            inputDescripcion: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
             },
-            inputPassword: {
+            inputIP: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
             },
-            inputRol: {
+            selectSectorEdit: {
                 required: "Este campo es requerido."
             }
         },
@@ -366,24 +344,22 @@
             var object = new Object();
 
             $("#div-loader").show();
-            object.UsuarioId = $('#input-Id-Edit').val();
-            object.Nombre = $("#input-Nombre-Edit").val();
-            object.Apellido = $("#input-Apellido-Edit").val();
-            object.Nombreusuario = $("#input-Usuario-Edit").val();
-            object.Contraseña = $("#input-Contraseña-Edit").val();
-            object.RolId = $("#selectRolEdit option:selected").val();
+            object.Id = $('#input-Id-Edit').val();
+            object.Descripcion = $("#input-Descripcion-Edit").val();
+            object.IP = $("#input-IP-Edit").val();
+            object.SectorId = $("#selectSectorEdit option:selected").val();
 
             var data = JSON.stringify(object);
 
-            //Antes de editar, verifico que no este duplicando el Rol
-            var isDuplicate = getDuplicates(object.UsuarioId, object.Nombreusuario);
+            //Antes de editar, verifico que no este duplicando la IP
+            var isDuplicate = getDuplicates(object.Id, object.IP);
 
             if (isDuplicate)
             {
                 $("#div-loader").hide();
                 Lobibox.notify('warning', {
                     title: 'Cuidado',
-                    msg: 'El nombre de usuario ya existe, debe asignar otro.'
+                    msg: 'El terminal ya esta registrado'
                 });
 
                 return;
@@ -391,7 +367,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("EditUsuario")',
+                url: '@Url.Action("EditTerminal")',
                     data: data,
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
@@ -433,18 +409,16 @@
 
         $.ajax({
             type: 'POST',
-            url: '@Url.Action("GetUsuario", "Usuarios")',
+            url: '@Url.Action("GetTerminal", "Terminals")',
             data: {
                 id: idRol
             },
             cache: false,
             success: function (result) {
-                $('#editarModal').find('input#input-Id-Edit').val(result.UsuarioId);
-                $('#editarModal').find('input#input-Usuario-Edit').val(result.Nombreusuario);
-                $('#editarModal').find('input#input-Contraseña-Edit').val(result.Contraseña);
-                $('#editarModal').find('input#input-Nombre-Edit').val(result.Nombre);
-                $('#editarModal').find('input#input-Apellido-Edit').val(result.Apellido);
-                $('#editarModal').find('#selectRolEdit').val(result.RolId);
+                $('#editarModal').find('input#input-Id-Edit').val(result.Id);
+                $('#editarModal').find('input#input-Descripcion-Edit').val(result.Descripcion);
+                $('#editarModal').find('input#input-IP-Edit').val(result.IP);
+                $('#editarModal').find('#selectSectorEdit').val(result.Sector.Id);
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -472,10 +446,10 @@
             $.ajax({
                 type: 'GET',
                 async: false ,
-            url: '@Url.Action("GetDuplicates", "Usuarios")',
+            url: '@Url.Action("GetDuplicates", "Terminals")',
             data: {
                 id: pid,
-                usuario: pParam
+                IP: pParam
 
             },
             cache: false,

@@ -5,7 +5,7 @@
 }
 
 @*<link href="@Url.Content("~/Content/jquery.multiselect.css")" rel="stylesheet" type="text/css" />*@
-<link href="@Url.Content("~/Content/multi-select.css")" rel="stylesheet" type="text/css" />
+<link href="@Url.Content("~/Content/multiselect-master.css")" rel="stylesheet" type="text/css" />
 <style type="text/css">
     #Sectores {
         height: 270px;
@@ -41,15 +41,38 @@
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     Aquellos que no se seleccionen no perteneceran al flujo de trabajo</a>.
                 </div>
-                <div class="panel-body">
-                    <select id="Sectores" multiple="multiple"></select>
+                <div class="row">
+                    <div class="col-xs-5">
+                        <select name="from[]" class="form-control" size="8" id="multiselect" multiple="multiple"></select>
 
+                    </div>
+                    <div class="col-xs-2">
+                        <button type="button" id="multiselect_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+                        <button type="button" id="multiselect_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                        <button type="button" id="multiselect_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                        <button type="button" id="multiselect_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+                    </div>
+
+                    <div class="col-xs-5">
+                        <select name="to[]" id="multiselect_to" class="form-control" size="8" multiple="multiple"></select>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="button" id="multiselect_move_up" class="btn btn-block"><i class="glyphicon glyphicon-arrow-up"></i></button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="button" id="multiselect_move_down" class="btn btn-block col-sm-6"><i class="glyphicon glyphicon-arrow-down"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+
                 @if (ViewBag.AltaModificacion)
                 {
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" id="btnGuardar" class="btn btn-primary">
                         Guardar
-                    </button> 
+                    </button>
                 }
             </div>
             <!-- /.panel -->
@@ -69,39 +92,44 @@
 
 @section scripts {
 
-    @*<script src="@Url.Content("~/Scripts/jquery.multiselect.js")"></script>*@
-    <script src="@Url.Content("~/Scripts/jquery.multi-select.js")"></script>
-    @*http://loudev.com/#project*@
+    <script src="@Url.Content("~/Scripts/multiselect.min.js")"></script>
+    @*https://crlcu.github.io/multiselect/*@
     <script>
         var arr = [];
         i = 0;
 
-        jQuery(function () {
-            //jQuery("#Sectores").gs_multiselect();
-            $("#Sectores").multiSelect();
-          //  $('#Sectores').multiSelect('addOption', { index: 0 });
+        jQuery(document).ready(function ($) {
+            $('#multiselect').multiselect({
+                keepRenderingSort: true
+            });
+
+
+
+            $("#btnGuardar").click(function () {
+                var sel = $('[name="to[]"]');
+                var selArray = [];
+                if (sel[0].length == 0)
+                    return;
+                for (var i = 0; i < sel[0].length; i++) {
+                    selArray[i] = sel[0][i].value;
+                }
+
+
+
+                setWorkflow(selArray);
+
+            });
+
         });
 
 
-        $('#Sectores').multiSelect({
-            afterSelect: function (values) {
-                //setWorkflow(value, orden);
-                var orden = $('.ms-selection > ul >li:visible').length
-                //alert("Orden: " + orden);
-           //     setWorkflow(values[0], orden);
-            },
-            afterDeselect: function (values) {
-                alert("Deselect value: " + values);
-            }
-        });
 
-
-        function setWorkflow(value, orden) {
+        function setWorkflow(values) {
             $("#div-loader").show();
             var object = new Object();
             object.TypesLicenseID = $(".ddlTypesLicense").val();
-            object.SectorID = value;
-            object.Orden = orden;
+            object.Sectores = values;
+            //object.Orden = orden;
             var data = JSON.stringify(object);
 
 
@@ -151,7 +179,7 @@
           src = $(obj);
 
             // find a control with id=Model (you need to add this to your view)
-            tgt = $("#Sectores");
+            tgt = $("#multiselect");
 
             // Get new model dataset via ajax
             // based on manufacturer
@@ -165,16 +193,22 @@
                     contentType: 'application/json; charset=utf-8;',
                 // success is called when dataset returns
                 success: function (p) {
-                    $('#Sectores').empty();
+                    $('#multiselect').empty();
+                    $('#multiselect_to').empty();
                     $.each(p, function (i, pr) {
+                        //$('#multiselect').append(
+                        //    '<option value="' + pr.Id + '">' +
+                        //    pr.Descripcion + '</option>'
+                        //);
+
                         if (pr.Selected) {
-                            $('#Sectores').append(
-                                '<option value="' + pr.Id + '" selected>' +
+                            $('#multiselect_to').append(
+                                '<option value="' + pr.Id + '">' +
                                 pr.Descripcion + '</option>'
                             );
                         }
                         else {
-                            $('#Sectores').append(
+                            $('#multiselect').append(
                                 '<option value="' + pr.Id + '">' +
                                 pr.Descripcion + '</option>'
                             );
@@ -183,7 +217,6 @@
 
                     })
 
-                    $('#Sectores').multiSelect('refresh');
                 }
             });
 

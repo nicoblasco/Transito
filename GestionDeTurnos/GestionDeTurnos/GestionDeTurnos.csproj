@@ -165,6 +165,7 @@
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\RolsController.cs" />
     <Compile Include="Controllers\SectorsController.cs" />
+    <Compile Include="Controllers\TerminalsController.cs" />
     <Compile Include="Controllers\TurnsController.cs" />
     <Compile Include="Controllers\TypesLicensesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -175,6 +176,7 @@
     </Compile>
     <Compile Include="Helpers\AuditHelper.cs" />
     <Compile Include="Helpers\BootstrapExtensions.cs" />
+    <Compile Include="Helpers\CompNameHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Helpers\WindowHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Sector.cs" />
     <Compile Include="Models\SectorWorkflow.cs" />
+    <Compile Include="Models\Terminal.cs" />
     <Compile Include="Models\Turn.cs" />
     <Compile Include="Models\TypesLicense.cs" />
     <Compile Include="Models\Usuario.cs" />
@@ -199,6 +202,7 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
+    <Compile Include="ViewModel\TurnoWSViewModel.cs" />
     <Compile Include="ViewModel\WorkflowIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +222,7 @@
     <Content Include="Content\metisMenu.css" />
     <Content Include="Content\metisMenu.min.css" />
     <Content Include="Content\multi-select.css" />
+    <Content Include="Content\multiselect-master.css" />
     <Content Include="Content\sb-admin-2.css" />
     <Content Include="Content\sb-admin-2.min.css" />
     <Content Include="Content\select2.css" />
@@ -445,6 +450,7 @@
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\multipartInAjaxBegin.js" />
+    <Content Include="Scripts\multiselect.min.js" />
     <Content Include="Scripts\notifications.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -515,6 +521,7 @@
     <Content Include="Views\Turns\Index.cshtml" />
     <Content Include="Views\Turns\Search.cshtml" />
     <Content Include="Views\Turns\Licenses.cshtml" />
+    <Content Include="Views\Terminals\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

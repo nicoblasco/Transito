@@ -15,5 +15,7 @@ namespace GestionDeTurnos.Helpers
             int ModuleId = db.Modules.Where(x => x.Descripcion == Modulo && x.Enable == true).Select(x => x.Id).FirstOrDefault();
             return db.Windows.Where(x => x.Descripcion == Pantalla && x.Enable == true && x.ModuleId == ModuleId).Select(x => x.Id).FirstOrDefault();
         }
+
+        
     }
 }

@@ -1,41 +1,206 @@
 ﻿@model GestionDeTurnos.Models.Workflow
 
 @{
-    ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<link href="@Url.Content("~/Content/multiselect-master.css")" rel="stylesheet" type="text/css" />
+<style type="text/css">
+    #Sectores {
+        height: 270px;
+        width: 240px;
+    }
+</style>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Workflow</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.TypesLicenseID, "TypesLicenseID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TypesLicenseID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TypesLicenseID, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Flujo de Trabajo</h1>
             </div>
+            <!-- /.col-lg-12 -->
         </div>
-    </div>
-}
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <form class="form-horizontal">
+                            <div class="form-inline">
+                                <label style="display: initial" class="control-label">Tipo de Tramite</label>
+                                @Html.DropDownList("TypesLicenseID", null, "--Seleccione--", htmlAttributes: new { @class = "form-control ddlTypesLicense", @style = "height: 30px", @onchange = "updateSelect(this)" })
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
+                            </div>
+                        </form>
+                    </div>
+                    <div class="alert alert-success alert-dismissable" style="margin-bottom: 0px;">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Seleccione el orden del flujo de trabajo.</a></div >
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type = "button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                         Aquellos que no se seleccionen no perteneceran al flujo de trabajo.</a></div>
+
+                <div class="row">
+                    <div class="col-xs-5">
+                        <select name="from[]" class="form-control" size="8" id="multiselect" multiple="multiple"></select>
+
+                    </div>
+                    <div class="col-xs-2">
+                        <button type="button" id="multiselect_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+                        <button type="button" id="multiselect_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                        <button type="button" id="multiselect_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                        <button type="button" id="multiselect_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+                    </div>
+
+                    <div class="col-xs-5">
+                        <select name="to[]" id="multiselect_to" class="form-control" size="8" multiple="multiple"></select>
+                    </div>
+                </div>
+
+                @if (ViewBag.AltaModificacion)
+                                        {
+                <button type="button" class="btn btn-primary">
+                    Guardar
+                </button>
+                                        }
+                </div>
+<!-- /.panel -->
 </div>
+<!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+</div>
+}
+@section scripts {
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    @*<script src="@Url.Content("~/Scripts/jquery.multiselect.js")"></script>*@
+    <script src="@Url.Content("~/Scripts/multiselect.min.js")"></script>
+    @*http://loudev.com/#project*@
+    <script>
+        var arr = [];
+        i = 0;
+
+        jQuery(document).ready(function ($) {
+            $('#multiselect').multiselect();
+        });
+
+
+        //$('#Sectores').multiSelect({
+        //    afterSelect: function (values) {
+        //        //setWorkflow(value, orden);
+        //        var orden = $('.ms-selection > ul >li:visible').length
+        //        //alert("Orden: " + orden);
+        //   //     setWorkflow(values[0], orden);
+        //    },
+        //    afterDeselect: function (values) {
+        //        alert("Deselect value: " + values);
+        //    }
+        //});
+
+
+        function setWorkflow(value, orden) {
+            $("#div-loader").show();
+            var object = new Object();
+            object.TypesLicenseID = $(".ddlTypesLicense").val();
+            object.SectorID = value;
+            object.Orden = orden;
+            var data = JSON.stringify(object);
+
+
+                 $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CreateWorflow")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $('#nuevoModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+
+
+        }
+
+        function updateSelect(obj) {
+          var jsUrl = '@Url.Action("GetSectores", "Workflows")'; // ## is the token
+
+
+          if ($(obj).val() == '')
+            {
+                return;
+            }
+          src = $(obj);
+
+            // find a control with id=Model (you need to add this to your view)
+            tgt = $("#multiselect");
+
+            // Get new model dataset via ajax
+            // based on manufacturer
+            // The url parameter points at your web method
+            $.ajax({
+                url: jsUrl,
+                    type: 'POST',
+                    data: JSON.stringify({
+                        "IdTipo": src.val()
+                    }),
+                    contentType: 'application/json; charset=utf-8;',
+                // success is called when dataset returns
+                success: function (p) {
+                    $('#multiselect').empty();
+                    $.each(p, function (i, pr) {
+                        $('#multiselect').append(
+                            '<option value="' + pr.Id + '">' +
+                            pr.Descripcion + '</option>'
+                        );
+
+                        //if (pr.Selected) {
+                        //    $('#Sectores').append(
+                        //        '<option value="' + pr.Id + '" selected>' +
+                        //        pr.Descripcion + '</option>'
+                        //    );
+                        //}
+                        //else {
+                        //    $('#Sectores').append(
+                        //        '<option value="' + pr.Id + '">' +
+                        //        pr.Descripcion + '</option>'
+                        //    );
+                        //}
+
+
+                    })
+
+                   // $('#multiselect').multiSelect('refresh');
+                }
+            });
+
+
+
+        }
+
+    </script>
 }
