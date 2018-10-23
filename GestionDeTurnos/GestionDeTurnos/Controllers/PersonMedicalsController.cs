@@ -23,22 +23,26 @@ namespace GestionDeTurnos.Controllers
 
         // GET: PersonMedicals/Details/5
         public ActionResult Details(int? id)
-        {
+        {   
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             PersonMedical personMedical = db.PersonMedicals.Find(id);
+            //Person person =db.personMedicals.Find(id);
+            //Array o List de PersonMedical personsMedicals = db.PersonMedicals.Find(PersonId=id)
             if (personMedical == null)
             {
                 return HttpNotFound();
             }
+            //Pasar a la Vista Person - PersonsMedicals
             return View(personMedical);
+            
         }
 
         // GET: PersonMedicals/Create
         public ActionResult Create()
-        {
+        {   
             ViewBag.PersonId = new SelectList(db.People, "Id", "Nombre");
             return View();
         }
@@ -50,6 +54,9 @@ namespace GestionDeTurnos.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,PersonId,Genero,Avoi")] PersonMedical personMedical)
         {
+            //Recover request by Post
+            //Add PersonMedicals
+            //Redirect to Details/idPerson
             if (ModelState.IsValid)
             {
                 db.PersonMedicals.Add(personMedical);
