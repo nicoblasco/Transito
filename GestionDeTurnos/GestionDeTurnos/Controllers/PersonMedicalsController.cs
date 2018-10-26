@@ -29,6 +29,7 @@ namespace GestionDeTurnos.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Person people = db.People.Find(id);
+            ViewBag.Dni = people.Dni;
             ViewBag.Nombre = people.Nombre;
             ViewBag.Apellido = people.Apellido;
             //Calcula Edad
