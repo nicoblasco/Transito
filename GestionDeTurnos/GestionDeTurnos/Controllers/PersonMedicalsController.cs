@@ -28,15 +28,25 @@ namespace GestionDeTurnos.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PersonMedical personMedical = db.PersonMedicals.Find(id);
+            Person people = db.People.Find(id);
+            ViewBag.Nombre = people.Nombre;
+            ViewBag.Apellido = people.Apellido;
+            //Calcula Edad
+            DateTime nacimiento = people.FechaNacimiento; //Fecha de nacimiento
+            int edad = DateTime.Today.AddTicks(-nacimiento.Ticks).Year - 1;
+            //Fin Calcula Edad
+            ViewBag.Edad = edad;
+
+            List<PersonMedical> listPersonMedicals = db.PersonMedicals.Where(s => s.PersonId == id).ToList();
+           // List<PersonMedical> listPersonMedicals = db.PersonMedicals.ToList();
             //Person person =db.personMedicals.Find(id);
             //Array o List de PersonMedical personsMedicals = db.PersonMedicals.Find(PersonId=id)
-            if (personMedical == null)
-            {
-                return HttpNotFound();
-            }
+            //if (personMedical == null)
+            //{
+             //   return HttpNotFound();
+           // }
             //Pasar a la Vista Person - PersonsMedicals
-            return View(personMedical);
+            return View(listPersonMedicals);
             
         }
 

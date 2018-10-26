@@ -23,6 +23,7 @@ namespace GestionDeTurnos.Models
         public bool GAA { get; set; }
         public bool AcidoUrico { get; set; }
         public bool Colesterol { get; set; }  
+        public String Observacion { get; set; }
 
     }
 }
