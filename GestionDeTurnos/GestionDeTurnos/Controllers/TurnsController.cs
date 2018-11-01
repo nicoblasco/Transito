@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
 
 namespace GestionDeTurnos.Controllers
@@ -17,8 +18,21 @@ namespace GestionDeTurnos.Controllers
         // GET: Turns
         public ActionResult Index()
         {
-            var turns = db.Turns.Include(t => t.Person).Include(t => t.TypesLicense);
-            return View(turns.ToList());
+            string IP = Request.UserHostName;
+            string terminalName = CompNameHelper.DetermineCompName(IP);
+            
+            //Obtengo el sector al que estoy asociado
+            Sector sector = db.Sectors.Where(x => x.Descripcion.ToUpper() == terminalName.ToUpper()).FirstOrDefault();
+            if (sector != null)
+            {
+                ViewBag.terminalName = terminalName;
+                var turns = db.Turns.Include(t => t.Person).Include(t => t.TypesLicense);
+                return View(turns.ToList());
+            }
+            else
+                return View("Create");
+
+
         }
 
 

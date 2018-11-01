@@ -166,6 +166,7 @@
     <Compile Include="Controllers\RolsController.cs" />
     <Compile Include="Controllers\SectorsController.cs" />
     <Compile Include="Controllers\TerminalsController.cs" />
+    <Compile Include="Controllers\TrackingsController.cs" />
     <Compile Include="Controllers\TurnsController.cs" />
     <Compile Include="Controllers\TypesLicensesController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Audit.cs" />
+    <Compile Include="Models\CallCenterTurn.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Person.cs" />
@@ -189,7 +191,9 @@
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Sector.cs" />
     <Compile Include="Models\SectorWorkflow.cs" />
+    <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\Terminal.cs" />
+    <Compile Include="Models\Tracking.cs" />
     <Compile Include="Models\Turn.cs" />
     <Compile Include="Models\TypesLicense.cs" />
     <Compile Include="Models\Usuario.cs" />
@@ -522,6 +526,11 @@
     <Content Include="Views\Turns\Search.cshtml" />
     <Content Include="Views\Turns\Licenses.cshtml" />
     <Content Include="Views\Terminals\Index.cshtml" />
+    <Content Include="Views\Trackings\Create.cshtml" />
+    <Content Include="Views\Trackings\Delete.cshtml" />
+    <Content Include="Views\Trackings\Details.cshtml" />
+    <Content Include="Views\Trackings\Edit.cshtml" />
+    <Content Include="Views\Trackings\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

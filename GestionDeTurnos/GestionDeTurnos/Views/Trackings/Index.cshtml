@@ -1,0 +1,215 @@
+﻿@model IEnumerable<GestionDeTurnos.Models.Tracking>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .middle {
+        padding-top: 30px;
+        background-color: #d6ea5c;
+        padding-bottom: 100px;
+        text-align: -webkit-center;
+        border-color: bisque;
+        border-width: thin;
+        border-style: groove;
+    }
+
+        .middle label {
+            font-size: 30px;
+        }
+
+    .btn-primary.raised {
+        box-shadow: 0 3px 0 0 #007299;
+        width: 203px;
+    }
+
+    .btn-danger.raised {
+        box-shadow: 0 3px 0 0 #d43f3a;
+        width: 203px;
+    }
+
+    .btn-success.raised {
+        box-shadow: 0 3px 0 0 #4cae4c;
+        width: 203px;
+    }
+
+    .btn-primary.raised:active, .btn-primary.raised.active {
+        background: #33a6cc;
+        box-shadow: none;
+        margin-bottom: -3px;
+        margin-top: 3px;
+    }
+
+    .btn-danger.raised:active, .btn-danger.raised.active {
+        background: #33a6cc;
+        box-shadow: none;
+        margin-bottom: -3px;
+        margin-top: 3px;
+    }
+
+    .btn-success.raised:active, .btn-success.raised.active {
+        background: #33a6cc;
+        box-shadow: none;
+        margin-bottom: -3px;
+        margin-top: 3px;
+    }
+</style>
+
+<h2>Index</h2>
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Atención al cliente</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body" style="padding: 0px;">
+                    <div class="col-lg-2">
+                        <div class="middle">
+                            <label>Puerta 2</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-10" style="padding: 0px;">
+                        <h4 class="page-header" style="margin: 10px 0 20px;">Atendimiento</h4>
+                        <div class="panel-body" style="padding: 0px; background-color: #f5f5f5;">
+                            <form>
+                                <div class="form-group row" style="margin-bottom: 3px;">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Turno</label>
+                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">RE1233 </label>
+
+                                </div>
+                                <div class="form-group row" style="margin-bottom: 3px;">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Estado</label>
+                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500; color:green">En Proceso </label>
+
+                                </div>
+                                <div class="form-group row" style="margin-bottom: 3px;">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Tipo de Turno</label>
+                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Renovación</label>
+                                </div>
+                                <div class="form-group row" style="margin-bottom: 3px;">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Nombre</label>
+                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Oscar</label>
+                                </div>
+                                <div class="form-group row" style="margin-bottom: 3px;">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">Apellido</label>
+                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Garcia</label>
+                                </div>
+                                <div class="form-group row" style="margin-bottom: 3px;">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">DNI</label>
+                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">30567933</label>
+                                </div>
+                                <div class="form-group row" style="margin-bottom: 3px;">
+                                    <label for="example-text-input" class="col-sm-2 col-form-label">EDAD</label>
+                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">33</label>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+
+            <div class="col-lg-4">
+                <a href="medico.html"><button type="button" class="btn btn-success btn-lg raised"> Llamar Nuevamente</button></a>
+            </div>
+            <div class="col-lg-4">
+                <a href="datospersonales.html"><button type="button" class="btn btn-primary btn-lg raised">Iniciar Atención</button></a>
+            </div>
+            <div class="col-lg-4">
+                <button type="button" class="btn btn-danger btn-lg raised">No se presento</button>
+            </div>
+
+            <!--
+            <div class="col-lg-4">
+                <button type="button" class="btn btn-success btn-lg raised">Llamar Nuevamente</button>
+            </div>
+            <div class="col-lg-4">
+                <button type="button" class="btn btn-primary btn-lg raised">Finalizar Atención</button>
+            </div>
+            <div class="col-lg-4">
+                <button type="button" class="btn btn-danger btn-lg raised">Incompleto</button>
+            </div>       -->
+
+            <div class="col-lg-10">
+                <h4 class="page-header">Turno siguientes</h4>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1234</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1235</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1236</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1237</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">DU1238</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1239</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">DU1280</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">OR1287</button>
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">OR1294</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /#page-wrapper -->
+<!-- /#wrapper -->
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $('.dropdown-menu a').click(function () {
+                console.log($(this).attr('data-value'));
+                $(this).closest('.dropdown').find('input.countrycode')
+                    .val('(' + $(this).attr('data-value') + ')');
+            });
+        });
+
+        function bs_input_file() {
+            $(".input-file").before(
+                function () {
+                    if (!$(this).prev().hasClass('input-ghost')) {
+                        var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+                        element.attr("name", $(this).attr("name"));
+                        element.change(function () {
+                            element.next(element).find('input').val((element.val()).split('\\').pop());
+                        });
+                        $(this).find("button.btn-choose").click(function () {
+                            element.click();
+                        });
+                        $(this).find("button.btn-reset").click(function () {
+                            element.val(null);
+                            $(this).parents(".input-file").find('input').val('');
+                        });
+                        $(this).find('input').css("cursor", "pointer");
+                        $(this).find('input').mousedown(function () {
+                            $(this).parents('.input-file').prev().click();
+                            return false;
+                        });
+                        return element;
+                    }
+                }
+            );
+        }
+        $(function () {
+            bs_input_file();
+        });
+
+
+        $(function () {
+            // initialize sol
+            $('#my-select').searchableOptionList();
+            $('#my-select2').searchableOptionList();
+        });
+    </script>
+
+}
