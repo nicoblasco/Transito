@@ -64,64 +64,69 @@
                             Datos Medicos
                         </div>
                         <div class="panel-body">
-                            <div class="form-group">
-                                <div class="col-sm-2">
-                                    <label>AVOI</label><input class="form-control" placeholder="AVOI" type="text">
+                            <form method="post">
+                                <div class="form-group">
+                                    <div class="col-sm-2">
+                                        <label>AVOI</label><input id="Avoi" name="Avoi" class="form-control" placeholder="AVOI" type="text">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label>AVOD</label><input id="Avod" name="Avod" class="form-control" placeholder="AVOD" type="text">
+                                    </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <label>AVOD</label><input class="form-control" placeholder="AVOI" type="text">
+
+                                <div class="form-group">
+
+                                    <div class="col-sm-12">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">Fuma
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">Profesional
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">Conduce con Anteojos
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">Visión Monocular
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">Discromatopsia
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">HTA
+                                        </label>
+
+
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
+                                <div class="form-group">
 
-                                <div class="col-sm-12">
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">Fuma
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">Profesional
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">Conduce con Anteojos
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">Visión Monocular
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">Discromatopsia
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">HTA
-                                    </label>
+                                    <div class="col-sm-12">
 
-
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">DBT
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">G.A.A
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">Acido Úrico
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox">Colesterol
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-
-                                <div class="col-sm-12">
-
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">DBT
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">G.A.A
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">Acido Úrico
-                                    </label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox">Colesterol
-                                    </label>
+                                <div class="form-group">
+                                    <label>Observaciones</label>
+                                    <textarea class="form-control" rows="3"></textarea>
                                 </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Observaciones</label>
-                                <textarea class="form-control" rows="3"></textarea>
-                            </div>
+                                <button type="submit" class="btn btn-primary pull-right">
+                                    Guardar
+                                </button>
+                            </form>
                         </div>
                     </div>
 

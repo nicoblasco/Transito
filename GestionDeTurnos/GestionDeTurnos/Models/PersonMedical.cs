@@ -10,7 +10,6 @@ namespace GestionDeTurnos.Models
         public int Id { get; set; }
         public int PersonId { get; set; }
         public virtual Person Person { get; set; }
-        public string Genero { get; set; }
         public int Avoi { get; set; }
         public int Avod { get; set; }
         public bool Fuma { get; set; }

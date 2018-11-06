@@ -28,7 +28,14 @@ namespace GestionDeTurnos.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person people = db.People.Find(id);
+            Turn turn = db.Turns.Find(id);
+
+            if(turn == null)
+            {
+                return HttpNotFound();
+            }
+
+            Person people = db.People.Find(turn.PersonID);
             ViewBag.Dni = people.Dni;
             ViewBag.Nombre = people.Nombre;
             ViewBag.Apellido = people.Apellido;
@@ -63,20 +70,20 @@ namespace GestionDeTurnos.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,PersonId,Genero,Avoi")] PersonMedical personMedical)
+        public ActionResult Create([Bind(Include = "PersonId,Genero,Avoi,Avod,Fuma,Profesional,ConduceConAnteojos,VisionMonocular,Discromatopsia,HTA,DBT,GAA,AcidoUrico,Colesterol,Observacion")] PersonMedical personMedical)
         {
             //Recover request by Post
             //Add PersonMedicals
             //Redirect to Details/idPerson
-            if (ModelState.IsValid)
-            {
+           // if (ModelState.IsValid)
+           // {
                 db.PersonMedicals.Add(personMedical);
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                return RedirectToAction("Details/1");
+           // }
 
-            ViewBag.PersonId = new SelectList(db.People, "Id", "Nombre", personMedical.PersonId);
-            return View(personMedical);
+          //  ViewBag.PersonId = new SelectList(db.People, "Id", "Nombre", personMedical.PersonId);
+         //   return View(personMedical);
         }
 
         // GET: PersonMedicals/Edit/5

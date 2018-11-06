@@ -12,5 +12,6 @@ namespace GestionDeTurnos.Models
         public string Apellido { get; set; }
         public string Dni { get; set; }
         public DateTime FechaNacimiento { get; set; }
+        public string Genero { get; set; }
     }
 }
