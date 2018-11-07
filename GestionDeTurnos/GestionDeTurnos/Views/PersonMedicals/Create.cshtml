@@ -8,50 +8,88 @@
 <h2>Create</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>PersonMedical</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.PersonId, "PersonId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PersonId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PersonId, "", new { @class = "text-danger" })
-            </div>
+<div id="page-wrapper">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Datos Medicos
         </div>
+        <div class="panel-body">
+            <form action="PersonMedicals/Create" method="post">
+                <div class="form-group"> <input id="PersonId" name="PersonId" type="hidden" value="1" /> </div>
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label>AVOI</label><input id="Avoi" name="Avoi" class="form-control" placeholder="AVOI" type="text">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>AVOD</label><input id="Avod" name="Avod" class="form-control" placeholder="AVOD" type="text">
+                        </div>
+                    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Genero, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Genero, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Genero, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                    <div class="form-group">
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Avoi, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Avoi, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Avoi, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                        <div class="col-sm-12">
+                            <label class="checkbox-inline">
+                                <input id="Fuma" name="Fuma" type="checkbox">Fuma
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="Profesional" name="Profesional" type="checkbox">Profesional
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="HTA" name="HTA" type="checkbox">HTA
+                            </label>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-sm-12">
+
+                            <label class="checkbox-inline">
+                                <input id="DBT" name="DBT" type="checkbox">DBT
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="GAA" name="GAA" type="checkbox">G.A.A
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
+                            </label>
+                            <label class="checkbox-inline">
+                                <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="Observacion" name="Observacion" class="form-control" rows="3"></textarea>
+                    </div>
+                    <input type="submit" value="Create" class="btn btn-primary pull-right">
+
+
+            </form>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
+    }
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

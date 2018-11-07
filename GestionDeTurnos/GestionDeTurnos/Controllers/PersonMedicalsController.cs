@@ -1,12 +1,11 @@
-﻿using System;
+﻿using GestionDeTurnos.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using GestionDeTurnos.Models;
 
 namespace GestionDeTurnos.Controllers
 {
@@ -45,6 +44,10 @@ namespace GestionDeTurnos.Controllers
             //Fin Calcula Edad
             ViewBag.Edad = edad;
 
+           
+
+
+
             List<PersonMedical> listPersonMedicals = db.PersonMedicals.Where(s => s.PersonId == id).ToList();
            // List<PersonMedical> listPersonMedicals = db.PersonMedicals.ToList();
             //Person person =db.personMedicals.Find(id);
@@ -58,6 +61,8 @@ namespace GestionDeTurnos.Controllers
             
         }
 
+   
+
         // GET: PersonMedicals/Create
         public ActionResult Create()
         {   
@@ -65,25 +70,28 @@ namespace GestionDeTurnos.Controllers
             return View();
         }
 
+
+
         // POST: PersonMedicals/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+       // [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "PersonId,Genero,Avoi,Avod,Fuma,Profesional,ConduceConAnteojos,VisionMonocular,Discromatopsia,HTA,DBT,GAA,AcidoUrico,Colesterol,Observacion")] PersonMedical personMedical)
         {
             //Recover request by Post
             //Add PersonMedicals
             //Redirect to Details/idPerson
-           // if (ModelState.IsValid)
-           // {
+            if (ModelState.IsValid)
+            {
                 db.PersonMedicals.Add(personMedical);
                 db.SaveChanges();
                 return RedirectToAction("Details/1");
-           // }
+            }
+            return HttpNotFound();
 
           //  ViewBag.PersonId = new SelectList(db.People, "Id", "Nombre", personMedical.PersonId);
-         //   return View(personMedical);
+          //   return View(personMedical);
         }
 
         // GET: PersonMedicals/Edit/5

@@ -64,7 +64,7 @@
                             Datos Medicos
                         </div>
                         <div class="panel-body">
-                            <form method="post">
+                            <form action="PersonMedicals/Create" method="post">
                                 <div class="form-group">
                                     <div class="col-sm-2">
                                         <label>AVOI</label><input id="Avoi" name="Avoi" class="form-control" placeholder="AVOI" type="text">
@@ -78,22 +78,22 @@
 
                                     <div class="col-sm-12">
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">Fuma
+                                            <input id="Fuma" name="Fuma" type="checkbox">Fuma
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">Profesional
+                                            <input id="Profesional" name="Profesional" type="checkbox">Profesional
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">Conduce con Anteojos
+                                            <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">Visión Monocular
+                                            <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">Discromatopsia
+                                            <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">HTA
+                                            <input id="HTA" name="HTA" type="checkbox">HTA
                                         </label>
 
 
@@ -105,27 +105,27 @@
                                     <div class="col-sm-12">
 
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">DBT
+                                            <input id="DBT" name="DBT" type="checkbox">DBT
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">G.A.A
+                                            <input id="GAA" name="GAA" type="checkbox">G.A.A
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">Acido Úrico
+                                            <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
                                         </label>
                                         <label class="checkbox-inline">
-                                            <input type="checkbox">Colesterol
+                                            <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
                                         </label>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Observaciones</label>
-                                    <textarea class="form-control" rows="3"></textarea>
+                                    <textarea id="Observacion" name="Observacion" class="form-control" rows="3"></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary pull-right">
-                                    Guardar
-                                </button>
+                                <input type="submit" value="Guardar" class="btn btn-primary pull-right">
+                                   
+                               
                             </form>
                         </div>
                     </div>
@@ -190,17 +190,18 @@
                                 <tr class="odd gradeX" id="@item.Id">
                                     <td>2018/05/20 09:00</td>
                                     <td>Renovación</td>
-                                    <td >@item.Avoi</td>
-                                    <td >@item.Avod</td>
-                                    <td >@item.Fuma</td>
-                                    <td >@item.ConduceConAnteojos</td>
-                                    <td >@item.VisionMonocular</td>
-                                    <td >@item.Discromatopsia</td>
-                                    <td >@item.HTA</td>
-                                    <td >@item.DBT</td>
-                                    <td >@item.AcidoUrico</td>
-                                    <td >@item.Colesterol</td>
-                                    <td >@item.Observacion</td>
+                                    <td>@item.Avoi</td>
+                                    <td>@item.Avod</td>
+                                    <td>@item.Fuma</td>
+                                    <td>@item.Profesional</td>
+                                    <td>@item.ConduceConAnteojos</td>
+                                    <td>@item.VisionMonocular</td>
+                                    <td>@item.Discromatopsia</td>
+                                    <td>@item.HTA</td>
+                                    <td>@item.DBT</td>
+                                    <td>@item.AcidoUrico</td>
+                                    <td>@item.Colesterol</td>
+                                    <td>@item.Observacion</td>
 
                                 </tr>
                             }
