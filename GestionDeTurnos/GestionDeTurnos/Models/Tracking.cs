@@ -23,8 +23,14 @@ namespace GestionDeTurnos.Models
         public DateTime? FechaIngreso { get; set; }
         public DateTime? FechaSalida { get; set; }
 
+        public DateTime FechaCreacion { get; set; }
+
         public TimeSpan? Tiempo { get; set; }
 
+        public int CantidadDeLlamados { get; set; }
+
+        public int? StatusID { get; set; }
+        public virtual Status  Status { get; set; }
 
     }
 }

@@ -1,8 +1,42 @@
-﻿@model IEnumerable<GestionDeTurnos.Models.Tracking>
+﻿@model GestionDeTurnos.Models.Tracking
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
+
+    string strId = "";
+    string strTurno="";
+    string strEstado = "";
+    string strTipoLicencia = "";
+    string strNombre = "";
+    string strApellido = "";
+    string strDNI = "";
+    string strFechaNacimiento = "";
+    int intEstadoOrden = 1;
+    bool booDisable = ViewBag.HabilitaLlamarNuevamente;
+
+
+
+    if (Model != null)
+    {
+        strId = Model.Id.ToString();
+        strTurno = Model.Turn.Turno;
+        strEstado = Model.Status.Descripcion;
+        intEstadoOrden = Model.Status.Orden;
+        strNombre = Model.Turn.Person.Nombre;
+        strApellido = Model.Turn.Person.Apellido;
+
+
+        if (Model.Status.Orden>2)
+        {
+            strTipoLicencia = Model.Turn.TypesLicense.Descripcion;
+            strDNI = Model.Turn.Person.Dni;
+            strFechaNacimiento = Model.Turn.Person.FechaNacimiento.ToShortDateString();
+
+
+        }
+    }
+
+ }
 
 <style type="text/css">
     .middle {
@@ -71,42 +105,45 @@
                 <div class="panel-body" style="padding: 0px;">
                     <div class="col-lg-2">
                         <div class="middle">
-                            <label>Puerta 2</label>
+                            <label>@ViewBag.Terminal</label>
                         </div>
                     </div>
                     <div class="col-lg-10" style="padding: 0px;">
                         <h4 class="page-header" style="margin: 10px 0 20px;">Atendimiento</h4>
                         <div class="panel-body" style="padding: 0px; background-color: #f5f5f5;">
                             <form>
+
+                                <input id="TurnId" type="hidden" value=@strId />
                                 <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Turno</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">RE1233 </label>
+                                    <label for="Turno" class="col-sm-2 col-form-label">Turno</label>
+                                    <label id="Turno" class="col-sm-10" style="font-weight: 500">@strTurno </label>
 
                                 </div>
                                 <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Estado</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500; color:green">En Proceso </label>
+                                    <label for="Estado" class="col-sm-2 col-form-label">Estado</label>
+
+                                    <label id="Estado" class="col-sm-10" style="font-weight: 500; color:green">@strEstado </label>
 
                                 </div>
                                 <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Tipo de Turno</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Renovación</label>
+                                    <label for="TipoTurno" class="col-sm-2 col-form-label">Tipo de Turno</label>
+                                    <label id="TipoTurno" class="col-sm-10" style="font-weight: 500">@strTipoLicencia</label>
                                 </div>
                                 <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Nombre</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Oscar</label>
+                                    <label for="Nombre" class="col-sm-2 col-form-label">Nombre</label>
+                                    <label id="Nombre" class="col-sm-10" style="font-weight: 500">@strNombre</label>
                                 </div>
                                 <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Apellido</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Garcia</label>
+                                    <label for="Apellido" class="col-sm-2 col-form-label">Apellido</label>
+                                    <label id="Apellido" class="col-sm-10" style="font-weight: 500">@strApellido</label>
                                 </div>
                                 <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">DNI</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">30567933</label>
+                                    <label for="DNI" class="col-sm-2 col-form-label">DNI</label>
+                                    <label id="DNI" class="col-sm-10" style="font-weight: 500">@strDNI</label>
                                 </div>
                                 <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">EDAD</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">33</label>
+                                    <label for="Edad" class="col-sm-2 col-form-label">Fecha De Nac </label>
+                                    <label id="Edad" class="col-sm-10" style="font-weight: 500">@strFechaNacimiento</label>
                                 </div>
                             </form>
                         </div>
@@ -118,40 +155,71 @@
             </div>
             <!-- /.panel -->
 
+
             <div class="col-lg-4">
-                <a href="medico.html"><button type="button" class="btn btn-success btn-lg raised"> Llamar Nuevamente</button></a>
-            </div>
-            <div class="col-lg-4">
-                <a href="datospersonales.html"><button type="button" class="btn btn-primary btn-lg raised">Iniciar Atención</button></a>
-            </div>
-            <div class="col-lg-4">
-                <button type="button" class="btn btn-danger btn-lg raised">No se presento</button>
+                @if (intEstadoOrden > 1)
+                {
+                    <button type="button" id="btnLlamar" class="btn btn-success btn-lg raised" style="display:none"> Llamar </button>
+                    <button type="button" id="btnLlamarNuevamente" class="btn btn-success btn-lg raised" disabled=@booDisable >Llamar Nuevamente</button>
+                }
+                else
+                {
+                    <button type="button" id="btnLlamar" class="btn btn-success btn-lg raised" >Llamar </button>
+                    <button type="button" id="btnLlamarNuevamente" class="btn btn-success btn-lg raised"  style="display:none">Llamar Nuevamente</button>
+                }
+
             </div>
 
-            <!--
             <div class="col-lg-4">
-                <button type="button" class="btn btn-success btn-lg raised">Llamar Nuevamente</button>
+                @if (intEstadoOrden > 2)
+                {
+                    <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised" >Finalizar Atención</button>
+                    <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised" style="display:none">Iniciar Atención</button>
+                }
+                else
+                {
+                    <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised" style="display:none">Finalizar Atención</button>
+                    <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised" >Iniciar Atención</button>
+                }
+
             </div>
+
+
             <div class="col-lg-4">
-                <button type="button" class="btn btn-primary btn-lg raised">Finalizar Atención</button>
+                @if (intEstadoOrden > 2)
+                {
+                    <button type="button" id="btnIncompleto" class="btn btn-danger btn-lg raised" >Incompleto</button>
+                    <button type="button" id="btnNoEsta" class="btn btn-danger btn-lg raised" style="display:none">No se presento</button>
+                }
+                else
+                {
+                    <button type="button" id="btnIncompleto" class="btn btn-danger btn-lg raised" style="display:none">Incompleto</button>
+                    <button type="button" id="btnNoEsta" class="btn btn-danger btn-lg raised" >No se presento</button>
+
+                }
+
             </div>
-            <div class="col-lg-4">
-                <button type="button" class="btn btn-danger btn-lg raised">Incompleto</button>
-            </div>       -->
+
+
+            @*<div class="col-lg-4">
+            <button type="button" class="btn btn-success btn-lg raised">Llamar Nuevamente</button>
+        </div>
+        <div class="col-lg-4">
+            <button type="button" class="btn btn-primary btn-lg raised">Finalizar Atención</button>
+        </div>
+        <div class="col-lg-4">
+            <button type="button" class="btn btn-danger btn-lg raised">Incompleto</button>
+        </div>*@
 
             <div class="col-lg-10">
                 <h4 class="page-header">Turno siguientes</h4>
-                <div class="panel-body">
+                <div class="panel-body" style="padding: 0px;">
                     <div class="form-inline">
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1234</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1235</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1236</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1237</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">DU1238</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1239</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">DU1280</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">OR1287</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">OR1294</button>
+                        <div id="divTurnos"></div>
+                        @*@foreach (var item in Model)
+                    {
+                        <button type="button" class="btn btn-outline btn-primary btn-sm">@item.Turn.Turno</button>
+                    }*@
                     </div>
                 </div>
             </div>
@@ -163,9 +231,38 @@
 </div>
 <!-- /#page-wrapper -->
 <!-- /#wrapper -->
+<!-- Progress Loader -->
+<div id="div-loader" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
+    <p style="position: absolute; color: White; top: 35%; left: 45%;">
+        <img src="~/Images/loading.gif" alt="Loading..." />
+    </p>
+</div>
+
 
 @section scripts {
+
+
     <script type="text/javascript">
+
+        refreshTurns();
+
+        function refreshTurns() {
+             $.ajax({
+                    url: '@Url.Action("GetTurnosPendientes")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8;',
+                 success: function (result) {
+                     $('#divTurnos').find('.btn-Turns').remove();
+                        $.each(result, function (k, v) {
+                            var $input = $("<button type='button'class='btn btn-primary btn-sm btn-Turns' style='border-radius: 15px'>" + v.Turn.Turno+"</button>");
+                            $input.appendTo($("#divTurnos"));
+                     });
+                     window.setTimeout(refreshTurns, 1000);
+
+                    }
+                });
+        }
+
         $(function () {
             $('.dropdown-menu a').click(function () {
                 console.log($(this).attr('data-value'));
@@ -210,6 +307,303 @@
             $('#my-select').searchableOptionList();
             $('#my-select2').searchableOptionList();
         });
+
+
+
+
+        ///***********************BOTONES
+
+            //************************LLAMAR
+
+
+        $('#btnLlamar').click(function () {
+            $("#div-loader").show();
+
+            $.ajax({
+                url: '@Url.Action("Llamar", "Trackings")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    $("#div-loader").hide();
+                    if (result.responseCode == 0) {
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Se ha llamado con exito'
+                        });
+
+                        //Asigno Parcialmente
+                        $("#TurnId").val(result.tracking.Id);
+                        $('#Turno').text(result.tracking.Turn.Turno);
+                        $('#Estado').text(result.tracking.Status.Descripcion);
+                        $('#Nombre').text(result.tracking.Turn.Person.Nombre);
+                        $('#Apellido').text(result.tracking.Turn.Person.Apellido);
+                        $('#btnLlamar').hide();
+                        $('#btnLlamarNuevamente').show();
+
+
+                    }
+                    if (result.responseCode == 2) {
+                        Lobibox.notify('warning', {
+                            title: 'Exito',
+                            msg: 'No quedan turnos pendiente'
+                        });
+                    }
+
+
+                },
+                error: function (response) {
+                    $("#div-loader").hide();
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                    });
+                }
+            });
+        });
+
+
+            //************************LLAMAR NUEVAMENTE
+
+
+        $('#btnLlamarNuevamente').click(function () {
+            $("#div-loader").show();
+            var id=$("#TurnId").val();
+            $.ajax({
+                url: '@Url.Action("LlamarNuevamente", "Trackings")',
+                data: JSON.stringify({
+                    "id": id
+                }),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    $("#div-loader").hide();
+                    if (result.responseCode == 0) {
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Se ha llamado con exito'
+                        });
+
+                        if (!result.PuedeSeguirLlamando)
+                            $('#btnLlamarNuevamente').attr("disabled","disabled");
+
+
+                    }
+                    if (result.responseCode == 2) {
+                        Lobibox.notify('warning', {
+                            title: 'Exito',
+                            msg: 'No quedan turnos pendiente'
+                        });
+                    }
+
+
+                },
+                error: function (response) {
+                    $("#div-loader").hide();
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                    });
+                }
+            });
+        });
+
+            //************************INICIAR ATENCION
+
+
+        $('#btnIniciar').click(function () {
+            $("#div-loader").show();
+            var id=$("#TurnId").val();
+            $.ajax({
+                url: '@Url.Action("IniciarAtencion", "Trackings")',
+                data: JSON.stringify({
+                    "id": id
+                }),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    $("#div-loader").hide();
+                    if (result.responseCode == 0) {
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Se ha Iniciado con exito'
+                        });
+
+
+                        $('#Estado').text(result.tracking.Status.Descripcion);
+                        $('#TipoTurno').text(result.tracking.Turn.TypesLicense.Descripcion);
+                        $('#DNI').text(result.tracking.Turn.Person.Dni);
+
+                        if (result.tracking.Turn.Person.FechaNacimiento != null) {
+                            var dateString = result.tracking.Turn.Person.FechaNacimiento.substr(6);
+                            var currentTime = new Date(parseInt(dateString));
+                            var month = currentTime.getMonth() + 1;
+                            var day = currentTime.getDate();
+                            var year = currentTime.getFullYear();
+                            var date = day + "/" + month + "/" + year;
+                            $('#Edad').text(date);
+                        }
+
+                        $('#btnIniciar').hide();
+                        $('#btnFinalizar').show();
+                        $('#btnNoEsta').hide();
+                        $('#btnIncompleto').show();
+
+
+                    }
+
+
+                },
+                error: function (response) {
+                    $("#div-loader").hide();
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                    });
+                }
+            });
+        });
+
+
+            //************************FINALIZAR ATENCION
+
+
+        $('#btnFinalizar').click(function () {
+            $("#div-loader").show();
+            var id=$("#TurnId").val();
+            $.ajax({
+                url: '@Url.Action("FinalizarAtencion", "Trackings")',
+                data: JSON.stringify({
+                    "id": id
+                }),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    $("#div-loader").hide();
+                    if (result.responseCode == 0) {
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Se ha finalizado con exito'
+                        });
+
+
+                        IniciarBotones();
+
+
+                    }
+
+
+                },
+                error: function (response) {
+                    $("#div-loader").hide();
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                    });
+                }
+            });
+        });
+
+            //************************NO Esta
+
+
+        $('#btnNoEsta').click(function () {
+            $("#div-loader").show();
+            var id=$("#TurnId").val();
+            $.ajax({
+                url: '@Url.Action("NoSePresento", "Trackings")',
+                data: JSON.stringify({
+                    "id": id
+                }),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    $("#div-loader").hide();
+                    if (result.responseCode == 0) {
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Se ha finalizado con exito'
+                        });
+
+
+                        IniciarBotones();
+
+
+                    }
+
+
+                },
+                error: function (response) {
+                    $("#div-loader").hide();
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                    });
+                }
+            });
+        });
+
+
+            //************************INCOMPLETO
+
+
+        $('#btnIncompleto').click(function () {
+            $("#div-loader").show();
+            var id=$("#TurnId").val();
+            $.ajax({
+                url: '@Url.Action("Incompleto", "Trackings")',
+                data: JSON.stringify({
+                    "id": id
+                }),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    $("#div-loader").hide();
+                    if (result.responseCode == 0) {
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Se ha finalizado con exito'
+                        });
+
+
+                        IniciarBotones();
+
+
+                    }
+
+
+                },
+                error: function (response) {
+                    $("#div-loader").hide();
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                    });
+                }
+            });
+        });
+
+
+        function IniciarBotones() {
+            $('#btnIniciar').show();
+            $('#btnFinalizar').hide();
+            $('#btnLlamarNuevamente').hide();
+            $('#btnLlamarNuevamente').attr("disabled", false);
+            $('#btnLlamar').show();
+            $('#btnIncompleto').hide();
+            $('#btnNoEsta').show();
+
+            $('#TurnId').val();
+            $('#Turno').text("");
+            $('#Estado').text("");
+            $('#TipoTurno').text("");
+            $('#Nombre').text("");
+            $('#Apellido').text("");
+            $('#DNI').text("");
+            $('#Edad').text("");
+        }
+
+
+
     </script>
 
 }

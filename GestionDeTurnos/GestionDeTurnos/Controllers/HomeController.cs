@@ -58,6 +58,8 @@ namespace GestionDeTurnos.Controllers
             int? NumeroSecuencia;
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            int EstadoInicial = db.Status.Where(x=>x.Orden==1).Select(x=>x.Id) .FirstOrDefault();
+
 
             if (ModelState.IsValid)
             {
@@ -141,7 +143,7 @@ namespace GestionDeTurnos.Controllers
 
 
 
-                    if (!db.Turns.Any())
+                    if (!db.Turns.Where(x => x.FechaIngreso >= startDateTime && x.FechaIngreso <= endDateTime).Any())
                         NumeroSecuencia = 1;
                     else
                         NumeroSecuencia = db.Turns.Where(x => x.FechaIngreso >= startDateTime && x.FechaIngreso <= endDateTime).Max(x => x.Secuencia);
@@ -149,7 +151,7 @@ namespace GestionDeTurnos.Controllers
                     if (NumeroSecuencia == null)
                         NumeroSecuencia = (typesLicense.NumeroInicial == 0) ? 1 : typesLicense.NumeroInicial;
                     else
-                        NumeroSecuencia = NumeroSecuencia++;
+                        NumeroSecuencia = NumeroSecuencia + 1;
 
 
                     Turn turn = new Turn
@@ -179,7 +181,9 @@ namespace GestionDeTurnos.Controllers
                     Tracking tracking = new Tracking
                     {
                         SectorID = sectorWorkflow.SectorID,
-                        TurnID = turn.Id
+                        TurnID = turn.Id,
+                        FechaCreacion = DateTime.Now,
+                        StatusID = EstadoInicial
                     };
 
                     db.Trackings.Add(tracking);

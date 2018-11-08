@@ -1,0 +1,123 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Transito - Municipalidad de Florencio Varela</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <style type="text/css">
+        video {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .alert {
+            margin-bottom: 0px;
+        }
+
+        .col-md-6, .col-md-12, .col-lg-7 {
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Publicidad -->
+                <div class="col-lg-7">
+                    <video autoplay muted loop>
+                        <source src=@Url.Content("~/Content/video/video.mp4") type="video/mp4">                       
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <!-- Turnos -->
+                <div class="col-lg-5">
+                    <div class="col-md-6">
+                        <div class="alert">
+                            <h2>  TURNO</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert">
+                            <h2> SECTOR</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <h1>OR2145</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <h1>CAJA</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h2>DU6543</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h2>PUERTA 1</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h2>RE1987</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h2>PUERTA 2</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h2>RE1976</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h2>CAJA</h2>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+</body>
+
+</html>

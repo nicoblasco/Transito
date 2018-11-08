@@ -59,5 +59,7 @@ namespace GestionDeTurnos.Models
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.Setting> Settings { get; set; }
 
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.Tracking> Trackings { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.Status> Status { get; set; }
     }
 }

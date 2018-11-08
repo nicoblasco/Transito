@@ -192,6 +192,7 @@
     <Compile Include="Models\Sector.cs" />
     <Compile Include="Models\SectorWorkflow.cs" />
     <Compile Include="Models\Setting.cs" />
+    <Compile Include="Models\Status.cs" />
     <Compile Include="Models\Terminal.cs" />
     <Compile Include="Models\Tracking.cs" />
     <Compile Include="Models\Turn.cs" />
@@ -531,6 +532,7 @@
     <Content Include="Views\Trackings\Details.cshtml" />
     <Content Include="Views\Trackings\Edit.cshtml" />
     <Content Include="Views\Trackings\Index.cshtml" />
+    <Content Include="Views\Trackings\Turnero.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

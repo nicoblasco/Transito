@@ -36,6 +36,8 @@ namespace GestionDeTurnos.Controllers
         }
 
 
+
+
         public ActionResult Search()
         {
             var turns = db.Turns.Include(t => t.Person).Include(t => t.TypesLicense);
