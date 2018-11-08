@@ -10,7 +10,7 @@
             <h1 class="page-header">Datos Medicos</h1>
 
 
-            <form role="form" class="form-horizontal">
+            <div role="form" class="form-horizontal">
                 <div class="col-lg-12">
 
                     <!-- /. Panel de Datos del Infractor -->
@@ -35,22 +35,18 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-3">
-                                    <label for="exampleFormControlSelect1">Genero</label>
-                                    <select class="form-control" id="exampleFormControlSelect1">
-                                        <option>Masculino</option>
-                                        <option>Femenino</option>
-                                    </select>
+                                    <label for="exampleFormControlSelect1">Genero</label> <input class="form-control" placeholder="Genero" value="@ViewBag.Edad" type="text" disabled>
                                 </div>
                                 <div class="col-sm-3">
                                     <label for="example-datetime-local-input">Fecha/Hora de Ingreso</label>
-                                    <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input" disabled>
+                                    <input class="form-control" type="text" value="@ViewBag.fechaTurn" id="example-datetime-local-input" disabled>
                                 </div>
                                 <div class="col-sm-3">
-                                    <label>Tipo de Tramite</label><input class="form-control" placeholder="Tipo de Tramite" type="text" disabled>
+                                    <label>Tipo de Tramite</label><input class="form-control" placeholder="Tipo de Tramite" value="@ViewBag.TipoTramiteTurn" type="text" disabled>
                                 </div>
 
                                 <div class="col-sm-3">
-                                    <label>Nro Turno</label><input class="form-control" placeholder="Número de turno" type="text" disabled>
+                                    <label>Nro Turno</label><input class="form-control" placeholder="Número de turno" type="text" value="@ViewBag.nroTurn" disabled>
                                 </div>
 
                             </div>
@@ -64,13 +60,17 @@
                             Datos Medicos
                         </div>
                         <div class="panel-body">
-                            <form action="PersonMedicals/Create" method="post">
+                            <form action="../Create" method="post">
+                               <div class="form-group">
+                                    <input id="nroTurn" name="nroTurn" class="form-control" value="@ViewBag.nroTurn" type="hidden">
+                                    <input id="PersonId" name="PersonId" class="form-control" value="@ViewBag.PersonID" type="hidden">
+                                </div>
                                 <div class="form-group">
                                     <div class="col-sm-2">
-                                        <label>AVOI</label><input id="Avoi" name="Avoi" class="form-control" placeholder="AVOI" type="text">
+                                        <label>AVOI</label><input id="Avoi" name="Avoi" class="form-control" placeholder="AVOI" type="number">
                                     </div>
                                     <div class="col-sm-2">
-                                        <label>AVOD</label><input id="Avod" name="Avod" class="form-control" placeholder="AVOD" type="text">
+                                        <label>AVOD</label><input id="Avod" name="Avod" class="form-control" placeholder="AVOD" type="number">
                                     </div>
                                 </div>
 
@@ -137,7 +137,7 @@
                 </div>
                 <!-- /.col-lg-12 -->
 
-            </form>
+            </div>
 
         </div>
         <!-- /.ro -->

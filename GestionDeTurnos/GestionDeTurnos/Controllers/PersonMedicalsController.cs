@@ -33,8 +33,14 @@ namespace GestionDeTurnos.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.nroTurn = turn.Id;
+            ViewBag.fechaTurn = turn.FechaIngreso;
+            TypesLicense tLicense = db.TypesLicenses.Find(turn.TypesLicenseID);
+            ViewBag.TipoTramiteTurn = tLicense.Descripcion;
+
 
             Person people = db.People.Find(turn.PersonID);
+            ViewBag.PersonID = people.Id;
             ViewBag.Dni = people.Dni;
             ViewBag.Nombre = people.Nombre;
             ViewBag.Apellido = people.Apellido;
@@ -43,8 +49,9 @@ namespace GestionDeTurnos.Controllers
             int edad = DateTime.Today.AddTicks(-nacimiento.Ticks).Year - 1;
             //Fin Calcula Edad
             ViewBag.Edad = edad;
+            ViewBag.Genero = people.Genero;
 
-           
+
 
 
 
@@ -65,7 +72,7 @@ namespace GestionDeTurnos.Controllers
 
         // GET: PersonMedicals/Create
         public ActionResult Create()
-        {   
+        {
             ViewBag.PersonId = new SelectList(db.People, "Id", "Nombre");
             return View();
         }
@@ -82,13 +89,16 @@ namespace GestionDeTurnos.Controllers
             //Recover request by Post
             //Add PersonMedicals
             //Redirect to Details/idPerson
-            if (ModelState.IsValid)
-            {
+          //  string nro =  Request.Form["nroTurn"];
+           // string personId = Request.Form["PersonId"];
+
+            //if (ModelState.IsValid) //Ver ModelStateValid
+            //{
                 db.PersonMedicals.Add(personMedical);
                 db.SaveChanges();
                 return RedirectToAction("Details/1");
-            }
-            return HttpNotFound();
+           // }
+            //return HttpNotFound();
 
           //  ViewBag.PersonId = new SelectList(db.People, "Id", "Nombre", personMedical.PersonId);
           //   return View(personMedical);

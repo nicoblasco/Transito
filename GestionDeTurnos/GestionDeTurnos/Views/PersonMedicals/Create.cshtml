@@ -1,95 +1,167 @@
-﻿@model GestionDeTurnos.Models.PersonMedical
+﻿@model IEnumerable<GestionDeTurnos.Models.PersonMedical>
 
 @{
-    ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+                /**/
+
+                ViewBag.Title = "Create";
+                Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Create</h2>
-
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
 <div id="page-wrapper">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Datos Medicos
+    <div class="row">
+        <h1 class="page-header">Datos Medicos</h1>
+
+
+        <div role="form" class="form-horizontal">
+            <div class="col-lg-12">
+
+                <!-- /. Panel de Datos del Infractor -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Datos Personales y del Tramite
+                    </div>
+             
+                </div>
+                <!-- /. FIN Panel de Datos del Infractor -->
+                <!-- /. Panel de Datos Medicos -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Datos Medicos
+                    </div>
+                    <div class="panel-body">
+                        <form action="PersonMedicals/Create" method="post">
+                            <div class="form-group">
+                                <div class="col-sm-2">
+                                    <label>AVOI</label><input id="Avoi" name="Avoi" class="form-control" placeholder="AVOI" type="text">
+                                </div>
+                                <div class="col-sm-2">
+                                    <label>AVOD</label><input id="Avod" name="Avod" class="form-control" placeholder="AVOD" type="text">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                                <div class="col-sm-12">
+                                    <label class="checkbox-inline">
+                                        <input id="Fuma" name="Fuma" type="checkbox">Fuma
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="Profesional" name="Profesional" type="checkbox">Profesional
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="HTA" name="HTA" type="checkbox">HTA
+                                    </label>
+
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                                <div class="col-sm-12">
+
+                                    <label class="checkbox-inline">
+                                        <input id="DBT" name="DBT" type="checkbox">DBT
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="GAA" name="GAA" type="checkbox">G.A.A
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Observaciones</label>
+                                <textarea id="Observacion" name="Observacion" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Guardar" class="btn btn-primary pull-right">
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+            <!-- /.col-lg-12 -->
+
         </div>
-        <div class="panel-body">
-            <form action="PersonMedicals/Create" method="post">
-                <div class="form-group"> <input id="PersonId" name="PersonId" type="hidden" value="1" /> </div>
-                    <div class="form-group">
-                        <div class="col-sm-2">
-                            <label>AVOI</label><input id="Avoi" name="Avoi" class="form-control" placeholder="AVOI" type="text">
-                        </div>
-                        <div class="col-sm-2">
-                            <label>AVOD</label><input id="Avod" name="Avod" class="form-control" placeholder="AVOD" type="text">
-                        </div>
-                    </div>
 
-                    <div class="form-group">
+    </div>
+    <!-- /.ro -->
 
-                        <div class="col-sm-12">
-                            <label class="checkbox-inline">
-                                <input id="Fuma" name="Fuma" type="checkbox">Fuma
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="Profesional" name="Profesional" type="checkbox">Profesional
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="HTA" name="HTA" type="checkbox">HTA
-                            </label>
-
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="col-sm-12">
-
-                            <label class="checkbox-inline">
-                                <input id="DBT" name="DBT" type="checkbox">DBT
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="GAA" name="GAA" type="checkbox">G.A.A
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
-                            </label>
-                            <label class="checkbox-inline">
-                                <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Observaciones</label>
-                        <textarea id="Observacion" name="Observacion" class="form-control" rows="3"></textarea>
-                    </div>
-                    <input type="submit" value="Create" class="btn btn-primary pull-right">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                        <thead>
+                            <tr>
+                                <th>Fecha Ingreso</th>
+                                <th>Tipo Tramite</th>
+                                <th>AVOI</th>
+                                <th>AVOD</th>
+                                <th>Fuma</th>
+                                <th>Anteojos</th>
+                                <th>Vision Monocular</th>
+                                <th>Discromatopsia</th>
+                                <th>HTA</th>
+                                <th>DBT</th>
+                                <th>G.A.A</th>
+                                <th>Acido Urico</th>
+                                <th>Colesterol</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <!--<tbody>
+                            <tr class="odd gradeX">
+                                <td>2018/05/20 09:00</td>
+                                <td>Renovación</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td>NO</td>
+                                <td></td>
+                            </tr>
+                        </tbody>-->
+                        <tbody>
+                         
+                        </tbody>
 
 
-            </form>
+                    </table>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
         </div>
+        <!-- /.col-lg-12 -->
     </div>
 </div>
-    }
-
-    <div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>
-
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }
+<!-- /#page-wrapper -->
