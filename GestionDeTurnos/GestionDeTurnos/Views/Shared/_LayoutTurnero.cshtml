@@ -1,0 +1,98 @@
+﻿@using GestionDeTurnos.Helpers
+@using GestionDeTurnos.ViewModel
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dirección de Transito - Municipalidad de Florencio Varela</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        .sidebar ul li a.active {
+            background-color: darkgreen !important;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: darkgreen;
+        }
+
+        .sidebar ul li a:focus {
+            background-color: darkgreen;
+        }
+
+        .navbar-top-links li a:hover {
+            background-color: darkgreen !important;
+        }
+
+        .navbar-top-links li a:focus {
+            background-color: darkgreen !important;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; ">
+            @*background-color: white;*@
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @*<img class="img_logo" src="../../Images/logo_muni.png" />*@
+                <img class="img_logo" src="~/Images/logo_muni.png" runat="server" />
+            </div>
+            <!-- /.navbar-header -->
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        @RenderBody()
+    </div>
+    <!-- /#wrapper -->
+    @*<div class="container body-content">
+
+        </div>*@
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/js")
+    @RenderSection("scripts", required: false)
+
+    @*<script>
+
+            $("#btnBuscarActa").click(function () {
+                var value = $("#inputBuscarActa").val();
+                if (value == "")
+                {
+                    var url = '@Url.Action("Index", "Acts")';
+                }
+                else
+                {
+                    var url = '@Url.Action("SearchNroActa", "Acts", new { NroActa = "__id__" })';
+                }
+
+                window.location.href = url.replace('__id__', value);
+                //alert(value);
+
+            });
+
+        </script>*@
+
+</body>
+
+</html>

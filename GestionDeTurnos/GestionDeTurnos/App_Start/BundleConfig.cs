@@ -37,6 +37,10 @@ namespace GestionDeTurnos
                       "~/Scripts/multipartInAjaxBegin.js"
                       ));
 
+            bundles.Add(new ScriptBundle("~/bundles/sound").Include(
+                      "~/Scripts/jquery.playSound.js"
+                      ));
+
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
                       "~/Scripts/ini.js",
                       "~/Scripts/jquery.form.js",

@@ -29,6 +29,8 @@ namespace GestionDeTurnos.Models
 
         public int CantidadDeLlamados { get; set; }
 
+        public bool Alerta { get; set; }
+
         public int? StatusID { get; set; }
         public virtual Status  Status { get; set; }
 

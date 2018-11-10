@@ -61,6 +61,25 @@ namespace GestionDeTurnos.Controllers
 
 
 
+        public ActionResult Turnero()
+        {
+            //Obtengo el numero de sector de esta maquina
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            List<Setting> setting = db.Settings.ToList();
+          //  int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
+            int[] statusOrden = { 2, 3,4,5,6 };
+
+                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Turn.FechaTurno>= startDateTime && x.Turn.FechaTurno<= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(5).ToList();
+
+
+
+
+                return View(trackings);
+
+
+        }
+
 
         [HttpPost]
         public JsonResult GetTurnosPendientes()
@@ -82,6 +101,62 @@ namespace GestionDeTurnos.Controllers
 
                 throw;
             }
+        }
+
+
+        [HttpPost]
+        public JsonResult GetTurnosTurnero()
+        {
+            //Obtengo el numero de sector de esta maquina
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            List<Setting> setting = db.Settings.ToList();
+            //  int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
+            int[] statusOrden = { 2, 3, 4, 5, 6 };
+            
+            try
+            {
+                List<Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).OrderByDescending(x => x.FechaCreacion).Take(5).ToList();
+
+                return Json(trackings, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateAlerta(int id)
+        {
+            Tracking tracking = new Tracking();
+
+            try
+            {
+                tracking = db.Trackings.Find(id);
+
+
+                    //Actualizo 
+                    tracking.Alerta = false;
+                    db.Entry(tracking).State = EntityState.Modified;
+                    db.SaveChanges();
+
+
+
+
+                var responseObject = new
+                {
+                    responseCode = 0
+                };
+
+                return Json(responseObject);
+            }
+            catch (Exception)
+            {
+
+                return Json(new { responseCode = "-10" });
+            };
         }
 
 
@@ -120,6 +195,7 @@ namespace GestionDeTurnos.Controllers
                     tracking.TerminalID = terminal.Id;
                     tracking.UsuarioID = SessionHelper.GetUser();
                     tracking.CantidadDeLlamados = tracking.CantidadDeLlamados + 1;
+                    tracking.Alerta = true;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -163,6 +239,7 @@ namespace GestionDeTurnos.Controllers
                 {
                     //Actualizo 
                     tracking.CantidadDeLlamados = tracking.CantidadDeLlamados + 1;
+                    tracking.Alerta = true;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();
                     if (tracking.CantidadDeLlamados >= CantidadDeLlamadosPosibles.Value)
@@ -213,6 +290,7 @@ namespace GestionDeTurnos.Controllers
                     tracking.Status = status;
                     tracking.UsuarioID = SessionHelper.GetUser();
                     tracking.FechaIngreso = DateTime.Now;
+                    tracking.Alerta = false;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -262,6 +340,7 @@ namespace GestionDeTurnos.Controllers
                     tracking.Status = status;
                     tracking.FechaSalida = DateTime.Now;
                     tracking.Tiempo = tracking.FechaSalida - tracking.FechaIngreso;
+                    tracking.Alerta = false;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -289,6 +368,7 @@ namespace GestionDeTurnos.Controllers
                             SectorID = SectorProximo.Value,
                             TurnID = tracking.Turn.Id,
                             FechaCreacion = DateTime.Now,
+                            Alerta = false,
                             StatusID = EstadoInicial
                         };
 
@@ -337,6 +417,7 @@ namespace GestionDeTurnos.Controllers
                     tracking.FechaIngreso = DateTime.Now;
                     tracking.FechaSalida = DateTime.Now;
                     tracking.Tiempo = tracking.FechaSalida - tracking.FechaIngreso;
+                    tracking.Alerta = false;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -379,6 +460,7 @@ namespace GestionDeTurnos.Controllers
                     tracking.StatusID = status.Id;
                     tracking.Status = status;
                     tracking.FechaSalida = DateTime.Now;
+                    tracking.Alerta = false;
                     tracking.Tiempo = tracking.FechaSalida - tracking.FechaIngreso;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();

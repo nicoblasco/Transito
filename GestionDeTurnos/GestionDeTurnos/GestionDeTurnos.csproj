@@ -256,6 +256,7 @@
     <Content Include="Images\sort_desc.png" />
     <Content Include="Images\sort_desc_disabled.png" />
     <Content Include="Images\switch.png" />
+    <Content Include="Scripts\attachments\sounds\sound.mp3" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -431,6 +432,7 @@
     <Content Include="Scripts\jquery.form.js" />
     <Content Include="Scripts\jquery.multi-select.js" />
     <Content Include="Scripts\jquery.multiselect.js" />
+    <Content Include="Scripts\jquery.playSound.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.date.js" />
@@ -533,6 +535,7 @@
     <Content Include="Views\Trackings\Edit.cshtml" />
     <Content Include="Views\Trackings\Index.cshtml" />
     <Content Include="Views\Trackings\Turnero.cshtml" />
+    <Content Include="Views\Shared\_LayoutTurnero.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />
