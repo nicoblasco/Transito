@@ -89,14 +89,14 @@ namespace GestionDeTurnos.Controllers
             //Recover request by Post
             //Add PersonMedicals
             //Redirect to Details/idPerson
-          //  string nro =  Request.Form["nroTurn"];
+            string nro =  Request.Form["nroTurn"];
            // string personId = Request.Form["PersonId"];
 
             //if (ModelState.IsValid) //Ver ModelStateValid
             //{
                 db.PersonMedicals.Add(personMedical);
                 db.SaveChanges();
-                return RedirectToAction("Details/1");
+                return RedirectToAction("Details/"+nro);
            // }
             //return HttpNotFound();
 
