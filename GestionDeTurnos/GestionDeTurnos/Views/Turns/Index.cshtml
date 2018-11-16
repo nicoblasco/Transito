@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<GestionDeTurnos.Models.Turn>
-
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 
 <style type="text/css">
     .middle {
@@ -54,164 +55,423 @@
         margin-bottom: -3px;
         margin-top: 3px;
     }
+
+
+
 </style>
 
 
 
-<div id="page-wrapper">
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">Atención al cliente</h1>
+<body>
+
+
+
+    <div id="page-wrapper">
+
+        <!-- /.row -->
+
+
+        <div class="row">
+
+            <div class="col-lg-2 col-md-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-calendar fa-4x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@ViewBag.TurnosProgramados</div>
+                                <div>Turnos Programados!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="btnTurnosProgramados" href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">Ver Detalle</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-time fa-4x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@ViewBag.MinPromedioAtencion</div>
+                                <div>Min/Prom Atención!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="btnTiempoPromedio" href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">Ver Detalle</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-exclamation-sign fa-4x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@ViewBag.MinPromedioDemora</div>
+                                <div>Min/Prom Demora!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="btnTiempoDemora" href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">Ver Detalle</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-stop fa-4x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@ViewBag.TurnosPendientes</div>
+                                <div>Turnos Pendientes!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="btnTurnosPendientes" href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">Ver Detalle</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-play fa-4x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@ViewBag.TurnosEnProceso</div>
+                                <div>Turnos En Proceso!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="btnTurnosEnProceso" href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">Ver Detalle</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-smile-o fa-4x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@ViewBag.TurnosCompletados</div>
+                                <div>Turnos Completados!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="btnTurnosFinalizados" href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">Ver Detalle</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
-        <!-- /.col-lg-12 -->
-    </div>
-    <!-- /.row -->
-    <div class="row">
+        <!-- /#row -->
         <div class="col-lg-12">
             <div class="panel panel-default">
-                <div class="panel-body" style="padding: 0px;">
-                    <div class="col-lg-2">
-                        <div class="middle">
-                            <label>Puerta 2</label>
-                        </div>
-                    </div>
-                    <div class="col-lg-10" style="padding: 0px;">
-                        <h4 class="page-header" style="margin: 10px 0 20px;">Atendimiento</h4>
-                        <div class="panel-body" style="padding: 0px; background-color: #f5f5f5;">
-                            <form>
-                                <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Turno</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">RE1233 </label>
-
-                                </div>
-                                <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Estado</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500; color:green">En Proceso </label>
-
-                                </div>
-                                <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Tipo de Turno</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Renovación</label>
-                                </div>
-                                <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Nombre</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Oscar</label>
-                                </div>
-                                <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">Apellido</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">Garcia</label>
-                                </div>
-                                <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">DNI</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">30567933</label>
-                                </div>
-                                <div class="form-group row" style="margin-bottom: 3px;">
-                                    <label for="example-text-input" class="col-sm-2 col-form-label">EDAD</label>
-                                    <label id="example-text-input" class="col-sm-10" style="font-weight: 500">33</label>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
-
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-Index">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Turno</th>
+                                <th>Inicio</th>
+                                <th>Salida</th>
+                                <th>Tipo Turno</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Estado</th>                              
+                                <th>Act.</th>
+                                <th>Prox.</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <!-- /.table-responsive -->
                 </div>
                 <!-- /.panel-body -->
             </div>
             <!-- /.panel -->
-
-            <div class="col-lg-4">
-                <a href="medico.html"><button type="button" class="btn btn-success btn-lg raised"> Llamar Nuevamente</button></a>
-            </div>
-            <div class="col-lg-4">
-                <a href="datospersonales.html"><button type="button" class="btn btn-primary btn-lg raised">Iniciar Atención</button></a>
-            </div>
-            <div class="col-lg-4">
-                <button type="button" class="btn btn-danger btn-lg raised">No se presento</button>
-            </div>
-
-            <!--
-            <div class="col-lg-4">
-                <button type="button" class="btn btn-success btn-lg raised">Llamar Nuevamente</button>
-            </div>
-            <div class="col-lg-4">
-                <button type="button" class="btn btn-primary btn-lg raised">Finalizar Atención</button>
-            </div>
-            <div class="col-lg-4">
-                <button type="button" class="btn btn-danger btn-lg raised">Incompleto</button>
-            </div>       -->
-
-            <div class="col-lg-10">
-                <h4 class="page-header">Turno siguientes</h4>
-                <div class="panel-body">
-                    <div class="form-inline">
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1234</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1235</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1236</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1237</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">DU1238</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">RE1239</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">DU1280</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">OR1287</button>
-                        <button type="button" class="btn btn-outline btn-primary btn-sm">OR1294</button>
-                    </div>
-                </div>
-            </div>
         </div>
         <!-- /.col-lg-12 -->
     </div>
     <!-- /.row -->
+    <!-- /#page-wrapper -->
+</body>
 
+@section scripts {
+    <script>
 
-    @section scripts {
-        <script>
-            $(function () {
-                $('.dropdown-menu a').click(function () {
-                    console.log($(this).attr('data-value'));
-                    $(this).closest('.dropdown').find('input.countrycode')
-                        .val('(' + $(this).attr('data-value') + ')');
-                });
+        $(document).ready(function () {
+
+            $('#dataTables-Index').DataTable({
+                "ajax":
+                {
+                    url: "@Url.Action("GetTurns", "Turns")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Turno" },
+                    { "data": "Ingreso" },
+                    { "data": "Salida" },
+                    { "data": "Tipo" },
+                    { "data": "Nombre" },
+                    { "data": "Apellido" },
+                    { "data": "Estado" },
+                    { "data": "SectorActual" },
+                    { "data": "SectorProximo" }
+                ],
+                responsive: true
             });
+        });
 
-            function bs_input_file() {
-                $(".input-file").before(
-                    function () {
-                        if (!$(this).prev().hasClass('input-ghost')) {
-                            var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
-                            element.attr("name", $(this).attr("name"));
-                            element.change(function () {
-                                element.next(element).find('input').val((element.val()).split('\\').pop());
-                            });
-                            $(this).find("button.btn-choose").click(function () {
-                                element.click();
-                            });
-                            $(this).find("button.btn-reset").click(function () {
-                                element.val(null);
-                                $(this).parents(".input-file").find('input').val('');
-                            });
-                            $(this).find('input').css("cursor", "pointer");
-                            $(this).find('input').mousedown(function () {
-                                $(this).parents('.input-file').prev().click();
-                                return false;
-                            });
-                            return element;
-                        }
+
+
+        $(function () {
+            $('.dropdown-menu a').click(function () {
+                console.log($(this).attr('data-value'));
+                $(this).closest('.dropdown').find('input.countrycode')
+                    .val('(' + $(this).attr('data-value') + ')');
+            });
+        });
+
+        function bs_input_file() {
+            $(".input-file").before(
+                function () {
+                    if (!$(this).prev().hasClass('input-ghost')) {
+                        var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+                        element.attr("name", $(this).attr("name"));
+                        element.change(function () {
+                            element.next(element).find('input').val((element.val()).split('\\').pop());
+                        });
+                        $(this).find("button.btn-choose").click(function () {
+                            element.click();
+                        });
+                        $(this).find("button.btn-reset").click(function () {
+                            element.val(null);
+                            $(this).parents(".input-file").find('input').val('');
+                        });
+                        $(this).find('input').css("cursor", "pointer");
+                        $(this).find('input').mousedown(function () {
+                            $(this).parents('.input-file').prev().click();
+                            return false;
+                        });
+                        return element;
                     }
-                );
-            }
-            $(function () {
-                bs_input_file();
+                }
+            );
+        }
+        $(function () {
+            bs_input_file();
+        });
+
+
+        $(function () {
+            // initialize sol
+            $('#my-select').searchableOptionList();
+            $('#my-select2').searchableOptionList();
+        });
+
+        
+        $('#btnTurnosProgramados').click(function () {
+            $('.panel-body').empty();
+            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Turno</th><th>Horario</th><th>Tipo</th><th>DNI</th><th>Apellido</th><th>Nombre</th></tr></thead></table>";
+            $('.panel-body').append(table);
+
+            $('#dataTables-Index').DataTable({
+                "ajax":
+                {
+                    url: "@Url.Action("GetTurnsProgramados", "Turns")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Turno" },
+                    { "data": "Horario" },
+                    { "data": "Tipo" },
+                    { "data": "Dni" },
+                    { "data": "Apellido" },
+                    { "data": "Nombre" }
+                ],
+                responsive: true
+            });
+
+        }); 
+
+
+        $('#btnTiempoPromedio').click(function () {
+            $('.panel-body').empty();
+            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Turno</th><th>Inicio</th><th>Salida</th><th>Sector</th><th>Usuario</th><th>Tiempo</th></tr></thead></table>";
+            $('.panel-body').append(table);
+
+            $('#dataTables-Index').DataTable({
+                "ajax":
+                {
+                    url: "@Url.Action("GetTurnsPromedio", "Turns")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Turno" },
+                    { "data": "Ingreso" },
+                    { "data": "Salida" },
+                    { "data": "Sector" },
+                    { "data": "Usuario" },
+                    { "data": "Tiempo" }
+                ],
+                responsive: true
+            });
+
+        }); 
+
+        $('#btnTurnosPendientes').click(function () {
+            $('.panel-body').empty();
+            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Turno</th><th>Inicio</th><th>Sector</th><th>Demora</th></tr></thead></table>"
+            $('.panel-body').append(table);
+            $('#dataTables-Index').DataTable({
+                "ajax":
+                {
+                    url: "@Url.Action("GetTurnsPendientes", "Turns")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Turno" },
+                    { "data": "Ingreso" },
+                    { "data": "Sector" },
+                    { "data": "Demora" }
+                ],
+                responsive: true
             });
 
 
-            $(function () {
-                // initialize sol
-                $('#my-select').searchableOptionList();
-                $('#my-select2').searchableOptionList();
+        }); 
+
+        $('#btnTurnosEnProceso').click(function () {
+            $('.panel-body').empty();
+            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Turno</th><th>Inicio</th><th>Sector</th><th>Tiempo</th><th>Usuario</th></tr></thead></table>"
+            $('.panel-body').append(table);
+            $('#dataTables-Index').DataTable({
+                "ajax":
+                {
+                    url: "@Url.Action("GetTurnsEnProceso", "Turns")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Turno" },                    
+                    { "data": "Ingreso" },
+                    { "data": "Sector" },
+                    { "data": "Usuario" },
+                    { "data": "Tiempo" }
+                ],
+                responsive: true
             });
 
 
+        }); 
 
-        </script>
+        $('#btnTurnosFinalizados').click(function () {
+            $('.panel-body').empty();
+            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Turno</th><th>Fecha</th><th>Inicio</th><th> Salida</th><th>Tiempo</th></tr></thead></table>"
+            $('.panel-body').append(table);
+            $('#dataTables-Index').DataTable({
+                "ajax":
+                {
+                    url: "@Url.Action("GetTurnsFinzalizados", "Turns")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Turno" },
+                    { "data": "FechaTurno" },                    
+                    { "data": "Ingreso" },
+                    { "data": "Finalizado" },
+                    { "data": "Tiempo" },
+
+                ],
+                responsive: true
+            });
 
 
-    }
+        }); 
+
+        $('#btnTiempoDemora').click(function () {
+            $('.panel-body').empty();
+            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Turno</th><th>Desde</th><th>Sector</th><th>Tiempo</th></tr></thead></table>"
+            $('.panel-body').append(table);
+            $('#dataTables-Index').DataTable({
+                "ajax":
+                {
+                    url: "@Url.Action("GetTurnsPromedioDemora", "Turns")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Turno" },
+                    { "data": "Desde" },
+                    { "data": "Sector" },
+                    { "data": "Tiempo" }
+
+                ],
+                responsive: true
+            });
+
+
+        }); 
+
+
+    </script>
+
+
+}

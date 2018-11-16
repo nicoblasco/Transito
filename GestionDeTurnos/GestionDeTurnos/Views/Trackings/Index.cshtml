@@ -171,31 +171,47 @@
             </div>
 
             <div class="col-lg-4">
-                @if (intEstadoOrden > 2)
-                {
-                    <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised" >Finalizar Atención</button>
-                    <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised" style="display:none">Iniciar Atención</button>
-                }
-                else
+                @if (intEstadoOrden == 1)
                 {
                     <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised" style="display:none">Finalizar Atención</button>
-                    <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised" >Iniciar Atención</button>
+                    <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised" style="display:none">Iniciar Atención</button>
                 }
 
+                else
+                {
+                    if (intEstadoOrden > 2)
+                    {
+                        <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised">Finalizar Atención</button>
+                        <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised" style="display:none">Iniciar Atención</button>
+                    }
+                    else
+                    {
+                        <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised" style="display:none">Finalizar Atención</button>
+                        <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised">Iniciar Atención</button>
+                    }
+                }
             </div>
 
 
             <div class="col-lg-4">
-                @if (intEstadoOrden > 2)
+                @if (intEstadoOrden == 1)
                 {
-                    <button type="button" id="btnIncompleto" class="btn btn-danger btn-lg raised" >Incompleto</button>
+                    <button type="button" id="btnIncompleto" class="btn btn-danger btn-lg raised" style="display:none">Incompleto</button>
                     <button type="button" id="btnNoEsta" class="btn btn-danger btn-lg raised" style="display:none">No se presento</button>
                 }
                 else
                 {
-                    <button type="button" id="btnIncompleto" class="btn btn-danger btn-lg raised" style="display:none">Incompleto</button>
-                    <button type="button" id="btnNoEsta" class="btn btn-danger btn-lg raised" >No se presento</button>
+                    if (intEstadoOrden > 2)
+                    {
+                        <button type="button" id="btnIncompleto" class="btn btn-danger btn-lg raised">Incompleto</button>
+                        <button type="button" id="btnNoEsta" class="btn btn-danger btn-lg raised" style="display:none">No se presento</button>
+                    }
+                    else
+                    {
+                        <button type="button" id="btnIncompleto" class="btn btn-danger btn-lg raised" style="display:none">Incompleto</button>
+                        <button type="button" id="btnNoEsta" class="btn btn-danger btn-lg raised">No se presento</button>
 
+                    }
                 }
 
             </div>
@@ -339,6 +355,9 @@
                         $('#Apellido').text(result.tracking.Turn.Person.Apellido);
                         $('#btnLlamar').hide();
                         $('#btnLlamarNuevamente').show();
+                        $('#btnIniciar').show();
+                        $('#btnNoEsta').show();
+
 
 
                     }
@@ -590,7 +609,9 @@
             $('#btnLlamarNuevamente').attr("disabled", false);
             $('#btnLlamar').show();
             $('#btnIncompleto').hide();
-            $('#btnNoEsta').show();
+            $('#btnNoEsta').hide();
+            $('#btnIniciar').hide();            
+
 
             $('#TurnId').val();
             $('#Turno').text("");

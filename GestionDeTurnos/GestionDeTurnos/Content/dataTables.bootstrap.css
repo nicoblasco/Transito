@@ -312,3 +312,7 @@ div.FixedHeader_Cloned table {
 	margin: 0 !important
 }
 
+table.dataTable tbody tr.selected {
+    color: white !important;
+    background-color: #428bca !important;
+}

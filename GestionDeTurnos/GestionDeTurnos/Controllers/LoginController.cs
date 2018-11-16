@@ -36,7 +36,7 @@ namespace GestionDeTurnos.Controllers
 
                 if (rm.response)
                 {
-                    rm.href = Url.Action("Index", "Usuarios");
+                    rm.href = Url.Action("Index", "Turns");
                 }
             }
             else

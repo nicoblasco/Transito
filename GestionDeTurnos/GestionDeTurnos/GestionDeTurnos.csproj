@@ -207,7 +207,14 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
+    <Compile Include="ViewModel\TurnDemoraViewModel.cs" />
+    <Compile Include="ViewModel\TurnEnProcesoViewModel.cs" />
+    <Compile Include="ViewModel\TurnFinalizadoViewModel.cs" />
+    <Compile Include="ViewModel\TurnIndexViewModel.cs" />
+    <Compile Include="ViewModel\TurnsProgramadosViewModel.cs" />
     <Compile Include="ViewModel\TurnoWSViewModel.cs" />
+    <Compile Include="ViewModel\TurnPendientesViewModel.cs" />
+    <Compile Include="ViewModel\TurnPromedioViewModel.cs" />
     <Compile Include="ViewModel\WorkflowIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

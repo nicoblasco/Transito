@@ -29,6 +29,8 @@ namespace GestionDeTurnos.Controllers
             int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
             Terminal terminal = db.Terminals.Where(x => x.IP == terminalName).FirstOrDefault();
             ViewBag.HabilitaLlamarNuevamente = true;
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
 
             if (terminal != null)
             {
@@ -39,15 +41,15 @@ namespace GestionDeTurnos.Controllers
                 //Me fijo si todavia tiene un turno asignado
                 //Esto por si cerro la ventana o algo por el estilo
 
-                Tracking tracking = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden)  && x.SectorID == terminal.SectorID && x.TerminalID==terminal.Id).FirstOrDefault();
+                    //Lo filtro por turnos del dia tambien???
+                Tracking tracking = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden)  && x.SectorID == terminal.SectorID && x.TerminalID==terminal.Id && x.FechaCreacion>=startDateTime && x.FechaCreacion<=endDateTime ).FirstOrDefault();
 
                 if (tracking!=null)
                 {
                     if (tracking.CantidadDeLlamados>=CantidadDeLlamadosPosibles)
                         ViewBag.HabilitaLlamarNuevamente = false;
                 }
-                
-                
+                                
 
                 return View(tracking);
                 // return View(trackings.ToList());
@@ -361,7 +363,7 @@ namespace GestionDeTurnos.Controllers
 
                     //Si tiene proximo Sector
 
-                    if (SectorProximo != null)
+                    if (SectorProximo != 0)
                     {
                         Tracking newtracking = new Tracking
                         {
@@ -374,6 +376,16 @@ namespace GestionDeTurnos.Controllers
 
                         db.Trackings.Add(newtracking);
                         db.SaveChanges();
+                    }
+                    else
+                    {
+                        //Finaliza la atencion
+                        Turn turn = db.Turns.Find(tracking.TurnID);
+                        turn.FechaSalida = DateTime.Now;
+                        turn.Tiempo = turn.FechaSalida - turn.FechaIngreso;
+                        db.Entry(turn).State = EntityState.Modified;
+                        db.SaveChanges();
+
                     }
 
                 }
