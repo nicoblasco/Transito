@@ -1,4 +1,5 @@
 
+insert into [dbo].[Modules] (Descripcion,Enable) values ('Monitoreo',1);
 insert into [dbo].[Modules] (Descripcion,Enable) values ('Configuración',1);
 insert into [dbo].[Modules] (Descripcion,Enable) values ('ABM Maestros',1);
 

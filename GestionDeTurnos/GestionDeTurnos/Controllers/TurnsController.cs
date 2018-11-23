@@ -26,7 +26,7 @@ namespace GestionDeTurnos.Controllers
             var timeSpanListDemora = new List<TimeSpan>();
             var totalTicks = 0L;
             var totalTicksDemora = 0L;
-
+            List<CallCenterTurn> centerTurns = db.CallCenterTurns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).ToList();
             List<Turn> turns = db.Turns.Where(x =>  x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).OrderBy(x => new {x.FechaIngreso }).ToList();
 
             List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).ToList();
@@ -45,7 +45,7 @@ namespace GestionDeTurnos.Controllers
             {
                 var avgTicks = totalTicks / timeSpanList.Count;
                 var avgTimeSpan = new TimeSpan(avgTicks);
-                ViewBag.MinPromedioAtencion = avgTimeSpan.Minutes;
+                ViewBag.MinPromedioAtencion = (int)avgTimeSpan.TotalMinutes;
             }
             else
             {
@@ -70,7 +70,7 @@ namespace GestionDeTurnos.Controllers
             {
                 var avgTicks = totalTicksDemora / timeSpanListDemora.Count;
                 var avgTimeSpan = new TimeSpan(avgTicks);
-                ViewBag.MinPromedioDemora= avgTimeSpan.Minutes;
+                ViewBag.MinPromedioDemora= (int)avgTimeSpan.TotalMinutes;
             }
             else
             {
@@ -78,12 +78,12 @@ namespace GestionDeTurnos.Controllers
             }
 
 
-            //TurnosProgramados
-            ViewBag.TurnosProgramados = trackings.Where(x => turns.Contains(x.Turn)).Count();
+            ViewBag.TurnosProgramados = centerTurns.Count();
+
 
             //Pendientes: Pendientes de ser atendidos por algun box
             //El cliente cuando ingresa se agredita y genera un primer regristro.
-            ViewBag.TurnosPendientes = trackings.Where(x => turns.Contains(x.Turn) && x.Status.Orden ==1 && x.FechaIngreso == null ).Count();
+                ViewBag.TurnosPendientes = trackings.Where(x => turns.Contains(x.Turn) && x.Status.Orden ==1 && x.FechaIngreso == null ).Count();
 
 
             //En proceso: Los que empezaron el ciclo (han sido llamados por algun box) y no finalizaron
@@ -96,6 +96,56 @@ namespace GestionDeTurnos.Controllers
 
 
         }
+
+
+        public ActionResult Search()
+        {
+            List<TypesLicense> lTypesLicense = new List<TypesLicense>();
+            lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
+            ViewBag.listaLicencias = lTypesLicense;
+
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetTurnsSearch()
+        {
+            try
+            {
+
+                List<TurnsSeachViewModel> turnsSeachViews = new List<TurnsSeachViewModel>();
+                List<Turn> turns = db.Turns.Take(1000).ToList();
+
+                foreach (var item in turns)
+                {
+                    TurnsSeachViewModel viewModel = new TurnsSeachViewModel
+                    {
+                        Apellido = item.Person.Apellido,
+                        DNI = item.Person.Dni,
+                        FechaTurno = item.FechaTurno.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Id = item.Id,
+                        Nombre = item.Person.Nombre,
+                        Ingreso = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Tipo = item.TypesLicense.Descripcion,
+                        Turno = item.Turno
+                    };
+
+                    turnsSeachViews.Add(viewModel);
+                }
+
+                return Json(turnsSeachViews.OrderByDescending(x=>x.FechaTurno), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
 
         [HttpPost]
         public JsonResult GetTurns()
@@ -146,6 +196,84 @@ namespace GestionDeTurnos.Controllers
             }
         }
 
+        public JsonResult SearchTurn(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo)
+        {
+            
+
+            List<TurnsSeachViewModel> turns = new List<TurnsSeachViewModel>();
+            turns = ArmarConsulta(NroTurno, DNI, Apellido, Nombre, FechaTurnoDesde, FechaTurnoHasta, Tipo);
+
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+
+            return Json(turns, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+        private List<TurnsSeachViewModel> ArmarConsulta(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo)
+        {
+            int TipoId=0;
+
+            if (!String.IsNullOrEmpty(Tipo))
+                TipoId = Convert.ToInt32(Tipo);
+
+
+            List<TurnsSeachViewModel> turns = new List<TurnsSeachViewModel>();
+            DateTime? dtFechaDesde = null;
+            DateTime? dtFechaHasta = null;
+
+            if (!String.IsNullOrEmpty(FechaTurnoDesde))
+                dtFechaDesde = Convert.ToDateTime(FechaTurnoDesde);
+
+            if (!String.IsNullOrEmpty(FechaTurnoHasta))
+                dtFechaHasta = Convert.ToDateTime(FechaTurnoHasta).AddDays(1).AddTicks(-1);
+
+
+            try
+            {
+
+
+                var lista = db.Turns
+                .Where(x => !string.IsNullOrEmpty(NroTurno) ? (x.Turno == NroTurno && x.Turno != null) : true)
+                .Where(x => !string.IsNullOrEmpty(DNI) ? (x.Person.Dni == DNI && x.Person.Dni != null) : true)
+                .Where(x => !string.IsNullOrEmpty(Apellido) ? (x.Person.Apellido == Apellido && x.Person.Apellido != null) : true)
+                .Where(x => !string.IsNullOrEmpty(Nombre) ? (x.Person.Nombre == Nombre && x.Person.Nombre != null) : true)
+                .Where(x => !string.IsNullOrEmpty(Tipo) ? (x.TypesLicense.Id == TipoId && x.TypesLicense.Descripcion != null) : true)
+                .Where(x => !string.IsNullOrEmpty(FechaTurnoDesde) ? (x.FechaTurno >= dtFechaDesde && x.FechaTurno != null) : true)
+                .Where(x => !string.IsNullOrEmpty(FechaTurnoHasta) ? (x.FechaTurno <= dtFechaHasta && x.FechaTurno != null) : true)
+                .Select(c => new { c.Id, c.Turno, c.FechaTurno, c.FechaIngreso, c.FechaSalida, c.TypesLicense, c.Person }).OrderByDescending(x => x.FechaTurno).Take(1000);
+                ;
+
+                foreach (var item in lista)
+                {
+                    TurnsSeachViewModel turn = new TurnsSeachViewModel
+                    {
+                        Apellido = item.Person.Apellido,
+                        DNI = item.Person.Dni,
+                        FechaTurno = item.FechaTurno.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Id = item.Id,
+                        Nombre = item.Person.Nombre,
+                        Ingreso = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Tipo = item.TypesLicense.Descripcion,
+                        Turno = item.Turno
+                    };
+
+                    turns.Add(turn);
+
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+            return turns;
+        }
 
         [HttpPost]
         public JsonResult GetTurnsPendientes()
@@ -194,20 +322,19 @@ namespace GestionDeTurnos.Controllers
             List<TurnsProgramadosViewModel> turnsvm = new List<TurnsProgramadosViewModel>();
             try
             {
-                List<Turn> turns = db.Turns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).ToList();
+                List<CallCenterTurn> centerTurns = db.CallCenterTurns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).ToList();
 
-                foreach (var item in turns)
+                foreach (var item in centerTurns)
                 {
 
                     TurnsProgramadosViewModel turn = new TurnsProgramadosViewModel
                     {
                         Id = item.Id,
-                        Turno = item.Turno,
-                        Apellido = item.Person.Apellido,
-                        Nombre = item.Person.Nombre,
-                        Dni = item.Person.Dni,
+                        Apellido = item.Apellido,
+                        Nombre = item.Nombre,
+                        Dni = item.DNI,
                         Horario = item.FechaTurno.ToString("HH:mm:ss"),
-                        Tipo = item.TypesLicense.Descripcion
+                        Tipo = item.TipoTramite
 
                     };
 
@@ -387,11 +514,246 @@ namespace GestionDeTurnos.Controllers
         }
 
 
-        public ActionResult Search()
+        [HttpPost]
+        public JsonResult GetTurnosProgramadorPorTipoTramite()
         {
-            var turns = db.Turns.Include(t => t.Person).Include(t => t.TypesLicense);
-            return View(turns.ToList());
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+
+            var pl = from r in db.Turns
+                     where r.FechaTurno >= startDateTime && r.FechaTurno<=endDateTime
+                     group r by r.TypesLicense.Descripcion into grp
+                     select new { key = grp.Key, cnt = grp.Count() };
+            try
+            {               
+
+                return Json(pl, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
         }
+
+
+        [HttpPost]
+        public JsonResult GetTurnosProgramadorPorEstado()
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            List<TurnChartViewModel> list = new List<TurnChartViewModel>();
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).ToList();
+            List<Turn> turns = db.Turns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).ToList();
+            List<CallCenterTurn> centerTurns = db.CallCenterTurns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).ToList();
+            TurnChartViewModel turn;
+
+            int[] statusOrdenPendiente = { 2, 3 };
+
+
+
+
+            turn = new TurnChartViewModel
+                {
+                    key = "Sin registrarse",
+                    cnt = (from c in centerTurns
+                          where !(from t in turns
+                                  select t.Person.Dni)
+                                 .Contains(c.DNI)
+                          select c).Count().ToString()
+        };
+                list.Add(turn);
+
+                turn = new TurnChartViewModel
+                {
+                    key = "Pendientes",
+                    cnt = trackings.Where(x => x.Status.Orden == 1 && x.FechaIngreso == null).Count().ToString()
+                };
+                list.Add(turn);
+
+
+            turn = new TurnChartViewModel
+            {
+                key = "En Proceso",
+                cnt = trackings.Where(x => x.Status.Orden == 1 && statusOrdenPendiente.Contains(x.Status.Orden)).Count().ToString()
+            };
+            list.Add(turn);
+
+
+            turn = new TurnChartViewModel
+            {
+                key = "Finalizados",
+                cnt = turns.Where(x => x.FechaSalida != null).Count().ToString()
+            };
+            list.Add(turn);
+
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+        [HttpPost]
+        public JsonResult GetTurnosPromedioPorSector()
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaSalida!=null).ToList();
+
+            var _groupedItems = trackings.GroupBy(i => i.Sector.Descripcion)
+                .Select(g => new {
+                    key = g.Key,
+                    cnt = (int) g.Select(x => x.Tiempo.Value.TotalMinutes).Average()
+//                    cnt = new TimeSpan(Convert.ToInt64(g.Select(x => x.Tiempo.Value.Seconds).Average())).Seconds
+                });
+
+            try
+            {
+
+                return Json(_groupedItems, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetTurnosPromedioPorTerminal()
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaSalida != null).ToList();
+
+            var _groupedItems = trackings.GroupBy(i => i.Terminal.Descripcion)
+                .Select(g => new {
+                    key = g.Key,
+                    cnt = (int)g.Select(x => x.Tiempo.Value.TotalMinutes).Average()
+                    //                    cnt = new TimeSpan(Convert.ToInt64(g.Select(x => x.Tiempo.Value.Seconds).Average())).Seconds
+                });
+
+            try
+            {
+
+                return Json(_groupedItems, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetTurnosDemoraPorSector()
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaIngreso == null).ToList();
+
+            var _groupedItems = trackings.GroupBy(i => i.Sector.Descripcion)
+                .Select(g => new {
+                    key = g.Key,
+                    cnt = (int)g.Select(x => (DateTime.Now - x.FechaCreacion).TotalMinutes).Average()
+                    //                    cnt = new TimeSpan(Convert.ToInt64(g.Select(x => x.Tiempo.Value.Seconds).Average())).Seconds
+                });
+
+            try
+            {
+
+                return Json(_groupedItems, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetTurnosPendientesPorSector()
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+
+            var pl = from r in db.Trackings
+                     where r.Turn.FechaTurno >= startDateTime && r.Turn.FechaTurno <= endDateTime && r.Status.Orden == 1 && r.FechaIngreso ==null
+                     group r by r.Sector.Descripcion into grp
+                     select new { key = grp.Key, cnt = grp.Count() };
+            try
+            {
+
+                return Json(pl, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult GetTurnosEnProcesoPorSector()
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            int[] statusOrdenPendiente = { 2, 3 };
+
+            var pl = from r in db.Trackings
+                     where r.Turn.FechaTurno >= startDateTime && r.Turn.FechaTurno <= endDateTime && statusOrdenPendiente.Contains(r.Status.Orden)
+                     group r by r.Sector.Descripcion into grp
+                     select new { key = grp.Key, cnt = grp.Count() };
+            try
+            {
+
+                return Json(pl, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult GetTurnosFinalizadosPorTipoTramite()
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            int[] statusOrdenPendiente = { 2, 3 };
+
+            var pl = from r in db.Turns
+                     where r.FechaTurno >= startDateTime && r.FechaTurno <= endDateTime && r.FechaSalida!=null
+                     group r by r.TypesLicense.Descripcion into grp
+                     select new { key = grp.Key, cnt = grp.Count() };
+            try
+            {
+
+                return Json(pl, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
+        }
+
+
+        //public ActionResult Search()
+        //{
+        //    var turns = db.Turns.Include(t => t.Person).Include(t => t.TypesLicense);
+        //    return View(turns.ToList());
+        //}
 
 
         public ActionResult Licenses()

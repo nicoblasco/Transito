@@ -55,9 +55,6 @@
         margin-bottom: -3px;
         margin-top: 3px;
     }
-
-
-
 </style>
 
 
@@ -223,7 +220,7 @@
                                 <th>Tipo Turno</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Estado</th>                              
+                                <th>Estado</th>
                                 <th>Act.</th>
                                 <th>Prox.</th>
                             </tr>
@@ -236,12 +233,37 @@
             <!-- /.panel -->
         </div>
         <!-- /.col-lg-12 -->
+
+        <div class="col-lg-6 Chart1">
+
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-6 -->
+
+        <div class="col-lg-6 Chart2">         
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-6 -->
+
     </div>
     <!-- /.row -->
     <!-- /#page-wrapper -->
 </body>
 
 @section scripts {
+    @Scripts.Render("~/bundles/chartjs")
+<script>
+
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
     <script>
 
         $(document).ready(function () {
@@ -316,10 +338,10 @@
             $('#my-select2').searchableOptionList();
         });
 
-        
+
         $('#btnTurnosProgramados').click(function () {
             $('.panel-body').empty();
-            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Turno</th><th>Horario</th><th>Tipo</th><th>DNI</th><th>Apellido</th><th>Nombre</th></tr></thead></table>";
+            var table = "<table width='100%' class='table table-striped table-bordered table-hover' id='dataTables-Index'><thead><tr><th>ID</th><th>Horario</th><th>Tipo</th><th>DNI</th><th>Apellido</th><th>Nombre</th></tr></thead></table>";
             $('.panel-body').append(table);
 
             $('#dataTables-Index').DataTable({
@@ -331,7 +353,6 @@
                 },
                 "columns": [
                     { "data": "Id" },
-                    { "data": "Turno" },
                     { "data": "Horario" },
                     { "data": "Tipo" },
                     { "data": "Dni" },
@@ -341,7 +362,11 @@
                 responsive: true
             });
 
-        }); 
+            LoadChart1("GetTurnosProgramadorPorTipoTramite", "Cantidad por tipo de tramite");
+            LoadChart2("GetTurnosProgramadorPorEstado", "Cantidad por estado del tramite");
+        });
+
+
 
 
         $('#btnTiempoPromedio').click(function () {
@@ -367,8 +392,9 @@
                 ],
                 responsive: true
             });
-
-        }); 
+            LoadChart1("GetTurnosPromedioPorSector", "Promedio por sector");
+            LoadChart2("GetTurnosPromedioPorTerminal", "Promedio por terminal");
+        });
 
         $('#btnTurnosPendientes').click(function () {
             $('.panel-body').empty();
@@ -390,9 +416,10 @@
                 ],
                 responsive: true
             });
+            LoadChart1("GetTurnosPendientesPorSector", "Cantidad por Sector");
+            $('.Chart2').empty();
 
-
-        }); 
+        });
 
         $('#btnTurnosEnProceso').click(function () {
             $('.panel-body').empty();
@@ -407,7 +434,7 @@
                 },
                 "columns": [
                     { "data": "Id" },
-                    { "data": "Turno" },                    
+                    { "data": "Turno" },
                     { "data": "Ingreso" },
                     { "data": "Sector" },
                     { "data": "Usuario" },
@@ -416,8 +443,9 @@
                 responsive: true
             });
 
-
-        }); 
+            LoadChart1("GetTurnosEnProcesoPorSector", "Cantidad por Sector");
+            $('.Chart2').empty();
+        });
 
         $('#btnTurnosFinalizados').click(function () {
             $('.panel-body').empty();
@@ -433,7 +461,7 @@
                 "columns": [
                     { "data": "Id" },
                     { "data": "Turno" },
-                    { "data": "FechaTurno" },                    
+                    { "data": "FechaTurno" },
                     { "data": "Ingreso" },
                     { "data": "Finalizado" },
                     { "data": "Tiempo" },
@@ -441,9 +469,10 @@
                 ],
                 responsive: true
             });
+            LoadChart1("GetTurnosFinalizadosPorTipoTramite", "Cantidad por Tipo de Tramite");
+            $('.Chart2').empty();
 
-
-        }); 
+        });
 
         $('#btnTiempoDemora').click(function () {
             $('.panel-body').empty();
@@ -467,9 +496,95 @@
                 responsive: true
             });
 
+            LoadChart1("GetTurnosDemoraPorSector", "Promedio por Sector");
+            $('.Chart2').empty();
+        });
 
-        }); 
 
+        function LoadChart1(action, title) {
+            $('.Chart1').empty();
+            var jsUrl = '@Url.Action("action")';
+            $.ajax({
+                    url: jsUrl.replace('action', action),
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8;',
+                   success: function (result) {
+                       if (result.length>0) {
+                           var findLabel = [];
+                           var findNumber = [];
+                           var findColor = [];
+
+                           result.forEach(function (valor, indice, array) {
+                               findLabel.push(valor.key);
+                               findNumber.push(valor.cnt);
+                               findColor.push(getRandomColor())
+                           });
+
+                           //Borro todo lo que hay adentro
+                           
+                           //Creo el contenedor
+                           var chart = "<div class='panel panel-default'><div class='panel-heading'>" + title +"</div><div class='panel-body'><div><canvas id='myChart'></canvas></div></div></div>";
+                           $('.Chart1').append(chart);
+                           var ctx = document.getElementById("myChart");
+                           var myChart = new Chart(ctx, {
+                               type: 'pie',
+                               data: {
+                                   labels: findLabel,
+                                   datasets: [{
+                                       data: findNumber, 
+                                       backgroundColor: findColor                                        
+
+                                   }]
+                               }
+                           });
+                       }
+                    }
+             });
+
+        }
+
+
+        function LoadChart2(action, title) {
+
+            //Borro todo lo que hay adentro
+            $('.Chart2').empty();
+            var jsUrl = '@Url.Action("action")';
+            $.ajax({
+                    url: jsUrl.replace('action', action),
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8;',
+                   success: function (result) {
+                       if (result != null) {
+                           var findLabel = [];
+                           var findNumber = [];
+                           var findColor = [];
+
+                           result.forEach(function (valor, indice, array) {
+                               findLabel.push(valor.key);
+                               findNumber.push(valor.cnt);
+                               findColor.push(getRandomColor())
+                           });
+
+                           //Creo el contenedor
+                           var chart = "<div class='panel panel-default'><div class='panel-heading'>" + title +"</div><div class='panel-body'><div><canvas id='myChart2'></canvas></div></div></div>";
+                           $('.Chart2').append(chart);
+                           var ctx = document.getElementById("myChart2");
+                           var myChart = new Chart(ctx, {
+                               type: 'doughnut',
+                               data: {
+                                   labels: findLabel,
+                                   datasets: [{
+                                       data: findNumber, 
+                                       backgroundColor: findColor                                        
+
+                                   }]
+                               }
+                           });
+                       }
+                    }
+             });
+
+        }
 
     </script>
 

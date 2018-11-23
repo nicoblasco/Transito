@@ -207,6 +207,8 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
+    <Compile Include="ViewModel\TurnsSeachViewModel.cs" />
+    <Compile Include="ViewModel\TurnChartViewModel.cs" />
     <Compile Include="ViewModel\TurnDemoraViewModel.cs" />
     <Compile Include="ViewModel\TurnEnProcesoViewModel.cs" />
     <Compile Include="ViewModel\TurnFinalizadoViewModel.cs" />
@@ -353,6 +355,7 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\CustomValidation.js" />
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
@@ -543,6 +546,8 @@
     <Content Include="Views\Trackings\Index.cshtml" />
     <Content Include="Views\Trackings\Turnero.cshtml" />
     <Content Include="Views\Shared\_LayoutTurnero.cshtml" />
+    <Content Include="Views\Turns\_Filtros.cshtml" />
+    <Content Include="Views\Turns\_Table.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />
