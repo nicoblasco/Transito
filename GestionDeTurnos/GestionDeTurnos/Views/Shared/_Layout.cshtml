@@ -99,23 +99,30 @@
                         <li>
                             <a style="color: whitesmoke" href="#"><i class="fa fa-dashboard fa-fw"></i> Menu Principal<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Monitoreo")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Monitoreo")))
                                 {
                                     <li>
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "Turns")">Monitoreo</a>
                                     </li>
                                 }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Atencion")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Atencion al cliente")))
                                 {
                                     <li>
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "Trackings")">Atención al cliente</a>
                                     </li>
                                 }
 
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("MenuPrincipal", "Busqueda")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Busquedas")))
                                 {
                                     <li>
                                         <a style="color: whitesmoke" href="@Url.Action("Search", "Turns")">Busquedas</a>
+                                    </li>
+                                }
+
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Call Center")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "CallCenterTurns")">Call Center</a>
                                     </li>
                                 }
                             </ul>
@@ -124,7 +131,7 @@
                         <li>
                             @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Licencias", "Licencias")))
                             {
-                                <a style="color: whitesmoke" href="@Url.Action("Licenses", "Turns")"><i class="fa fa-credit-card"></i>  Licencias<span class="fa arrow"></span></a>
+                                <a style="color: whitesmoke" href="@Url.Action("Index", "Licenses")"><i class="fa fa-credit-card"></i>  Licencias<span class="fa arrow"></span></a>
                             }
                             </li>
                         
@@ -159,6 +166,12 @@
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "Terminals")">Terminales</a>
                                     </li>
                                 }
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("ABM Maestros", "Clases de Licencia")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "LicenseClasses")">Clases de Licencia</a>
+                                    </li>
+                                }
                             </ul>
                         </li>
                         <li>
@@ -186,6 +199,18 @@
                                 {
                                     <li>
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "Audits")">Auditoria</a>
+                                    </li>
+                                }
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Configuración", "Sistema")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Edit", "Settings")">Sistema</a>
+                                    </li>
+                                }
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Configuración", "Procesos")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Process")">Procesos</a>
                                     </li>
                                 }
                             </ul>

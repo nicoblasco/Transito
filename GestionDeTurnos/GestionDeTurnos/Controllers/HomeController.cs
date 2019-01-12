@@ -127,8 +127,13 @@ namespace GestionDeTurnos.Controllers
                             Nombre = callCenterTurn.Nombre,
                             Apellido = callCenterTurn.Apellido,
                             Dni = callCenterTurn.DNI,
-                            FechaNacimiento = callCenterTurn.FechaNacimiento
+                            Barrio = callCenterTurn.Barrio,
+                            Tel_Celular = callCenterTurn.Tel_Celular,
+                            Tel_Particular= callCenterTurn.Tel_Particular                            
                         };
+
+                        if (!String.IsNullOrEmpty(callCenterTurn.Vencimiento_licencia))
+                            person.Vencimiento_licencia = Convert.ToDateTime(callCenterTurn.Vencimiento_licencia);
                         db.People.Add(person);
                         db.SaveChanges();
                     }
@@ -162,7 +167,8 @@ namespace GestionDeTurnos.Controllers
                         //Armo el codigo del dia
                         Turno = typesLicense.Codigo + NumeroSecuencia.Value.ToString("0000"),
                         Secuencia = NumeroSecuencia.Value,
-                        FechaTurno = callCenterTurn.FechaTurno
+                        FechaTurno = callCenterTurn.FechaTurno,
+                        Enable =true
 
                     };
                     db.Turns.Add(turn);
@@ -183,7 +189,8 @@ namespace GestionDeTurnos.Controllers
                         SectorID = sectorWorkflow.SectorID,
                         TurnID = turn.Id,
                         FechaCreacion = DateTime.Now,
-                        StatusID = EstadoInicial
+                        StatusID = EstadoInicial,
+                        Enable=true
                     };
 
                     db.Trackings.Add(tracking);

@@ -1,0 +1,760 @@
+﻿
+@model IEnumerable<GestionDeTurnos.ViewModel.CallCenterIndexViewModel>
+
+
+@if (TempData["message"] != null)
+{
+    if (TempData["message"].ToString().Contains("Lo sentimos"))
+    {
+        <div>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="alert alert-danger alert-dismissable">
+                        <button id="btndismissable" type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>@TempData["message"]
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="alert alert-success alert-dismissable">
+                        <button id="btndismissable" type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>@TempData["message"]
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+<!-- Progress Loader -->
+<div id="div-loader" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
+    <p style="position: absolute; color: White; top: 35%; left: 45%;">
+        <img src="~/Images/loading.gif" alt="Loading..." />
+    </p>
+</div>
+
+
+@Html.Partial("_Filtros");
+@Html.Partial("_Table");
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="nuevoModal" role="dialog">
+    <div class="modal-dialog">
+        <form id="form-create" method="post">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Nuevo Turno</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <input id="input-DNI" name="inputDNI" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <input id="input-Apellido" name="inputApellido" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input id="input-Nombre" name="inputNombre" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Tramite</label>
+                            @Html.DropDownList("selectTipoCreate", new SelectList(ViewBag.listaLicencias, "Referencia", "Descripcion"), new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha y Hora del Turno</label>
+                            <input class="form-control input-sm input-datelong" id="input-FechaTurno" type="text" name="inputFechaTurno">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="editarModal" role="dialog">
+    <div class="modal-dialog">
+        <form id="form-edit" method="post">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Editar Turno</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group" style="display:none">
+                            <label>ID</label>
+                            <input id="input-Id" name="inputId" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <input id="input-DNI-Edit" name="inputDNI" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <input id="input-Apellido-Edit" name="inputApellido" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input id="input-Nombre-Edit" name="inputNombre" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Tramite</label>
+                            @Html.DropDownList("selectTipoEdit", new SelectList(ViewBag.listaLicencias, "Referencia", "Descripcion"), new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha y Hora del Turno</label>
+                            <input class="form-control input-sm input-datelong" id="input-FechaTurno-Edit" type="text" name="inputFechaTurno">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+    @Scripts.Render("~/Scripts/dataTables.buttons.min.js")
+    @Scripts.Render("~/Scripts/buttons.flash.min.js")
+    @Scripts.Render("~/Scripts/jszip.min.js")
+    @Scripts.Render("~/Scripts/pdfmake.min.js")
+    @Scripts.Render("~/Scripts/vfs_fonts.js")
+    @Scripts.Render("~/Scripts/buttons.html5.min.js")
+    @Scripts.Render("~/Scripts/buttons.print.min.js")
+    <script>
+
+
+    $(document).ready(function () {
+
+        var Editar = '@ViewBag.Editar';
+        var Baja = '@ViewBag.Baja';
+        var Ver = '@ViewBag.Ver';
+        var Action;
+            Action = "@Url.Action("GetTurnsSearch")";
+
+        var table = $('#dataTables-Index').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+                "ajax":
+                {
+                    url: "_Action".replace("_Action",Action),
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "id", defaultContent: '', className: 'px100' },
+                    { "data": "DNI", className: 'px200' },
+                    { "data": "Nombre", className: 'px200' },
+                    { "data": "Apellido", className: 'px200' },
+                    { "data": "TipoTramite", className: 'px200' },
+                    { "data": "FechaTurno", className: 'px200' },
+                    { "data": "Asignado", className: 'px200' }
+                ],
+                rowId: 'Id',
+                responsive: true,
+                ordering: true,
+                searching: false,
+               // "order": [[1, "desc"]],
+                scrollX: true,
+                //"autoWidth": true,
+                "fnCreatedRow": function (nRow, aData, iDataIndex) {
+                    //Agrego las
+                    // Add a class to the cell in the first column
+                    $(nRow).children(':nth-child(1)').addClass('td-btn');
+
+                    //Agrego el boton
+                    if (Ver == 'True') {
+                        //Ver
+                        $('td:eq(0)', nRow).append("<span class='fa fa-eye span-btn' type='button' value='C' data-toggle='tooltip' data-placement='top' title='Ver' id='btn_Ver'/> ");
+                    }
+
+                    if (aData.Asignado == "NO") {
+                        if (Editar == 'True') {
+                            //Modificar
+                            $('td:eq(0)', nRow).append("<span class='fa fa-pencil span-btn' type='button' value='E' data-toggle='tooltip' data-placement='top' title='Modificar' id='btn_Editar' />");
+                        }
+                    }
+                    //else {
+                    //    if (Editar == 'True') {
+                    //        //Modificar
+                    //        $('td:eq(0)', nRow).append("<span class='fa fa-pencil span-btn' type='button' value='E' data-toggle='tooltip' data-placement='top' title='Modificar' id='btn_Editar' disabled />");
+                    //    }
+
+                    //}
+
+
+                    if (aData.Asignado == "NO") {
+                        if (Baja == 'True') {
+                            //Borrar
+
+                            $('td:eq(0)', nRow).append("<span data-toggle='modal' data-target='#eliminar-modal'><span class='fa fa-trash span-btn-dtl' type='button' value='D' data-toggle='tooltip' data-placement='top' title='Eliminar' id='btn_Eliminar' /></span>");
+                        }
+                    }
+                }
+
+            });
+
+
+    });
+
+    $(document).on('click', '#btn_Editar', function () {
+        $('#editarModal').modal('toggle');
+
+        var idTurno = $(this).parents().closest('tr').attr('id')
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetTurno")',
+            data: {
+                id: idTurno
+            },
+            cache: false,
+            success: function (result) {
+                $('#editarModal').find('input#input-Id').val(result.Id);
+                $('#editarModal').find('input#input-DNI-Edit').val(result.DNI);
+                $('#editarModal').find('input#input-Apellido-Edit').val(result.Apellido);
+                $('#editarModal').find('input#input-Nombre-Edit').val(result.Nombre);
+                $('#editarModal').find('#selectTipoEdit').val(result.TipoTramite);
+                $('#editarModal').find('input#input-FechaTurno-Edit').val(result.FechaTurno);
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                    $('#editarModal').modal('hide');
+            }
+        });
+    });
+
+    $(document).on('click', '#btn_Ver', function () {
+        $('#editarModal').modal('toggle');
+
+        var idTurno = $(this).parents().closest('tr').attr('id')
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetTurno")',
+            data: {
+                id: idTurno
+            },
+            cache: false,
+            success: function (result) {
+                $('#editarModal').find('input#input-Id').val(result.Id);
+                $('#editarModal').find('input#input-DNI-Edit').val(result.DNI);
+                $('#editarModal').find('input#input-Apellido-Edit').val(result.Apellido);
+                $('#editarModal').find('input#input-Nombre-Edit').val(result.Nombre);
+                $('#editarModal').find('#selectTipoEdit').val(result.TipoTramite);
+                $('#editarModal').find('input#input-FechaTurno-Edit').val(result.FechaTurno);
+
+                $('#editarModal').find('input#input-Id').prop('disabled', true);
+                $('#editarModal').find('input#input-DNI-Edit').prop('disabled', true);
+                $('#editarModal').find('input#input-Apellido-Edit').prop('disabled', true);
+                $('#editarModal').find('input#input-Nombre-Edit').prop('disabled', true);
+                $('#editarModal').find('#selectTipoEdit').prop('disabled', true);
+                $('#editarModal').find('input#input-FechaTurno-Edit').prop('disabled', true);
+                $('#editarModal').find('.btn-primary').prop('disabled', true);
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                    $('#editarModal').modal('hide');
+            }
+        });
+    });
+
+
+
+    $(document).on('click', '#btn_Eliminar', function () {
+        Delete(this);
+    });
+
+
+        function Delete(a) {
+            var id = $(a).closest('tr').attr('id')
+
+            Lobibox.confirm({
+                title: 'Atención',
+                msg: "¿Esta seguro que desea eliminar el Turno?",
+                callback: function ($this, type, ev) {
+                    if (type === 'yes') {
+                    $.ajax({
+                    url: '@Url.Action("DeleteTurn", "CallCenterTurns")',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        "id": id
+                    }),
+                    contentType: 'application/json; charset=utf-8;',
+                    success: function (result) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $("#div-loader").hide();
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Los cambios se han grabado correctamente.'
+                        });
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'});
+                        }
+                     });
+                    };
+}
+
+            });
+        }
+
+$("#form-create").validate({
+        rules: {
+            inputDNI: { required: true, minlength: 7, maxlength: 8 },
+            inputApellido: { required: true, minlength: 2, maxlength: 64 },
+            inputNombre: { required: true, minlength: 2, maxlength: 64 },
+            inputFechaTurno: { required: true },
+            selectTipoCreate: { required: true }
+        },
+        messages: {
+            inputDNI: {
+                required: "Este campo es requerido.",
+                minlength: "Introduzca al menos 7 caracteres.",
+                maxlength: "La longitud máxima permtida es de 8 caracteres."
+            },
+            inputApellido: {
+                required: "Este campo es requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputNombre: {
+                required: "Este campo es requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputFechaTurno: {
+                required: "Este campo es requerido."
+            },
+            selectTipoCreate: {
+                required: "Este campo es requerido."
+            }
+        },
+        submitHandler: function (form) {
+            $("#div-loader").show();
+            var object = new Object();
+            object.DNI = $("#input-DNI").val();
+            object.Apellido = $("#input-Apellido").val();
+            object.Nombre = $("#input-Nombre").val();
+            object.FechaTurno = $("#input-FechaTurno").val();
+            object.TipoTramite = $("#selectTipoCreate option:selected").val();
+            var data = JSON.stringify(object);
+
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CreateTurno")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#nuevoModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+    });
+
+
+    $("#form-edit").validate({
+        rules: {
+            inputDNI: { required: true, minlength: 7, maxlength: 8 },
+            inputApellido: { required: true, minlength: 2, maxlength: 64 },
+            inputNombre: { required: true, minlength: 2, maxlength: 64 },
+            inputFechaTurno: { required: true },
+            selectTipoEdit: { required: true }
+        },
+        messages: {
+            inputDNI: {
+                required: "Este campo es requerido.",
+                minlength: "Introduzca al menos 7 caracteres.",
+                maxlength: "La longitud máxima permtida es de 8 caracteres."
+            },
+            inputApellido: {
+                required: "Este campo es requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputNombre: {
+                required: "Este campo es requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputFechaTurno: {
+                required: "Este campo es requerido."
+            },
+            selectTipoCreate: {
+                required: "Este campo es requerido."
+            }
+        },
+        submitHandler: function (form) {
+            var object = new Object();
+
+            $("#div-loader").show();
+            object.Id = $("#input-Id").val();
+            object.DNI = $("#input-DNI-Edit").val();
+            object.Apellido = $("#input-Apellido-Edit").val();
+            object.Nombre = $("#input-Nombre-Edit").val();
+            object.FechaTurno = $("#input-FechaTurno-Edit").val();
+            object.TipoTramite = $("#selectTipoEdit option:selected").val();
+
+            var data = JSON.stringify(object);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditTurno")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#editarModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                        habilitaBotones(false);
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+    });
+
+
+    //Completo el modal edit con los datos de la grilla
+    @*$('#editarModal').on('shown.bs.modal', function (e) {
+       // var idTurno = $('#dataTables-Index').find('tr.selected>td').first().text();
+        var idTurno = $(this).parents().closest('tr').attr('id')
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetTurno")',
+            data: {
+                id: idTurno
+            },
+            cache: false,
+            success: function (result) {
+                $('#editarModal').find('input#input-DNI-Edit').val(result.DNI);
+                $('#editarModal').find('input#input-Apellido-Edit').val(result.Apellido);
+                $('#editarModal').find('input#input-Nombre-Edit').val(result.Nombre);
+                $('#editarModal').find('#selectTipoEdit').val(result.TipoTramite);
+                $('#editarModal').find('input#input-FechaTurno-Edit').val(result.FechaTurno);
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                    $('#editarModal').modal('hide');
+            }
+        });
+
+
+    });*@
+
+
+    //Reinicio los modal
+    $('.modal').on('hidden.bs.modal', function (e) {
+        $(".modal-body input").val(""),
+            $(this).removeData('bs.modal');
+        $("form").validate().resetForm();
+    });
+
+    </script>
+
+    @*Table*@
+    <script>
+        $(document).ready(function () {
+            $(".select-buscador").select2();
+
+            //Datepicker
+            $.datetimepicker.setLocale('es');
+
+            $('.input-date').datetimepicker({
+                timepicker: false,
+                format: 'd/m/Y',
+                scrollInput: false,
+                date: new Date(Date.now())
+            });
+
+            $('.input-datelong').datetimepicker({
+                timepicker: true,
+                format: 'd/m/Y H:i',
+                scrollInput: false
+             //   date: new Date(Date.now())
+            });
+
+            $('#fecha-inicio').datetimepicker({
+                locale: 'es',
+                date: new Date(Date.now())
+            });
+            $('#fecha-fin').datetimepicker({
+                locale: 'es',
+                date: new Date(Date.now())
+            });
+
+            $('#input-FechaTurno').datetimepicker({
+                locale: 'es',
+                sideBySide: true
+            //    date: new Date(Date.now())
+            });
+
+            $('.tags-group').find('.alert').hide();
+
+        });
+
+        $(".filters").hide();
+
+        $("#btn-filter").click(function () {
+            $(this).toggleClass('btn-ghost-neutral btn-neutral').blur();
+            $('.filters').slideToggle(400);
+        });
+
+        $("#btn-apply").click(function () {
+            $('.filters').slideToggle(400, function () {
+                $('#btn-filter').toggleClass('btn-ghost-neutral btn-neutral');
+                completarTags();
+                buscarTurnos();
+            });
+        });
+
+        $("#btn-crear").click(function () {
+
+        });
+
+        $('.tags-group').find(".close").click(function () {
+            var idTag = $(this).parents('.alert').attr('id');
+            $(this).parents('.alert').hide();
+            var child = $(this).parents('.alert');
+            child.children('.tagId').text('');
+            child.children('.tagValue').text('');
+
+            //Limpio el combo del tag que cerro
+            switch (idTag) {
+                case "tagDNI":
+                    $('#DNI').val('');
+                    break;
+                case "tagNombre":
+                    $('#Nombre').val('');
+                    break;
+                case "tagApellido":
+                    $('#Apellido').val('');
+                    break;
+                case "TipoTramite":
+                    $('#ddlTipo').val('').change();
+                    break;
+                case "tagFechaDesde":
+                    $('#fecha-inicio').val('');
+                    break;
+                case "tagFechaHasta":
+                    $('#fecha-fin').val('');
+                    break;
+                case "tagAsignado":
+                    $('#ddlAsignado').val('').change();
+                    break;
+
+                default:
+            }
+
+
+            buscarTurnos();
+        });
+
+        function buscarTurnos() {
+            $("#div-loader").show();
+            var DNI = $('#tagDNI').find('.tagId').text();
+            var Nombre = $('#tagNombre').find('.tagId').text();
+            var Apellido = $('#tagApellido').find('.tagId').text();
+            var Tipo = $('#tagTipo').find('.tagId').text();
+            var FechaTurnoDesde = $('#tagFechaDesde').find('.tagId').text();
+            var FechaTurnoHasta = $('#tagFechaHasta').find('.tagId').text();
+            var Asignado = $('#tagAsignado').find('.tagId').text();
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("SearchTurn", "CallCenterTurns")",
+                        data: JSON.stringify({
+                            "DNI": DNI,
+                            "Nombre": Nombre,
+                            "Apellido": Apellido,
+                            "Tipo": Tipo,
+                            "FechaTurnoDesde": FechaTurnoDesde,
+                            "FechaTurnoHasta": FechaTurnoHasta,
+                            "Asignado": Asignado
+                        }),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8;',
+                        success: function (dataNew) {
+                            $("#div-loader").hide();
+                            if (dataNew.length > 0) {
+                                var datatable = $('#dataTables-Index').DataTable();
+                                datatable.rows().remove().draw();
+                                datatable.rows.add(dataNew); // Add new data
+                                datatable.columns.adjust().draw(); // Redraw the DataTable
+                            }
+                            else {
+                                var datatable = $('#dataTables-Index').DataTable();
+                                datatable.rows().remove().draw();
+                                datatable.rows.add(dataNew); // Add new data
+                                datatable.columns.adjust().draw(); // Redraw the DataTable
+                            }
+                        }
+                    });
+            }
+
+            function completarTags() {
+                //Tomo el valor de cada uno de los combos
+
+                if ($('#ddlTipo').val() != null && $('#ddlTipo').val() != '') {
+                    $('#tagTipo').find('.tagId').text($("#ddlTipo option:selected").text());
+                    $('#tagTipo').find('.tagValue').text($("#ddlTipo option:selected").text());
+                    $('#tagTipo').css("display", "inline-block");
+                }
+                else {
+                    $('#tagTipo').find('.tagId').text('');
+                    $('#tagTipo').find('.tagValue').text('');
+                    $('#tagTipo').hide();
+                }
+
+                if ($('#DNI').val() != null && $('#DNI').val() != '') {
+                    $('#tagDNI').find('.tagId').text($('#DNI').val());
+                    $('#tagDNI').find('.tagValue').text($('#DNI').val());
+                    $('#tagDNI').css("display", "inline-block");
+                }
+                else {
+                    $('#tagDNI').find('.tagId').text('');
+                    $('#tagDNI').find('.tagValue').text('');
+                    $('#tagDNI').hide();
+                }
+
+                if ($('#Apellido').val() != null && $('#Apellido').val() != '') {
+                    $('#tagApellido').find('.tagId').text($('#Apellido').val());
+                    $('#tagApellido').find('.tagValue').text($('#Apellido').val());
+                    $('#tagApellido').css("display", "inline-block");
+                }
+                else {
+                    $('#tagApellido').find('.tagId').text('');
+                    $('#tagApellido').find('.tagValue').text('');
+                    $('#tagApellido').hide();
+                }
+
+                if ($('#Nombre').val() != null && $('#Nombre').val() != '') {
+                    $('#tagNombre').find('.tagId').text($('#Nombre').val());
+                    $('#tagNombre').find('.tagValue').text($('#Nombre').val());
+                    $('#tagNombre').css("display", "inline-block");
+                }
+                else {
+                    $('#tagNombre').find('.tagId').text('');
+                    $('#tagNombre').find('.tagValue').text('');
+                    $('#tagNombre').hide();
+                }
+
+                if ($('#fecha-inicio').val() != null && $('#fecha-inicio').val() != '') {
+                    $('#tagFechaDesde').find('.tagId').text($('#fecha-inicio').val());
+                    $('#tagFechaDesde').find('.tagValue').text($('#fecha-inicio').val());
+                    $('#tagFechaDesde').css("display", "inline-block");
+                }
+                else {
+                    $('#tagFechaDesde').find('.tagId').text('');
+                    $('#tagFechaDesde').find('.tagValue').text('');
+                    $('#tagFechaDesde').hide();
+                }
+
+                if ($('#fecha-fin').val() != null && $('#fecha-fin').val() != '') {
+                    $('#tagFechaHasta').find('.tagId').text($('#fecha-fin').val());
+                    $('#tagFechaHasta').find('.tagValue').text($('#fecha-fin').val());
+                    $('#tagFechaHasta').css("display", "inline-block");
+                }
+                else {
+                    $('#tagFechaHasta').find('.tagId').text('');
+                    $('#tagFechaHasta').find('.tagValue').text('');
+                    $('#tagFechaHasta').hide();
+                }
+
+                if ($('#ddlAsignado').val() != null && $('#ddlAsignado').val() != '') {
+                    $('#tagAsignado').find('.tagId').text($('#ddlAsignado').val());
+                    $('#tagAsignado').find('.tagValue').text($('#ddlAsignado').val());
+                    $('#tagAsignado').css("display", "inline-block");
+                }
+                else {
+                    $('#tagAsignado').find('.tagId').text('');
+                    $('#tagAsignado').find('.tagValue').text('');
+                    $('#tagAsignado').hide();
+                }
+
+            }
+
+
+
+    </script>
+}
+

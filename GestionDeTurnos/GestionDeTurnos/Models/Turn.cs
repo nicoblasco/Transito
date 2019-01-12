@@ -27,5 +27,7 @@ namespace GestionDeTurnos.Models
 
         public TimeSpan? Tiempo { get; set; }
 
+
+        public bool Enable { get; set; }
     }
 }

@@ -159,7 +159,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AuditsController.cs" />
+    <Compile Include="Controllers\CallCenterTurnsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LicenseClassesController.cs" />
+    <Compile Include="Controllers\LicensesController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ModulesController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
@@ -184,15 +187,21 @@
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Audit.cs" />
     <Compile Include="Models\CallCenterTurn.cs" />
+    <Compile Include="Models\Country.cs" />
+    <Compile Include="Models\License.cs" />
+    <Compile Include="Models\LicenseClass.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Process.cs" />
+    <Compile Include="Models\ProcessLog.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\Rol.cs" />
     <Compile Include="Models\Sector.cs" />
     <Compile Include="Models\SectorWorkflow.cs" />
     <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\Status.cs" />
+    <Compile Include="Models\Street.cs" />
     <Compile Include="Models\Terminal.cs" />
     <Compile Include="Models\Tracking.cs" />
     <Compile Include="Models\Turn.cs" />
@@ -203,10 +212,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tags\AutenticadoAttribute.cs" />
     <Compile Include="Validations\DateGreaterThanAttribute.cs" />
+    <Compile Include="ViewModel\CallCenterIndexViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\LicenseIndexViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
+    <Compile Include="ViewModel\TrackingViewModel.cs" />
     <Compile Include="ViewModel\TurnsSeachViewModel.cs" />
     <Compile Include="ViewModel\TurnChartViewModel.cs" />
     <Compile Include="ViewModel\TurnDemoraViewModel.cs" />
@@ -355,9 +367,13 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Scripts\buttons.flash.min.js" />
+    <Content Include="Scripts\buttons.html5.min.js" />
+    <Content Include="Scripts\buttons.print.min.js" />
     <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\CustomValidation.js" />
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\dataTables.buttons.min.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -450,6 +466,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jszip.min.js" />
     <Content Include="Scripts\lobibox.js" />
     <Content Include="Scripts\messageboxes.js" />
     <Content Include="Scripts\metisMenu.js" />
@@ -469,6 +486,7 @@
     <Content Include="Scripts\multipartInAjaxBegin.js" />
     <Content Include="Scripts\multiselect.min.js" />
     <Content Include="Scripts\notifications.js" />
+    <Content Include="Scripts\pdfmake.min.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
@@ -487,6 +505,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Scripts\vfs_fonts.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -537,7 +556,6 @@
     <Content Include="Views\Turns\Edit.cshtml" />
     <Content Include="Views\Turns\Index.cshtml" />
     <Content Include="Views\Turns\Search.cshtml" />
-    <Content Include="Views\Turns\Licenses.cshtml" />
     <Content Include="Views\Terminals\Index.cshtml" />
     <Content Include="Views\Trackings\Create.cshtml" />
     <Content Include="Views\Trackings\Delete.cshtml" />
@@ -548,6 +566,12 @@
     <Content Include="Views\Shared\_LayoutTurnero.cshtml" />
     <Content Include="Views\Turns\_Filtros.cshtml" />
     <Content Include="Views\Turns\_Table.cshtml" />
+    <Content Include="Views\Turns\_TableTrackings.cshtml" />
+    <Content Include="Views\CallCenterTurns\Index.cshtml" />
+    <Content Include="Views\CallCenterTurns\_Table.cshtml" />
+    <Content Include="Views\CallCenterTurns\_Filtros.cshtml" />
+    <Content Include="Views\Licenses\Index.cshtml" />
+    <Content Include="Views\LicenseClasses\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

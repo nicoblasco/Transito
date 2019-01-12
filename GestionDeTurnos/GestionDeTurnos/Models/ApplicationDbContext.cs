@@ -61,5 +61,13 @@ namespace GestionDeTurnos.Models
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.Tracking> Trackings { get; set; }
 
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.Status> Status { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.Process> Process { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.ProcessLog> ProcessLogs { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.License> Licenses { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.LicenseClass> LicenseClasses { get; set; }
     }
 }

@@ -11,6 +11,23 @@ namespace GestionDeTurnos.Models
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Dni { get; set; }
-        public DateTime FechaNacimiento { get; set; }
+        public DateTime? FechaNacimiento { get; set; }
+
+        public string Calle { get; set; }
+        public int? StreetId { get; set; }
+        public virtual Street Street { get; set; }
+        public string Altura { get; set; }
+
+        public int? CountryId { get; set; }
+
+        public virtual Country Country { get; set; }
+
+        public string Tel_Particular { get; set; }
+
+        public string Tel_Celular { get; set; }
+
+        public string Barrio { get; set; }
+
+        public DateTime? Vencimiento_licencia { get; set; }
     }
 }

@@ -1,75 +1,182 @@
 ﻿@model GestionDeTurnos.Models.Tracking
 
 @{
-    ViewBag.Title = "Details";
+    /**/
+
+    ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string Sector = Model.Sector.Descripcion ?? null;
+    string Terminal = Model.Terminal == null ? null : Model.Terminal.Descripcion;
+    string Status = Model.Status == null ? null : Model.Status.Descripcion;
+    string Usuario = Model.Usuario == null ? null : Model.Usuario.Nombreusuario;
+
 }
 
-<h2>Details</h2>
+<style>
+    .btn-sm {
+        font-size: 12px;
+        height: 30px;
+        margin-bottom: 3px;
+    }
 
-<div>
-    <h4>Tracking</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Sector.Descripcion)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Sector.Descripcion)
-        </dd>
+    .ck-sm {
+        font-size: 12px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Terminal.Descripcion)
-        </dt>
+    .select2 {
+        font-size: 12px;
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.Terminal.Descripcion)
-        </dd>
+    label {
+        font-size: 12px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Turn.Turno)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Turn.Turno)
-        </dd>
+    .sol-container {
+        padding: 0px;
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Usuario.Nombre)
-        </dt>
+    .red {
+        color: #a94442;
+    }
+</style>
 
-        <dd>
-            @Html.DisplayFor(model => model.Usuario.Nombre)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.FechaIngreso)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.FechaIngreso)
-        </dd>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-        <dt>
-            @Html.DisplayNameFor(model => model.FechaSalida)
-        </dt>
+    <div id="page-wrapper">
+        <div class="row">
+            <h3 class="page-header" style="margin: 10px;">Turno: @Model.Turn.Turno / Sector: @Model.Sector.Descripcion</h3>
 
-        <dd>
-            @Html.DisplayFor(model => model.FechaSalida)
-        </dd>
+            <form id="form-create" role="form" class="form-horizontal">
+                <div class="col-lg-12">
+                    <!-- /.Panel de Datos de Alta -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Datos del Turno
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <label>Nro. Truno</label><span class="red"> * </span>
+                                    <input class="form-control input-sm" id="input-Turno" value="@Model.Turn.Turno" type="text" disabled>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Tiempo)
-        </dt>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Tipo de Turno</label><span class="red"> * </span>
+                                    @Html.DropDownListFor(model => model.Turn.TypesLicenseID, new SelectList(ViewBag.listaTiposLicencia, "Id", "Descripcion"), "Seleccione...", new { @class = "form-control input-sm", id = "ddlTipoLicencia" })
+                                </div>
+                                @*<div class="form-group">*@
+                                <div class="col-sm-3">
+                                    <label>Fecha/Hora de Turno</label>
+                                    @Html.EditorFor(model => model.Turn.FechaTurno, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-FechaTurno", @type = "datetime" } })
+                                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Tiempo)
-        </dd>
+                                <div class="col-sm-3">
+                                    <label>Fecha/Hora de Ingreso</label>
+                                    @Html.EditorFor(model => model.Turn.FechaIngreso, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-FechaIngreso", @type = "datetime" } })
+                                </div>
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+                                <div class="col-sm-3">
+                                    <label>Fecha/Hora de Salida</label>
+                                    @Html.EditorFor(model => model.Turn.FechaSalida, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-FechaSalida", @type = "datetime" } })
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label>Tiempo de Atención</label>
+                                    <input class="form-control input-sm" id="input-Tiempo" value="@Model.Tiempo" type="text" disabled>
+                                </div>
+                                @*</div>*@
+                            </div>
+                        </div>
+                        <!-- /. FIN Panel de Datos del Turno -->
+                        <!-- /. Panel de Datos del Seguimiento -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Datos Personales
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div class="col-sm-3">
+                                        <label>Id</label>
+                                        <input class="form-control input-sm" id="input-Id" value="@Model.Id" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Sector</label>
+                                        <input class="form-control input-sm" id="input-Sector" value="@Sector" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Terminal</label>
+                                        <input class="form-control input-sm" id="input-Terminal" value="@Terminal" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Estado</label>
+                                        <input class="form-control input-sm" id="input-Status" value="@Status" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Usuario</label>
+                                        <input class="form-control input-sm" id="input-Nombreusuario" value="@Usuario" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Fecha/Hora de Ingreso</label>
+                                        @Html.EditorFor(model => model.FechaIngreso, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-SeFechaEntrada", @type = "datetime" } })
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Fecha/Hora de Salida</label>
+                                        @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-SeFechaSalida", @type = "datetime" } })
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Tiempo</label>
+                                        <input class="form-control input-sm" id="input-Tiempo" value="@Model.Tiempo" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Cantidad de Llamados</label>
+                                        <input class="form-control input-sm" id="input-CantidadDeLlamados" value="@Model.CantidadDeLlamados" type="text" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.col-lg-12 -->
+
+            </form>
+
+            <!-- /.form -->
+        </div>
+
+        <!-- /.ro -->
+    </div>
+
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+    <script>
+
+        $('#dt-FechaIngreso').attr("readonly", "readonly")
+        $('#dt-FechaSalida').attr("readonly", "readonly");
+        $('#dt-Vencimiento_licencia').attr("readonly", "readonly");
+        $('#ddlTipoLicencia').attr("readonly", "readonly");
+        $('#dt-FechaTurno').attr("readonly", "readonly");
+        $('#dt-SeFechaEntrada').attr("readonly", "readonly");
+        $('#dt-SeFechaSalida').attr("readonly", "readonly");
+
+    </script>
+
+
+}
+
+
+
+
+

@@ -1,91 +1,181 @@
 ﻿@model GestionDeTurnos.Models.Tracking
 
 @{
+    /**/
+
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string Sector = Model.Sector.Descripcion ?? null;
+    string Terminal = Model.Terminal == null ? null : Model.Terminal.Descripcion;
+   
+    string Usuario = Model.Usuario == null ? null : Model.Usuario.Nombreusuario;
+
 }
 
-<h2>Edit</h2>
+<style>
+    .btn-sm {
+        font-size: 12px;
+        height: 30px;
+        margin-bottom: 3px;
+    }
+
+
+    .ck-sm {
+        font-size: 12px;
+    }
+
+    .select2 {
+        font-size: 12px;
+    }
+
+    label {
+        font-size: 12px;
+    }
+
+
+    .sol-container {
+        padding: 0px;
+    }
+
+    .red {
+        color: #a94442;
+    }
+</style>
+
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Tracking</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TurnID, "TurnID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TurnID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TurnID, "", new { @class = "text-danger" })
-            </div>
+    <div id="page-wrapper">
+        <div class="row">
+            <h3 class="page-header" style="margin: 10px;">Turno: @Model.Turn.Turno / Sector: @Model.Sector.Descripcion</h3>
+
+            <form id="form-create" role="form" class="form-horizontal">
+                <div class="col-lg-12">
+                    <!-- /.Panel de Datos de Alta -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Datos del Turno
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <label>Nro. Truno</label><span class="red"> * </span>
+                                    <input class="form-control input-sm" id="input-Turno" value="@Model.Turn.Turno" type="text" disabled>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Tipo de Turno</label><span class="red"> * </span>
+                                    @Html.DropDownListFor(model => model.Turn.TypesLicenseID, new SelectList(ViewBag.listaTiposLicencia, "Id", "Descripcion"), "Seleccione...", new { @class = "form-control input-sm", id = "ddlTipoLicencia" })
+                                </div>
+                                @*<div class="form-group">*@
+                                <div class="col-sm-3">
+                                    <label>Fecha/Hora de Turno</label>
+                                    @Html.EditorFor(model => model.Turn.FechaTurno, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-FechaTurno", @type = "datetime" } })
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label>Fecha/Hora de Ingreso</label>
+                                    @Html.EditorFor(model => model.Turn.FechaIngreso, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-FechaIngreso", @type = "datetime" } })
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label>Fecha/Hora de Salida</label>
+                                    @Html.EditorFor(model => model.Turn.FechaSalida, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-FechaSalida", @type = "datetime" } })
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label>Tiempo de Atención</label>
+                                    <input class="form-control input-sm" id="input-Tiempo" value="@Model.Tiempo" type="text" disabled>
+                                </div>
+                                @*</div>*@
+                            </div>
+                        </div>
+                        <!-- /. FIN Panel de Datos del Turno -->
+                        <!-- /. Panel de Datos del Seguimiento -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Datos Personales
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div class="col-sm-3">
+                                        <label>Id</label>
+                                        <input class="form-control input-sm" id="input-Id" value="@Model.Id" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Sector</label>
+                                        <input class="form-control input-sm" id="input-Sector" value="@Sector" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Terminal</label>
+                                        <input class="form-control input-sm" id="input-Terminal" value="@Terminal" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Estado</label>
+                                        @Html.DropDownListFor(model => model.StatusID, new SelectList(ViewBag.listaEstados, "Id", "Descripcion"), "Seleccione...", new { @class = "form-control input-sm", id = "ddlTipoLicencia" })
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Usuario</label>
+                                        <input class="form-control input-sm" id="input-Nombreusuario" value="@Usuario" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Fecha/Hora de Ingreso</label>
+                                        @Html.EditorFor(model => model.FechaIngreso, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-SeFechaEntrada", @type = "datetime" } })
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Fecha/Hora de Salida</label>
+                                        @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control input-sm", id = "dt-SeFechaSalida", @type = "datetime" } })
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Tiempo</label>
+                                        <input class="form-control input-sm" id="input-Tiempo" value="@Model.Tiempo" type="text" disabled>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Cantidad de Llamados</label>
+                                        @Html.EditorFor(model => model.CantidadDeLlamados, new { htmlAttributes = new { @class = "form-control input-sm", id = "input-CantidadDeLlamados", @type = "number", @min = "0" } })
+                                        @Html.ValidationMessageFor(model => model.CantidadDeLlamados, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+
+
+                </div>
+                <!-- /.col-lg-12 -->
+
+            </form>
+
+            <!-- /.form -->
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TerminalID, "TerminalID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TerminalID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TerminalID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.SectorID, "SectorID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SectorID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SectorID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UsuarioID, "UsuarioID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("UsuarioID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.UsuarioID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.FechaIngreso, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.FechaIngreso, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.FechaIngreso, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.FechaSalida, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.FechaSalida, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.FechaSalida, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Tiempo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Tiempo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Tiempo, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
+        <!-- /.ro -->
     </div>
+
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+    <script>
+
+        $('#dt-FechaIngreso').attr("readonly", "readonly")
+        $('#dt-FechaSalida').attr("readonly", "readonly");
+        $('#dt-Vencimiento_licencia').attr("readonly", "readonly");
+        $('#ddlTipoLicencia').attr("readonly", "readonly");
+        $('#dt-FechaTurno').attr("readonly", "readonly");
+        $('#dt-SeFechaEntrada').attr("readonly", "readonly");
+        $('#dt-SeFechaSalida').attr("readonly", "readonly");
+
+    </script>
+
 }
+
+
+

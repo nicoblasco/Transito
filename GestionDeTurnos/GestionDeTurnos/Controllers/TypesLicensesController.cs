@@ -186,7 +186,7 @@ namespace GestionDeTurnos.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Descripcion,Codigo")] TypesLicense typesLicense)
+        public ActionResult Create([Bind(Include = "Id,Descripcion,Codigo,Referencia")] TypesLicense typesLicense)
         {
             if (ModelState.IsValid)
             {
@@ -218,7 +218,7 @@ namespace GestionDeTurnos.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Descripcion,Codigo")] TypesLicense typesLicense)
+        public ActionResult Edit([Bind(Include = "Id,Descripcion,Codigo,Referencia")] TypesLicense typesLicense)
         {
             if (ModelState.IsValid)
             {

@@ -84,7 +84,7 @@
                 responsive: true,
                 ordering: true,
                 searching: false,
-                //"order": [[3, "desc"]],
+               // "order": [[1, "desc"]],
                 scrollX: true,
                 //"autoWidth": true,
                 "fnCreatedRow": function (nRow, aData, iDataIndex) {
@@ -93,15 +93,17 @@
                     $(nRow).children(':nth-child(1)').addClass('td-btn');
 
                     //Agrego el boton
+                    if (Ver == 'True') {
+                        //Ver
+                        $('td:eq(0)', nRow).append("<span class='fa fa-eye span-btn' type='button' value='C' data-toggle='tooltip' data-placement='top' title='Ver' id='btn_Ver'/> ");
+                    }
+
                     if (Editar == 'True') {
                         //Modificar
                         $('td:eq(0)', nRow).append("<span class='fa fa-pencil span-btn' type='button' value='E' data-toggle='tooltip' data-placement='top' title='Modificar' id='btn_Editar' />");
                     }
 
-                    if (Ver == 'True') {
-                        //Ver
-                            $('td:eq(0)', nRow).append("<span class='fa fa-eye span-btn' type='button' value='C' data-toggle='tooltip' data-placement='top' title='Liberar' id='btn_Ver'/> ");                        
-                    }
+
 
                     if (Baja == 'True') {
                         //Borrar
@@ -147,7 +149,7 @@
                 callback: function ($this, type, ev) {
                     if (type === 'yes') {
                     $.ajax({
-                    url: '@Url.Action("Delete", "Turns")',
+                    url: '@Url.Action("DeleteTurn", "Turns")',
                     type: 'POST',
                     data: JSON.stringify({
                         "id": id

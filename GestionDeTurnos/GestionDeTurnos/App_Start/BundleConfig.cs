@@ -57,6 +57,7 @@ namespace GestionDeTurnos
                       "~/Scripts/select2.js"
                       ));
 
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.min.css",
                       //"~/Content/bootstrap-theme.min.css",

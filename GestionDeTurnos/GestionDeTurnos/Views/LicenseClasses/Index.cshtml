@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GestionDeTurnos.Models.TypesLicense>
+﻿@model IEnumerable<GestionDeTurnos.Models.LicenseClass>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,7 +8,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Tipos de Licencias</h1>
+            <h1 class="page-header">Cases de Licencias</h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -42,9 +42,8 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Descripción</th>
-                                <th>Abreviación</th>
-                                <th>Referencia</th>
+                                <th>Codigo</th>
+                                <th>Descripcion</th>
                             </tr>
                         </thead>
                     </table>
@@ -76,21 +75,17 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Nuevo Tipo de Licencia</h4>
+                    <h4 class="modal-title">Nueva Clase de Licencia</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form">
                         <div class="form-group">
+                            <label>Codigo</label>
+                            <input id="input-Codigo" name="inputCodigo" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
                             <label>Descripción</label>
                             <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Abreviación</label>
-                            <input id="input-Abreviacion" name="inputAbreviacion" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Referencia con Call Center</label>
-                            <input id="input-Referencia" name="inputReferencia" class="form-control" autocomplete="off">
                         </div>
                     </form>
                 </div>
@@ -122,17 +117,13 @@
 
 
                         <div class="form-group">
-                            <label>Descripción</label>
-                            <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
+                            <label>Codigo</label>
+                            <input id="input-Codigo" name="inputCodigo" class="form-control" autocomplete="off">
                         </div>
 
                         <div class="form-group">
-                            <label>Perfil</label>
-                            <input id="input-Abreviacion" name="inputAbreviacion" class="form-control" autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label>Referencia con Call Center</label>
-                            <input id="input-Referencia" name="inputReferencia" class="form-control" autocomplete="off">
+                            <label>Descripción</label>
+                            <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
                     </form>
                 </div>
@@ -160,15 +151,14 @@
         $('#dataTables-Index').DataTable({
               "ajax":
                   {
-                      url: "@Url.Action("GetTipos", "TypesLicenses")",
+                      url: "@Url.Action("GetClases")",
                       type: "post",
                       dataSrc: ""
                   },
            "columns": [
                { "data": "Id" },
-               { "data": "Descripcion" },
                { "data": "Codigo" },
-               { "data": "Referencia" }
+               { "data": "Descripcion" }
            ],
            responsive: true
        });
@@ -196,7 +186,7 @@
 
         Lobibox.confirm({
             title: 'Atención',
-            msg: "¿Esta seguro que desea eliminar el Tipo de Licencia?",
+            msg: "¿Esta seguro que desea eliminar la Clase de Licencia?",
             callback: function ($this, type, ev) {
                 if (type === 'yes') {
                     Delete();
@@ -214,7 +204,7 @@
             //var id = $("#dataTables-Index").dataTable().$("tr.selected").attr('id');
             var id =$('#dataTables-Index').find('tr.selected>td').first().text();
             $.ajax({
-                    url: '@Url.Action("DeleteTipo", "TypesLicenses")',
+                    url: '@Url.Action("DeleteClase")',
                     type: 'POST',
                     data: JSON.stringify({
                         "id": id
@@ -241,44 +231,37 @@
 
     $("#form-create").validate({
         rules: {
-            inputPerfil: { required: true, minlength: 2, maxlength: 64 },
-            inputAbreviacion: { required: true, minlength: 2, maxlength: 64 },
-            inputReferencia: { required: true, minlength: 2, maxlength: 200 },
+            inputDescripcion: { required: true, minlength: 2, maxlength: 500 },
+            inputCodigo: { required: true, minlength: 2, maxlength: 64 },
         },
         messages: {
-            inputAbreviacion: {
-                required: "Este campo es requerido.",
-                minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 64 caracteres."
-            },
             inputDescripcion: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 64 caracteres."
+                maxlength: "La longitud máxima permtida es de 500 caracteres."
             },
-            inputReferencia: {
+            inputCodigo: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 200 caracteres."
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
             }
         },
         submitHandler: function (form) {
             $("#div-loader").show();
             var object = new Object();
-            object.Codigo = $("#input-Abreviacion").val();
             object.Descripcion = $("#input-Descripcion").val();
-            object.Referencia = $("#input-Referencia").val();
+            object.Codigo = $("#input-Codigo").val();
             var data = JSON.stringify(object);
 
 
             //Antes de editar, verifico que no este duplicando el Rol
-            var isDuplicate = getDuplicates(0, object.Descripcion);
+            var isDuplicate = getDuplicates(0, object.Codigo);
 
             if (isDuplicate) {
                 $("#div-loader").hide();
                 Lobibox.notify('warning', {
                     title: 'Cuidado',
-                    msg: 'El tipo de licencia ya existe, debe asignar otro nombre.'
+                    msg: 'La clase de licencia ya existe, debe asignar otro nombre.'
                 });
 
                 return;
@@ -287,7 +270,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("CreateTipo")',
+                url: '@Url.Action("CreateClase")',
                     data: data,
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
@@ -324,25 +307,19 @@
 
     $("#form-edit").validate({
         rules: {
-            inputAbreviacion: { required: true, minlength: 1, maxlength: 64 },
-            inputDescripcion: { required: true, minlength: 2, maxlength: 64 },
-            inputReferencia: { required: true, minlength: 2, maxlength: 200 },
+            inputDescripcion: { required: true, minlength: 2, maxlength: 500 },
+            inputCodigo: { required: true, minlength: 2, maxlength: 64 },
         },
         messages: {
-            inputAbreviacion: {
-                required: "Este campo es requerido.",
-                minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 64 caracteres."
-            },
             inputDescripcion: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 64 caracteres."
+                maxlength: "La longitud máxima permtida es de 500 caracteres."
             },
-            inputReferencia: {
+            inputCodigo: {
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
-                maxlength: "La longitud máxima permtida es de 200 caracteres."
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
             }
         },
         submitHandler: function (form) {
@@ -350,13 +327,12 @@
 
             var object = new Object();
             object.Id = $('#editarModal').find('input#input-Id').val();
-            object.Codigo = $('#editarModal').find('input#input-Abreviacion').val();
             object.Descripcion = $('#editarModal').find('input#input-Descripcion').val();
-            object.Referencia = $('#editarModal').find('input#input-Referencia').val();
+            object.Codigo = $('#editarModal').find('input#input-Codigo').val();
             var data = JSON.stringify(object);
 
             //Antes de editar, verifico que no este duplicando el Rol
-            var isDuplicate = getDuplicates(object.Id, object.Descripcion);
+            var isDuplicate = getDuplicates(object.Id, object.Codigo);
 
             if (isDuplicate)
             {
@@ -371,7 +347,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("EditTipo")',
+                url: '@Url.Action("EditClase")',
                     data: data,
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
@@ -413,16 +389,15 @@
 
         $.ajax({
             type: 'POST',
-            url: '@Url.Action("GetTipo", "TypesLicenses")',
+            url: '@Url.Action("GetClase")',
             data: {
                 id: idTipo
             },
             cache: false,
             success: function (result) {
                 $('#editarModal').find('input#input-Id').val(result.Id);
-                $('#editarModal').find('input#input-Abreviacion').val(result.Codigo);
+                $('#editarModal').find('input#input-Codigo').val(result.Codigo);
                 $('#editarModal').find('input#input-Descripcion').val(result.Descripcion);
-                $('#editarModal').find('input#input-Referencia').val(result.Referencia);
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -450,10 +425,10 @@
             $.ajax({
                 type: 'GET',
                 async: false ,
-            url: '@Url.Action("GetDuplicates", "TypesLicenses")',
+            url: '@Url.Action("GetDuplicates")',
             data: {
                 id: pid,
-                tipo: pParam
+                codigo: pParam
             },
             cache: false,
             success: function (result) {

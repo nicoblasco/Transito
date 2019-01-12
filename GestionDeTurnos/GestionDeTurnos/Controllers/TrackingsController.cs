@@ -14,8 +14,8 @@ namespace GestionDeTurnos.Controllers
     public class TrackingsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        public string ModuleDescription = "MenuPrincipal";
-        public string WindowDescription = "Atencion";
+        public string ModuleDescription = "Menu Principal";
+        public string WindowDescription = "Busquedas";
 
 
         // GET: Trackings
@@ -42,7 +42,7 @@ namespace GestionDeTurnos.Controllers
                 //Esto por si cerro la ventana o algo por el estilo
 
                     //Lo filtro por turnos del dia tambien???
-                Tracking tracking = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden)  && x.SectorID == terminal.SectorID && x.TerminalID==terminal.Id && x.FechaCreacion>=startDateTime && x.FechaCreacion<=endDateTime ).FirstOrDefault();
+                Tracking tracking = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable==true  && x.SectorID == terminal.SectorID && x.TerminalID==terminal.Id && x.FechaCreacion>=startDateTime && x.FechaCreacion<=endDateTime ).FirstOrDefault();
 
                 if (tracking!=null)
                 {
@@ -72,7 +72,7 @@ namespace GestionDeTurnos.Controllers
           //  int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
             int[] statusOrden = { 2, 3,4,5,6 };
 
-                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Turn.FechaTurno>= startDateTime && x.Turn.FechaTurno<= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(5).ToList();
+                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable == true && x.Turn.FechaTurno>= startDateTime && x.Turn.FechaTurno<= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(5).ToList();
 
 
 
@@ -94,7 +94,7 @@ namespace GestionDeTurnos.Controllers
             Terminal terminal = db.Terminals.Where(x => x.IP == terminalName).FirstOrDefault();
             try
             {
-                list = db.Trackings.Where(x => x.Status.Orden == 1 && x.SectorID == terminal.SectorID && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno<= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
+                list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno<= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
@@ -118,7 +118,7 @@ namespace GestionDeTurnos.Controllers
             
             try
             {
-                List<Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).OrderByDescending(x => x.FechaCreacion).Take(5).ToList();
+                List<Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable == true && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).OrderByDescending(x => x.FechaCreacion).Take(5).ToList();
 
                 return Json(trackings, JsonRequestBehavior.AllowGet);
             }
@@ -182,7 +182,7 @@ namespace GestionDeTurnos.Controllers
 
             try
             {
-                tracking = db.Trackings.Where(x => x.Status.Orden == 1 && x.SectorID == terminal.SectorID && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).OrderBy(x => x.FechaCreacion).FirstOrDefault();
+                tracking = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).OrderBy(x => x.FechaCreacion).FirstOrDefault();
 
                 if (tracking==null)
                 {
@@ -322,6 +322,7 @@ namespace GestionDeTurnos.Controllers
 
             Tracking tracking = new Tracking();
             Status status = db.Status.Where(x => x.Orden == 4).FirstOrDefault();
+            string estadoLicencia = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS" && x.Numero1 == 1).FirstOrDefault().Texto1;
             int EstadoInicial = db.Status.Where(x => x.Orden == 1).Select(x => x.Id).FirstOrDefault();
             int OrdenDeSectorActual;
             int? SectorProximo;
@@ -371,6 +372,7 @@ namespace GestionDeTurnos.Controllers
                             TurnID = tracking.Turn.Id,
                             FechaCreacion = DateTime.Now,
                             Alerta = false,
+                            Enable = true,
                             StatusID = EstadoInicial
                         };
 
@@ -386,6 +388,17 @@ namespace GestionDeTurnos.Controllers
                         db.Entry(turn).State = EntityState.Modified;
                         db.SaveChanges();
 
+                        //Creo la licencia y la dejo en espera
+                        License license = new License
+                        {
+                            PersonId = turn.PersonID,
+                            TurnId = turn.Id,
+                            TypesLicenseId = turn.TypesLicenseID,
+                            Estado = estadoLicencia
+                        };
+
+                        db.Licenses.Add(license);
+                        db.SaveChanges();
                     }
 
                 }
@@ -397,7 +410,7 @@ namespace GestionDeTurnos.Controllers
 
                 return Json(responseObject);
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
                 return Json(new { responseCode = "-10" });
@@ -491,6 +504,77 @@ namespace GestionDeTurnos.Controllers
 
                 return Json(new { responseCode = "-10" });
             };
+
+        }
+
+        public ActionResult Details(int id)
+        {
+            Tracking tracking = db.Trackings.Find(id);
+            if (tracking == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.listaTiposLicencia = new List<TypesLicense>(db.TypesLicenses.ToList());
+            return View(tracking);
+        }
+
+
+        public ActionResult Edit(int id)
+        {
+            Tracking tracking = db.Trackings.Find(id);
+            if (tracking == null)
+            {
+                return HttpNotFound();
+            }
+
+            ViewBag.listaTiposLicencia = new List<TypesLicense>(db.TypesLicenses.ToList());
+            ViewBag.listaEstados = new List<Status>(db.Status.ToList());
+            return View(tracking);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,StatusID,CantidadDeLlamados ")] Tracking vmtracking)
+        {
+            if (ModelState.IsValid)
+            {
+                Tracking tracking = db.Trackings.Find(vmtracking.Id);
+                tracking.StatusID = vmtracking.StatusID;
+                tracking.CantidadDeLlamados = vmtracking.CantidadDeLlamados;
+
+
+                db.Entry(tracking).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Search","Turns");
+            }
+
+            ViewBag.listaTiposLicencia = new List<TypesLicense>(db.TypesLicenses.ToList());
+            ViewBag.listaEstados = new List<Status>(db.Status.ToList());
+            return RedirectToAction("Search");
+        }
+
+        public JsonResult DeleteTracking(int id)
+        {
+            if (id == 0)
+            {
+                return Json(new { responseCode = "-10" });
+            }
+
+            Tracking tracking = db.Trackings.Find(id);
+            tracking.Enable = false;
+            db.Entry(tracking).State = EntityState.Modified;
+            db.SaveChanges();
+
+            AuditHelper.Auditar("Baja", "Id -" + tracking.Id.ToString() + " / Turno -" + tracking.Turn.Turno, "Trackings", ModuleDescription, WindowDescription);
+
+            var responseObject = new
+            {
+                responseCode = 0
+            };
+
+            return Json(responseObject);
+
 
         }
 

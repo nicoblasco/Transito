@@ -52,8 +52,10 @@ namespace GestionDeTurnos.ViewModel
         public static List<Permission> GetPermisos()
         {
             Usuario usuario = new Usuario();
+
             usuario = usuario.Obtener(SessionHelper.GetUser());
             return new Permission().Obtener(usuario.RolId);
+
         }
 
         public static bool IsAdmin()

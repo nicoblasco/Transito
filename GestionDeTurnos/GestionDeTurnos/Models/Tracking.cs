@@ -34,5 +34,7 @@ namespace GestionDeTurnos.Models
         public int? StatusID { get; set; }
         public virtual Status  Status { get; set; }
 
+        public bool Enable { get; set; }
+
     }
 }
