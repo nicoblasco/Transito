@@ -14,6 +14,7 @@ namespace GestionDeTurnos.Models
         public DateTime? FechaNacimiento { get; set; }
 
         public string Calle { get; set; }
+        public string CalleNro { get; set; }
         public int? StreetId { get; set; }
         public virtual Street Street { get; set; }
         public string Altura { get; set; }

@@ -14,7 +14,7 @@ namespace GestionDeTurnos.Models
         public DateTime? FechaOtorgamiento { get; set; }
         public DateTime? FechaVencimiento { get; set; }
 
-        public int TypesLicenseId { get; set; }
+        public int? TypesLicenseId { get; set; }
         public virtual TypesLicense TypesLicense { get; set; }
 
         public virtual ICollection<LicenseClass>  LicenseClasses { get; set; }
@@ -27,5 +27,7 @@ namespace GestionDeTurnos.Models
 
         public int? TurnId { get; set; }
         public virtual Turn Turn { get; set; }
+
+
     }
 }

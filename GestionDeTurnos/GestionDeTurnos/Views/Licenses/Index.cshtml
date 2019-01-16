@@ -3,7 +3,70 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
 
+    .thumbnail img {
+        padding-right: 15px;
+    }
+
+    .textRight {
+        text-align: right;
+    }
+
+    /* resize images */
+    .container img {
+        width: 15%;
+        height: auto;
+    }
+
+    label {
+        text-align: right;
+        width: 100px;
+    }
+
+    .label_corto {
+        text-align: left !important;
+        width: 30px;
+    }
+
+    .input-corto {
+        width: 90px !important;
+        margin-bottom: 7px;
+    }
+
+    .input-width {
+        width: 250px !important;
+        margin-bottom: 7px;
+    }
+
+    .color-Red {
+        color: red;
+    }
+
+    .ancho_label_left {
+        text-align: left !important;
+        width: 100% !important;
+        margin-right: 30px;
+    }
+
+    .width_modal {
+        width: 900px;
+    }
+
+    .sol-style {
+        margin-left: 100px;
+    }
+
+    .height_auto {
+        height: auto;
+    }
+
+    /* Added some padding to make it more readable */
+
+    /*div[class^="col-"] {
+        padding: 40px;
+    }*/
+</style>
 
 
 <div id="page-wrapper">
@@ -21,32 +84,43 @@
                     <form class="form-horizontal">
                         <div class="form-inline">
                             <label style="display: initial" class="control-label">Estado</label>
-                            <select class="form-control" class="form-control" style="height: 30px">
-                                <option>Licencias No Recibidas</option>
-                                <option>Pendiente de Entrega</option>
-                                <option>Entregados</option>
-                            </select>
+                            @Html.DropDownList("selectEstado", new SelectList(ViewBag.Estados, "Texto1", "Texto1"), "Seleccione", htmlAttributes:
+                            new
+                            {
+                                id = "selectEstado",
+                                @class = "form-control",
+                                @onchange = "refreshdropdown()"
+                            }
+                            )
+
+
+                            <label style="display: initial" class="control-label">DNI</label>
+                            <input id="inputBuscar" type="text" class="form-control" placeholder="Buscar ...">
+                            <button id="btnBuscar" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+
                         </div>
                     </form>
                 </div>
                 <div class="panel-heading">
                     @if (ViewBag.AltaModificacion)
                     {
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevoModal">
+                        <button type="button" id="btnDetalle" class="btn btn-primary" data-toggle="modal" data-target="#editarModal">
                             Detalle
                         </button>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editarModal">
+                        <button type="button" id="btnNuevo" class="btn btn-primary" data-toggle="modal" data-target="#createModal">
                             Nuevo
                         </button>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevoModal">
+                        <button type="button" id="btnRecibido" class="btn btn-primary" data-toggle="modal" data-target="#recibidoModal">
                             Recibido
                         </button>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#borrarModal">
+                        <button type="button" id="btnEntregado" class="btn btn-primary" data-toggle="modal" data-target="#entregadoModal">
                             Entregado
                         </button>
                     }
-                    </div>
-                    
+                </div>
+
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-Index">
@@ -72,68 +146,425 @@
 </div>
 
 
-<div class="modal fade" id="nuevoModal" role="dialog">
+<div class="modal fade" id="editarModal" role="dialog">
     <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Nueva Licencia</h4>
-            </div>
-            <div class="modal-body">
-                <form role="form">
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Apellido</label>
-                        <input class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Apellido</label>
-                        <input class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="example-datetime-local-input">Fecha/Hora de Entrega</label>
-                        <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Firma Adjunta</label>
-                        <div class="input-group input-file" name="Fichier1">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default btn-choose" type="button">Elegir</button>
-                            </span>
-                            <input type="text" class="form-control" placeholder='Selecciona Acta...' />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default btn-reset" type="button">Borrar</button>
-                            </span>
+        <form id="form-edit" method="post" class="form-inline height_auto">
+            <!-- Modal content-->
+            <div class="modal-content width_modal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Detalle Licencia</h4>
+                </div>
+                <div class="modal-body height_auto">
+                    <form role="form" class="form-inline height_auto">
+                        <div class="row height_auto">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="media">
+                                    <div class="container">
+                                        <img class="media-object" src="~/Images/person-icon.jpg" runat="server" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Estado"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRecibo"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRetiro"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Firma"></label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-8">
+                                <div class="media-body">
+                                    <input id="input-Id" name="inputId" style="display:none">
+                                    <div class="form-group">
+                                        <label for="inputDNI">DNI</label>
+                                        <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Apellido</label>
+                                        <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <input id="input-Nombre" name="inputNombre" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fecha De Nac</label>
+                                        <input class="form-control input-sm input-date input-width" id="input-FechaDeNacimiento" type="text" name="inputFechaDeNacimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Domicilio</label>
+                                        <input id="input-Domicilio" name="inputDomicilio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-CalleId" name="inputCalleId" class="form-control" autocomplete="off" style="display:none">
+                                        <label class="label_corto">Nro</label>
+                                        <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nacionalidad</label>
+                                        @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
+                                        @*<input id="input-Nacionalidad" name="inputNacionalidad" class="form-control" autocomplete="off">*@
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Otorgamiendo</label>
+                                        <input class="form-control input-sm input-date input-width" style="margin-top: 7px;" id="input-Otorgamiendo" type="text" name="inputOtorgamiendo">
+                                        <label class="label_corto">VTO</label>
+                                        <input class="form-control input-sm input-date input-corto" id="input-Vencimiento" type="text" name="inputVencimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Clases</label>
+                                        @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
+                                        @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" id="btnEditar" class="btn btn-primary">Guardar</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Guardar</button>
-            </div>
-        </div>
-
+        </form>
     </div>
 </div>
 
 
+<div class="modal fade" id="createModal" role="dialog">
+    <div class="modal-dialog">
+        <form id="form-create" method="post" class="form-inline height_auto">
+            <!-- Modal content-->
+            <div class="modal-content width_modal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Crear Datos de Licencia</h4>
+                </div>
+                <div class="modal-body height_auto">
+                    <form role="form" class="form-inline height_auto">
+                        <div class="row height_auto">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="media">
+                                    <div class="container">
+                                        <img class="media-object" src="~/Images/person-icon.jpg" runat="server" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Estado"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRecibo"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRetiro"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Firma"></label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-8">
+                                <div class="media-body">
+                                    <input id="input-PersonId" name="inputPersonId" style="display:none">
+                                    <div class="form-group">
+                                        <label for="inputDNI">DNI</label>
+                                        <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Apellido</label>
+                                        <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <input id="input-Nombre" name="inputNombre" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fecha De Nac</label>
+                                        <input class="form-control input-sm input-date input-width" id="input-FechaDeNacimiento" type="text" name="inputFechaDeNacimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Domicilio</label>
+                                        <input id="input-Domicilio" name="inputDomicilio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-CalleId" name="inputCalleId" class="form-control" autocomplete="off" style="display:none">
+                                        <label class="label_corto">Nro</label>
+                                        <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nacionalidad</label>
+                                        @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
+                                        @*<input id="input-Nacionalidad" name="inputNacionalidad" class="form-control" autocomplete="off">*@
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Otorgamiendo</label>
+                                        <input class="form-control input-sm input-date input-width" style="margin-top: 7px;" id="input-Otorgamiendo" type="text" name="inputOtorgamiendo">
+                                        <label class="label_corto">VTO</label>
+                                        <input class="form-control input-sm input-date input-corto" id="input-Vencimiento" type="text" name="inputVencimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Clases</label>
+                                        @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
+                                        @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" id="btnEditar" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 
+<div class="modal fade" id="recibidoModal" role="dialog">
+    <div class="modal-dialog">
+        <form id="form-recibido" method="post" class="form-inline height_auto">
+            <!-- Modal content-->
+            <div class="modal-content width_modal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Recibir Licencia</h4>
+                </div>
+                <div class="modal-body height_auto">
+                    <form role="form" class="form-inline height_auto">
+                        <div class="row height_auto">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="media">
+                                    <div class="container">
+                                        <img class="media-object" src="~/Images/person-icon.jpg" runat="server" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Estado"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRecibo"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRetiro"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Firma"></label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-8">
+                                <div class="media-body">
+                                    <input id="input-Id" name="inputId" style="display:none">
+                                    <div class="form-group">
+                                        <label for="inputDNI">DNI</label>
+                                        <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Apellido</label>
+                                        <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <input id="input-Nombre" name="inputNombre" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fecha De Nac</label>
+                                        <input class="form-control input-sm input-date input-width" id="input-FechaDeNacimiento" type="text" name="inputFechaDeNacimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Domicilio</label>
+                                        <input id="input-Domicilio" name="inputDomicilio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-CalleId" name="inputCalleId" class="form-control" autocomplete="off" style="display:none">
+                                        <label class="label_corto">Nro</label>
+                                        <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nacionalidad</label>
+                                        @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
+                                        @*<input id="input-Nacionalidad" name="inputNacionalidad" class="form-control" autocomplete="off">*@
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Otorgamiendo</label>
+                                        <input class="form-control input-sm input-date input-width" style="margin-top: 7px;" id="input-Otorgamiendo" type="text" name="inputOtorgamiendo">
+                                        <label class="label_corto">VTO</label>
+                                        <input class="form-control input-sm input-date input-corto" id="input-Vencimiento" type="text" name="inputVencimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Clases</label>
+                                        @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
+                                        @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" id="btnEditar" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="entregadoModal" role="dialog">
+    <div class="modal-dialog">
+        <form id="form-entregado" method="post" class="form-inline height_auto">
+            <!-- Modal content-->
+            <div class="modal-content width_modal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Entregar Licencia</h4>
+                </div>
+                <div class="modal-body height_auto">
+                    <form role="form" class="form-inline height_auto">
+                        <div class="row height_auto">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="media">
+                                    <div class="container">
+                                        <img class="media-object" src="~/Images/person-icon.jpg" runat="server" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Estado"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRecibo"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="FechaRetiro"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="ancho_label_left color-Red" id="Firma"></label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-8">
+                                <div class="media-body">
+                                    <input id="input-Id" name="inputId" style="display:none">
+                                    <div class="form-group">
+                                        <label for="inputDNI">DNI</label>
+                                        <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Apellido</label>
+                                        <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombre</label>
+                                        <input id="input-Nombre" name="inputNombre" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fecha De Nac</label>
+                                        <input class="form-control input-sm input-date input-width" id="input-FechaDeNacimiento" type="text" name="inputFechaDeNacimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Domicilio</label>
+                                        <input id="input-Domicilio" name="inputDomicilio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-CalleId" name="inputCalleId" class="form-control" autocomplete="off" style="display:none">
+                                        <label class="label_corto">Nro</label>
+                                        <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nacionalidad</label>
+                                        @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
+                                        @*<input id="input-Nacionalidad" name="inputNacionalidad" class="form-control" autocomplete="off">*@
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Otorgamiendo</label>
+                                        <input class="form-control input-sm input-date input-width" style="margin-top: 7px;" id="input-Otorgamiendo" type="text" name="inputOtorgamiendo">
+                                        <label class="label_corto">VTO</label>
+                                        <input class="form-control input-sm input-date input-corto" id="input-Vencimiento" type="text" name="inputVencimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Clases</label>
+                                        @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
+                                        @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" id="btnEditar" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section scripts {
+    @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
         $(document).ready(function () {
+
+            habilitaBotones(false,null);
+
+            $(".select-buscador").select2();
+
+            //$("#input-Clase").select2({
+            //    tags: true
+            //});
+
+            $(document).ready(function () {
+                $('.js-example-basic-multiple').select2();
+            });
+
+
+            //Datepicker
+            $.datetimepicker.setLocale('es');
+
+            $('.input-date').datetimepicker({
+                timepicker: false,
+                format: 'd/m/Y',
+                scrollInput: false,
+                date: new Date(Date.now())
+            });
+
+            $('#input-FechaDeNacimiento').datetimepicker({
+                locale: 'es'
+            });
+
+            $('#input-Otorgamiendo').datetimepicker({
+                locale: 'es'
+            });
+
+            $('#input-Vencimiento').datetimepicker({
+                locale: 'es'
+            });
+
+
+            //Cargo las calles
+
+            var varListaCalles = @Html.Raw(Json.Encode(ViewBag.listaCalles));
+            var callesJson = $.parseJSON(varListaCalles.Data);
+
+            $('#editarModal').find('#input-Domicilio').autocomplete({
+                lookup: callesJson,
+                onSelect: function (suggestion) {
+                    $('#editarModal').find("#input-CalleId").val(suggestion.data);
+                }
+            });
+
+            $('#createModal').find('#input-Domicilio').autocomplete({
+                lookup: callesJson,
+                onSelect: function (suggestion) {
+                    $('#createModal').find("#input-CalleId").val(suggestion.data);
+                }
+            });
+
+
+            //Cargo la grilla
+
             $('#dataTables-Index').DataTable({
                   "ajax":
-                      {
-                          url: "@Url.Action("GetLicencias")",
+                  {
+                      url: "@Url.Action("GetLicencias", "Licenses", new { Estado = "ParamEstado" })".replace("ParamEstado", $('#selectEstado').val()),
                           type: "post",
                           dataSrc: ""
                       },
@@ -145,7 +576,8 @@
                    { "data": "Estado" }
 
                ],
-               responsive: true
+                responsive: true,
+                searching: false
            });
 
             var table = $('#dataTables-Index').DataTable();
@@ -153,10 +585,13 @@
             $('#dataTables-Index tbody').on('click', 'tr', function () {
                 if ($(this).hasClass('selected')) {
                     $(this).removeClass('selected');
+                    habilitaBotones(false, null);
                 }
                 else {
                     table.$('tr.selected').removeClass('selected');
                     $(this).addClass('selected');
+                    var estado = table.rows({ selected: true }).data()[this.rowIndex-1].Estado;
+                    habilitaBotones(true, estado);
 
                 }
             });
@@ -166,6 +601,568 @@
             });
 
         });
+
+
+        $('#btnBuscar').click(function () {
+            refreshdropdown();
+        });
+
+        function refreshdropdown() {            
+            var newurl = "@Url.Action("GetLicencias", "Licenses", new { Estado = "ParamEstado", Dni = "ParamDNI" })".replace("ParamEstado", $('#selectEstado').val()).replace("ParamDNI", $('#inputBuscar').val());
+            habilitaBotones(false, null);
+            $("#dataTables-Index").dataTable().fnReloadAjax(newurl);
+
+            $("#div-loader").show();
+            var DNI = $('#inputBuscar').val();
+            var Estado = $('#selectEstado').val();
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetLicencias", "Licenses")",
+                        data: JSON.stringify({
+                            "Estado": Estado,
+                            "Dni": DNI
+                        }),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8;',
+                        success: function (dataNew) {
+                            $("#div-loader").hide();
+                            if (dataNew.length > 0) {
+                                var datatable = $('#dataTables-Index').DataTable();
+                                datatable.rows().remove().draw();
+                                datatable.rows.add(dataNew); // Add new data
+                                datatable.columns.adjust().draw(); // Redraw the DataTable
+                            }
+                            else {
+                                var datatable = $('#dataTables-Index').DataTable();
+                                datatable.rows().remove().draw();
+                                datatable.rows.add(dataNew); // Add new data
+                                datatable.columns.adjust().draw(); // Redraw the DataTable
+                            }
+                        }
+                    });
+         };
+
+
+        function completeDatos(modal, idLicencia) {
+             $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetLicencia")',
+            data: {
+                id: idLicencia
+            },
+            cache: false,
+            success: function (result) {
+                $(modal).find('#input-Id').val(result.Id);
+                $(modal).find('#Estado').text(result.Estado);
+                $(modal).find('#FechaRecibo').text(result.FechaRecibo);
+                $(modal).find('#FechaRetiro').text(result.FechaRetiro);
+                $(modal).find('#input-DNI').val(result.Dni).prop("disabled", true);
+                $(modal).find('#input-Apellido').val(result.Apellido);
+                $(modal).find('#input-Nombre').val(result.Nombre);
+                $(modal).find('#input-FechaDeNacimiento').val(result.FechaDeNacimiento);
+                $(modal).find('#input-Domicilio').val(result.Domicilio);
+                $(modal).find('#input-Nro').val(result.DomicilioNro);
+                $(modal).find('#input-Nacionalidad').val(result.Nacionalidad);
+                $(modal).find('#input-Otorgamiendo').val(result.Otorgamiendo);
+                $(modal).find('#input-Vencimiento').val(result.Vencimiento);
+                $(modal).find('#input-Clases').val(result.SelectedClases).trigger('change');
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                $(modal).modal('hide');
+            }
+            });
+        }
+
+    //Completo el modal edit con los datos de la grilla
+        $('#editarModal').on('shown.bs.modal', function (e) {
+            var idLicencia = $('#dataTables-Index').find('tr.selected>td').first().text();
+            completeDatos($('#editarModal'), idLicencia);
+
+        });
+
+        $('#recibidoModal').on('shown.bs.modal', function (e) {
+            var idLicencia = $('#dataTables-Index').find('tr.selected>td').first().text();
+            completeDatos($('#recibidoModal'), idLicencia);
+
+        });
+
+        $('#entregadoModal').on('shown.bs.modal', function (e) {
+            var idLicencia = $('#dataTables-Index').find('tr.selected>td').first().text();
+            completeDatos($('#entregadoModal'), idLicencia);
+
+        });
+
+  $("#form-edit").validate({
+        rules: {
+            inputDNI: { required: true, minlength: 7, maxlength: 8 },
+            inputApellido: { required: true, minlength: 2, maxlength: 64 },
+            inputNombre: { required: true, minlength: 2, maxlength: 64 }
+            //inputFechaDeNacimiento: { required: true },
+            //inputDomicilio: { required: true },
+            //inputOtorgamiendo: { required: true },
+            //inputVencimiento: { required: true }
+        },
+        messages: {
+            inputDNI: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 7 caracteres.",
+                maxlength: "La longitud máxima permtida es de 8 caracteres."
+            },
+            inputApellido: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputNombre: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            }
+            //inputFechaDeNacimiento: {
+            //    required: "Requerido."
+            //},
+            //inputDomicilio: {
+            //    required: "Requerido."
+            //},
+            //inputOtorgamiendo: {
+            //    required: "Requerido."
+            //},
+            //inputVencimiento: {
+            //    required: "Requerido."
+            //}
+        },
+        submitHandler: function (form) {
+            var object = new Object();
+
+            $("#div-loader").show();
+
+            object.Id = $('#editarModal').find("#input-Id").val();
+            object.DNI = $('#editarModal').find('#input-DNI').val();
+            object.Apellido =$('#editarModal').find('#input-Apellido').val();
+            object.Nombre = $('#editarModal').find('#input-Nombre').val();
+            object.FechaDeNacimiento= $('#editarModal').find('#input-FechaDeNacimiento').val();
+            object.Domicilio = $('#editarModal').find('#input-Domicilio').val();
+            object.DomicilioNro = $('#editarModal').find('#input-Nro').val();
+            object.CalleId = $('#editarModal').find('#input-CalleId').val();
+            object.Nacionalidad = $('#editarModal').find('#input-Nacionalidad').val();
+            object.Otorgamiendo = $('#editarModal').find('#input-Otorgamiendo').val();
+            object.Vencimiento = $('#editarModal').find('#input-Vencimiento').val();
+            object.SelectedClases = $('#editarModal').find('#input-Clases').val();
+
+            var data = JSON.stringify(object);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditLicense")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#editarModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                        habilitaBotones(false, null);
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+        });
+
+
+$("#form-create").validate({
+        rules: {
+            inputDNI: { required: true, minlength: 7, maxlength: 8 },
+            inputApellido: { required: true, minlength: 2, maxlength: 64 },
+            inputNombre: { required: true, minlength: 2, maxlength: 64 }
+            //inputFechaDeNacimiento: { required: true },
+            //inputDomicilio: { required: true },
+            //inputOtorgamiendo: { required: true },
+            //inputVencimiento: { required: true }
+        },
+        messages: {
+            inputDNI: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 7 caracteres.",
+                maxlength: "La longitud máxima permtida es de 8 caracteres."
+            },
+            inputApellido: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputNombre: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            }
+            //inputFechaDeNacimiento: {
+            //    required: "Requerido."
+            //},
+            //inputDomicilio: {
+            //    required: "Requerido."
+            //},
+            //inputOtorgamiendo: {
+            //    required: "Requerido."
+            //},
+            //inputVencimiento: {
+            //    required: "Requerido."
+            //}
+        },
+        submitHandler: function (form) {
+            var object = new Object();
+
+            $("#div-loader").show();
+
+            object.PersonId = $('#createModal').find("#input-PersonId").val();
+            object.DNI = $('#createModal').find('#input-DNI').val();
+            object.Apellido = $('#createModal').find('#input-Apellido').val();
+            object.Nombre = $('#createModal').find('#input-Nombre').val();
+            object.FechaDeNacimiento = $('#createModal').find('#input-FechaDeNacimiento').val();
+            object.Domicilio = $('#createModal').find('#input-Domicilio').val();
+            object.DomicilioNro = $('#createModal').find('#input-Nro').val();
+            object.CalleId = $('#createModal').find('#input-CalleId').val();
+            object.Nacionalidad = $('#createModal').find('#input-Nacionalidad').val();
+            object.Otorgamiendo = $('#createModal').find('#input-Otorgamiendo').val();
+            object.Vencimiento = $('#createModal').find('#input-Vencimiento').val();
+            object.SelectedClases = $('#createModal').find('#input-Clases').val();
+
+            var data = JSON.stringify(object);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CrearLicense")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#createModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                        habilitaBotones(false, null);
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+    });
+
+        //Reinicio los modal
+        $('.modal').on('hidden.bs.modal', function (e) {
+            $(".modal-body input").val(""),
+                $(this).removeData('bs.modal');
+            $("form").validate().resetForm();
+            $('.js-example-basic-multiple').val(null).trigger("change");
+        });
+
+
+
+        //Traigo los datos del contribuyente con el DNI
+
+        $('#createModal').find("#input-DNI").focusout(function () {
+            var dni = $('#createModal').find('#input-DNI').val();
+            if (dni != '') {
+                $("#div-loader").show();
+                    $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetDatosDePersona", "Licenses")',
+                    data: {
+                        dni: dni
+                    },
+                    cache: false,
+                    success: function (result) {
+                        $('#createModal').find('#input-PersonId').val(result.Id);
+                        $('#createModal').find('#input-DNI').val(result.Dni);
+                        $('#createModal').find('#input-Apellido').val(result.Apellido);
+                        $('#createModal').find('#input-Nombre').val(result.Nombre);
+                        $('#createModal').find('#input-FechaDeNacimiento').val(result.FechaDeNacimiento);
+                        $('#createModal').find('#input-Domicilio').val(result.Domicilio);
+                        $('#createModal').find('#input-Nro').val(result.DomicilioNro);
+                        $('#createModal').find('#input-Nacionalidad').val(result.Nacionalidad);
+                        $("#div-loader").hide();
+                    },
+                        error: function (response) {
+                            $("#div-loader").hide();
+                            if (response.status != 200) {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                                });
+                            }
+
+                    }
+                });
+            }
+
+        });
+
+
+  $("#form-recibido").validate({
+        rules: {
+            inputDNI: { required: true, minlength: 7, maxlength: 8 },
+            inputApellido: { required: true, minlength: 2, maxlength: 64 },
+            inputNombre: { required: true, minlength: 2, maxlength: 64 }
+            //inputFechaDeNacimiento: { required: true },
+            //inputDomicilio: { required: true },
+            //inputOtorgamiendo: { required: true },
+            //inputVencimiento: { required: true }
+        },
+        messages: {
+            inputDNI: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 7 caracteres.",
+                maxlength: "La longitud máxima permtida es de 8 caracteres."
+            },
+            inputApellido: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputNombre: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            }
+            //inputFechaDeNacimiento: {
+            //    required: "Requerido."
+            //},
+            //inputDomicilio: {
+            //    required: "Requerido."
+            //},
+            //inputOtorgamiendo: {
+            //    required: "Requerido."
+            //},
+            //inputVencimiento: {
+            //    required: "Requerido."
+            //}
+        },
+        submitHandler: function (form) {
+            var object = new Object();
+
+            $("#div-loader").show();
+
+            object.Id = $('#recibidoModal').find("#input-Id").val();
+            object.DNI = $('#recibidoModal').find('#input-DNI').val();
+            object.Apellido = $('#recibidoModal').find('#input-Apellido').val();
+            object.Nombre = $('#recibidoModal').find('#input-Nombre').val();
+            object.FechaDeNacimiento = $('#recibidoModal').find('#input-FechaDeNacimiento').val();
+            object.Domicilio = $('#recibidoModal').find('#input-Domicilio').val();
+            object.DomicilioNro = $('#recibidoModal').find('#input-Nro').val();
+            object.CalleId = $('#recibidoModal').find('#input-CalleId').val();
+            object.Nacionalidad = $('#recibidoModal').find('#input-Nacionalidad').val();
+            object.Otorgamiendo = $('#recibidoModal').find('#input-Otorgamiendo').val();
+            object.Vencimiento = $('#recibidoModal').find('#input-Vencimiento').val();
+            object.SelectedClases = $('#recibidoModal').find('#input-Clases').val();
+
+            var data = JSON.stringify(object);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("RecibirLicense")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#recibidoModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                        habilitaBotones(false, null);
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+        });
+
+
+$("#form-entregado").validate({
+        rules: {
+            inputDNI: { required: true, minlength: 7, maxlength: 8 },
+            inputApellido: { required: true, minlength: 2, maxlength: 64 },
+            inputNombre: { required: true, minlength: 2, maxlength: 64 }
+            //inputFechaDeNacimiento: { required: true },
+            //inputDomicilio: { required: true },
+            //inputOtorgamiendo: { required: true },
+            //inputVencimiento: { required: true }
+        },
+        messages: {
+            inputDNI: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 7 caracteres.",
+                maxlength: "La longitud máxima permtida es de 8 caracteres."
+            },
+            inputApellido: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputNombre: {
+                required: "Requerido.",
+                minlength: "Introduzca al menos 2 caracteres.",
+                maxlength: "La longitud máxima permtida es de 64 caracteres."
+            }
+            //inputFechaDeNacimiento: {
+            //    required: "Requerido."
+            //},
+            //inputDomicilio: {
+            //    required: "Requerido."
+            //},
+            //inputOtorgamiendo: {
+            //    required: "Requerido."
+            //},
+            //inputVencimiento: {
+            //    required: "Requerido."
+            //}
+        },
+        submitHandler: function (form) {
+            var object = new Object();
+
+            $("#div-loader").show();
+
+            object.Id = $('#entregadoModal').find("#input-Id").val();
+            object.DNI = $('#entregadoModal').find('#input-DNI').val();
+            object.Apellido = $('#entregadoModal').find('#input-Apellido').val();
+            object.Nombre = $('#entregadoModal').find('#input-Nombre').val();
+            object.FechaDeNacimiento = $('#entregadoModal').find('#input-FechaDeNacimiento').val();
+            object.Domicilio = $('#entregadoModal').find('#input-Domicilio').val();
+            object.DomicilioNro = $('#entregadoModal').find('#input-Nro').val();
+            object.CalleId = $('#entregadoModal').find('#input-CalleId').val();
+            object.Nacionalidad = $('#entregadoModal').find('#input-Nacionalidad').val();
+            object.Otorgamiendo = $('#entregadoModal').find('#input-Otorgamiendo').val();
+            object.Vencimiento = $('#entregadoModal').find('#input-Vencimiento').val();
+            object.SelectedClases = $('#entregadoModal').find('#input-Clases').val();
+
+            var data = JSON.stringify(object);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EntregarLicense")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#entregadoModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                        habilitaBotones(false, null);
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+        });
+
+
+
+        function habilitaBotones(boHabilita, estado) {
+            if (boHabilita) {
+                switch (estado) {
+                    case 'NO RECIBIDA':
+                        $('#btnDetalle').removeAttr("disabled");
+                        $('#btnRecibido').removeAttr("disabled");
+                        $('#btnEntregado').attr("disabled", true)
+                        break;
+                    case 'PARA ENTREGAR':
+                        $('#btnDetalle').removeAttr("disabled");
+                        $('#btnRecibido').attr("disabled", true);
+                        $('#btnEntregado').removeAttr("disabled");
+                        break;
+                    case 'ENTREGADA':
+                        $('#btnDetalle').removeAttr("disabled");
+                        $('#btnRecibido').removeAttr("disabled");
+                        $('#btnEntregado').attr("disabled", true)
+                        break;
+                }
+
+            }
+            else {
+                $('#btnDetalle').attr("disabled", true);
+                $('#btnRecibido').attr("disabled", true);
+                $('#btnEntregado').attr("disabled", true);
+            }
+        };
 
     </script>
 
