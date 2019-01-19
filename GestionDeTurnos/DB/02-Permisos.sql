@@ -8,6 +8,8 @@ insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Rol
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Usuarios',1,'Usuarios',2,(select Id from [dbo].[Modules] where Descripcion='Configuración'))
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Permisos',1,'Permissions',3,(select Id from [dbo].[Modules] where Descripcion='Configuración'))
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Auditoria',1,'Audits',4,(select Id from [dbo].[Modules] where Descripcion='Configuración'))
+insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Sistema',1,'Settings',5,(select Id from [dbo].[Modules] where Descripcion='Configuración'))
+insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Procesos',1,'Settings',6,(select Id from [dbo].[Modules] where Descripcion='Configuración'))
 
 
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Tipos de Licencia',1,'TypesLicenses',1,(select Id from [dbo].[Modules] where Descripcion='ABM Maestros'))

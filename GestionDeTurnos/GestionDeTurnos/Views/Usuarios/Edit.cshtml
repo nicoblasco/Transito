@@ -1,0 +1,209 @@
+﻿@model GestionDeTurnos.Models.Usuario
+@using GestionDeTurnos.Helpers
+
+
+@{
+                /**/
+
+                Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@{
+    string currentController = Html.ViewContext.RouteData.GetRequiredString("controller");
+}
+
+<style>
+    .btn-sm {
+        font-size: 12px;
+        height: 30px;
+        margin-bottom: 3px;
+    }
+
+
+    .ck-sm {
+        font-size: 12px;
+    }
+
+    .select2 {
+        font-size: 12px;
+    }
+
+    label {
+        font-size: 12px;
+    }
+
+
+    .sol-container {
+        padding: 0px;
+    }
+
+    .red {
+        color: #a94442;
+    }
+</style>
+
+
+
+@using (Html.BeginForm("Edit", "Usuarios", FormMethod.Post, new { id = "formUsuarios", style = "height:100%" }))
+
+
+{
+    @Html.AntiForgeryToken()
+    <div id="page-wrapper">
+        <div class="row">
+            <h1 class="page-header" style="margin: 10px;">Usuario</h1>
+
+            <form id="form-create" role="form">
+                <div class="col-lg-12">
+                    <!-- /.Panel de Datos de Alta -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Datos del Usuario
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <label>ID</label><span class="red"> * </span>
+                                    <input class="form-control input-sm" id="input-Id" value="@Model.UsuarioId" name="UsuarioId" placeholder="ID" type="text" disabled>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Usuario</label>
+                                    <input class="form-control input-sm" id="input-Usuario" value="@Model.Nombre" name="Nombre" placeholder="Nombre" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Apellido</label>
+                                    <input class="form-control input-sm" id="input-Apellido" value="@Model.Apellido" name="Apellido" placeholder="Apellido" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Rol</label>
+                                    <input class="form-control input-sm" id="input-Rol" value="@Model.Rol.Descripcion" name="Rol" placeholder="Rol" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Nombre Usuario</label>
+                                    <input class="form-control input-sm" id="input-Nombreusuario" value="@Model.Nombreusuario" name="Nombreusuario" placeholder="Nombreusuario" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Contraseña</label><span class="red"> * </span>
+                                    @Html.EditorFor(model => model.Contraseña, new { htmlAttributes = new { @class = "form-control input-sm", id = "input-Contraseña", name = "input-Contraseña", placeholder = "Contraseña", @type = "password" } })
+                                    @Html.ValidationMessageFor(model => model.Contraseña, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Repetir Contraseña</label><span class="red"> * </span>
+                                    <input class="form-control input-sm" id="input-RepetirContraseña" value="@Model.Contraseña" name="Rol" placeholder="Repetir Contraseña" type="password">
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-12"><span class="red Mensaje1"></span></div>
+                    <div class="col-sm-12"><span class="red Mensaje2"></span></div>
+                    <div class="col-sm-12"><span class="red Mensaje3"></span></div>
+
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+                <!-- /.col-lg-12 -->
+            </form>
+            <!-- /.form -->
+        </div>
+        <!-- /.ro -->
+    </div>
+}
+
+@section scripts {
+
+    <script>
+
+        function validaRequerido() {
+            var valor = true;
+            var mensajeRequerido = "Los campos con * son Requeridos";
+            if ($('#input-Contraseña').val() == '' || $('#input-RepetirContraseña').val() == '') {
+                valor = false;
+            }
+            else {
+                valor = true;
+            }
+
+            if (valor)
+                $(".Mensaje1").text("");
+            else
+                $(".Mensaje1").text(mensajeRequerido);
+
+            return valor;
+
+        }
+
+        function validaContraseña() {
+            var mensajeNoCoinciden = "Los campos Contraseña y Repetir Contraseña deben ser iguales";
+            var valor = true;
+
+            if ($('#input-Contraseña').val() != $('#input-RepetirContraseña').val()) {
+                valor = false;
+            }
+            else {
+                valor = true;
+            }
+
+            if (valor)
+                $(".Mensaje2").text("");
+            else
+                $(".Mensaje2").text(mensajeNoCoinciden);
+
+            return valor;
+
+        }
+
+
+        function validaContraseñaLongitud() {
+            var mensaje = "Los campos Contraseña deben tener una longitud entre 2 y 64 caracteres";
+            var valor = true;
+
+            if (($('#input-Contraseña').val().length >= 2 && $('#input-Contraseña').val().length <= 64) && ($('#input-RepetirContraseña').val().length >= 2 && $('#input-RepetirContraseña').val().length <= 64)) {
+                valor = true;
+            }
+            else {
+                valor = false;
+            }
+
+            if (valor)
+                $(".Mensaje3").text("");
+            else
+                $(".Mensaje3").text(mensaje);
+
+            return valor;
+
+        }
+
+        function validationIsTrue() {
+
+
+            var valor1;
+            var valor2;
+            var valor3;
+
+            valor1 = validaRequerido();
+            valor2 = validaContraseña();
+            valor3 = validaContraseñaLongitud();
+            if (valor1 == false || valor2 == false || valor2 == false)
+                return false;
+            else
+                return true;
+
+
+        }
+
+        $("form").submit(function () {
+            if (validationIsTrue()) {
+
+                return true;
+            }
+            else {
+
+                return false;
+            }
+        });
+    </script>
+}

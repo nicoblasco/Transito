@@ -166,8 +166,10 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ModulesController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
+    <Compile Include="Controllers\ProcessesController.cs" />
     <Compile Include="Controllers\RolsController.cs" />
     <Compile Include="Controllers\SectorsController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\TerminalsController.cs" />
     <Compile Include="Controllers\TrackingsController.cs" />
     <Compile Include="Controllers\TurnsController.cs" />
@@ -218,7 +220,10 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
     <Compile Include="ViewModel\PersonViewModel.cs" />
+    <Compile Include="ViewModel\ProcessesViewModel.cs" />
+    <Compile Include="ViewModel\ProcessLogsViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
+    <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="ViewModel\TrackingViewModel.cs" />
     <Compile Include="ViewModel\TurnsSeachViewModel.cs" />
     <Compile Include="ViewModel\TurnChartViewModel.cs" />
@@ -575,6 +580,9 @@
     <Content Include="Views\CallCenterTurns\_Filtros.cshtml" />
     <Content Include="Views\Licenses\Index.cshtml" />
     <Content Include="Views\LicenseClasses\Index.cshtml" />
+    <Content Include="Views\Settings\Edit.cshtml" />
+    <Content Include="Views\Processes\Index.cshtml" />
+    <Content Include="Views\Usuarios\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

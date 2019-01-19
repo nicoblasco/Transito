@@ -196,12 +196,9 @@ namespace GestionDeTurnos.Controllers
         }
 
         // GET: Usuarios/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            int id = SessionHelper.GetUser();
             Usuario usuario = db.Usuarios.Find(id);
             if (usuario == null)
             {
@@ -215,13 +212,15 @@ namespace GestionDeTurnos.Controllers
         // más información vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Apellido")] Usuario usuario)
+        public ActionResult Edit([Bind(Include = "UsuarioId,Contraseña")] Usuario usuario)
         {
+            Usuario user = db.Usuarios.Find(SessionHelper.GetUser());
+            user.Contraseña = usuario.Contraseña;
             if (ModelState.IsValid)
             {
-                db.Entry(usuario).State = EntityState.Modified;
+                db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Acts");
             }
             return View(usuario);
         }

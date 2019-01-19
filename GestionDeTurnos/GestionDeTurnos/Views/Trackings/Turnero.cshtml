@@ -58,12 +58,17 @@
 
 
                 <!-- Publicidad -->
-                <div class="col-lg-8">
-                    <video autoplay muted loop>
-                        <source src=@Url.Content("~/Content/video/video.mp4") type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
+                @if (!string.IsNullOrEmpty(ViewBag.Video))
+                {
+                    <div class="col-lg-8">
+                        <video autoplay muted loop>
+                            <source src=@Url.Content("~/Content/video/video.mp4") type="video/mp4">
+                            @*<source src=@Url.Content("~/App_Data/upload/video/video.mp4" ) type="video/mp4">*@
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                }
+
                 <!-- Turnos -->
                 <div class="col-lg-4">
                     <div class="col-md-6">

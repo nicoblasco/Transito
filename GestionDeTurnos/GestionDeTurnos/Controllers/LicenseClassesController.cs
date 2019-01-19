@@ -29,10 +29,10 @@ namespace GestionDeTurnos.Controllers
         [HttpPost]
         public JsonResult GetClases()
         {
-            List<LicenseClass> list = new List<LicenseClass>();
+            //var list = new List<LicenseClass>();
             try
             {
-                list = db.LicenseClasses.Where(x=>x.Enable==true).ToList();
+                var list = db.LicenseClasses.Where(x=>x.Enable==true).Select(c => new { c.Id, c.Codigo, c.Descripcion }).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }

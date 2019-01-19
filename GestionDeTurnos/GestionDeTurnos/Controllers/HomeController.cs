@@ -132,8 +132,13 @@ namespace GestionDeTurnos.Controllers
                             Tel_Particular= callCenterTurn.Tel_Particular                            
                         };
 
-                        if (!String.IsNullOrEmpty(callCenterTurn.Vencimiento_licencia))
-                            person.Vencimiento_licencia = Convert.ToDateTime(callCenterTurn.Vencimiento_licencia);
+                        //No le paso fecha de vencimiento de la licencia porque esta pasando mal el webservice
+
+                        //if (!String.IsNullOrEmpty(callCenterTurn.Vencimiento_licencia))
+                        //{
+                        //    person.Vencimiento_licencia = Convert.ToDateTime(callCenterTurn.Vencimiento_licencia.Substring(0,9));
+                        //}
+                            
                         db.People.Add(person);
                         db.SaveChanges();
                     }

@@ -1,0 +1,168 @@
+﻿@model GestionDeTurnos.ViewModel.SettingsViewModel
+@using GestionDeTurnos.Helpers
+@using GestionDeTurnos.ViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    string currentController = Html.ViewContext.RouteData.GetRequiredString("controller");
+    string extension = "(mp4)";
+}
+
+<style>
+    .btn-sm {
+        font-size: 12px;
+        height: 30px;
+        margin-bottom: 3px;
+    }
+
+
+    .ck-sm {
+        font-size: 12px;
+    }
+
+
+    label {
+        font-size: 12px;
+    }
+
+
+    .sol-container {
+        padding: 0px;
+    }
+
+    .red {
+        color: #a94442;
+    }
+
+    .input_ancho {
+        width: 10%;
+    }
+
+    #divExtension {
+        color: darkgrey;
+        font-size: x-small;
+        padding-left: 5px;
+    }
+
+    #divLabelExtension {
+        display: -webkit-box;
+    }
+</style>
+
+@using (Html.BeginForm("Edit", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div id="page-wrapper">
+        <div class="row">
+            <h1 class="page-header" style="margin: 10px;">Sistema</h1>
+            <form id="form-create" role="form">
+                <div class="col-lg-12">
+                    <!-- /.Panel de Datos de Alta -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Datos del Sistema
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Tiempo Maximo Expera</label>
+                                    @Html.EditorFor(model => model.TiempoMaximoEspera, new { htmlAttributes = new { @type = "number", @min = 0, @max = 120, @class = "form-control input-sm input_ancho", placeholder = "Tiempo Maximo De Espera" } })
+                                    @Html.ValidationMessageFor(model => model.TiempoMaximoEspera, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Numero Inicial de Turnos Diarios</label>
+                                    @Html.EditorFor(model => model.NumeroInicialTurno, new { htmlAttributes = new { @type = "number", @min = 1, @max = 100000, @class = "form-control input-sm input_ancho", placeholder = "Tiempo Maximo De Espera" } })
+                                    @Html.ValidationMessageFor(model => model.NumeroInicialTurno, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Maxima cantidad de llamados por contribuyete</label>
+                                    @Html.EditorFor(model => model.CantidadLlamadosPermitidos, new { htmlAttributes = new { @type = "number", @min = 1, @max = 100000, @class = "form-control input-sm input_ancho", placeholder = "Tiempo Maximo De Espera" } })
+                                    @Html.ValidationMessageFor(model => model.CantidadLlamadosPermitidos, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-4" id="divArchivo">
+                                    <label id="divLabelExtension">Video de Pagina Principal <div id="divExtension"> @extension </div> </label>
+                                    @Html.HiddenFor(m => m.VideoBorrado, new { id = "hiddenArchivoBorrado" })
+                                    @Html.HiddenFor(m => m.Video)
+                                    <div class="input-group input-file" name="fileVideo">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-choose btn-sm" type="button">Elegir</button>
+                                        </span>
+                                        <input id="input-ArchivoActa" name="inputArchivoActa" value="@Path.GetFileName(Model.Video)" type="text" class="form-control input-sm" placeholder='Selecciona el Video...' />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-reset btn-sm" type="button">Borrar</button>
+                                        </span>
+                                    </div>
+                                    @if (Model.Video != null)
+                                    {
+                                        <p>@Html.ActionLink(Path.GetFileName(Model.Video), "Download", "Settings", new { filePath = Model.Video, id = "linkActaAdjunta" }, null)</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Settings", "Sistema")))
+                    {
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    }
+
+                </div>
+                <!-- /.col-lg-12 -->
+            </form>
+            <!-- /.form -->
+        </div>
+
+    </div>
+
+
+
+}
+
+@section scripts {
+    <script>
+        function bs_input_file() {
+            $(".input-file").before(
+                function () {
+                    if (!$(this).prev().hasClass('input-ghost')) {
+                        var element = $("<input type='file' accept='.mp4' class='input-ghost' style='visibility:hidden; height:0'>");
+                        element.attr("name", $(this).attr("name"));
+                        element.change(function () {
+                            element.next(element).find('input').val((element.val()).split('\\').pop());
+                            $(this).parents('#divArchivo').children('p').hide();
+                            //$('#ActaAdjuntaBorrada').val('True');
+                            $(this).parents('#divArchivo').children('#hiddenArchivoBorrado').val('True');
+                        });
+                        $(this).find("button.btn-choose").click(function () {
+                            element.click();
+                        });
+                        $(this).find("button.btn-reset").click(function () {
+                            element.val(null);
+                            $(this).parents(".input-file").find('input').val('');
+                            $(this).parents('#divArchivo').children('p').hide();
+                            //$('#ActaAdjuntaBorrada').val('True');
+                            $(this).parents('#divArchivo').children('#hiddenArchivoBorrado').val('True');
+
+                        });
+                        $(this).find('input').css("cursor", "pointer");
+                        $(this).find('input').mousedown(function () {
+                            $(this).parents('.input-file').prev().click();
+                            return false;
+                        });
+                        return element;
+                    }
+                }
+            );
+        }
+        $(function () {
+            bs_input_file();
+        });
+    </script>
+}

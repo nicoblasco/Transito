@@ -65,12 +65,9 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        @*<li>
-                                <a href="perfil.html"><i class="fa fa-user fa-fw"></i> Perfil de Usuario</a>
-                            </li>
-                            <li>
-                                <a href="configuracion.html"><i class="fa fa-gear fa-fw"></i> Configuracion</a>
-                            </li>*@
+                        <li>
+                            <a href="@Url.Action("Edit", "Usuarios")"> Cambiar Contraseña</a>
+                        </li>
                         <li class="divider"></li>
                         <li>
                             <a href="@Url.Action("Logout", "Usuarios")"><i class="fa fa-sign-out fa-fw"></i> Cerrar Sesión</a>
@@ -133,8 +130,8 @@
                             {
                                 <a style="color: whitesmoke" href="@Url.Action("Index", "Licenses")"><i class="fa fa-credit-card"></i>  Licencias<span class="fa arrow"></span></a>
                             }
-                            </li>
-                        
+                        </li>
+
                         <li>
                             <a style="color: whitesmoke" href="#"><i class="fa fa-hdd-o fa-fw"></i> AMB Maestros<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -210,7 +207,7 @@
                                 @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Configuración", "Procesos")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Process")">Procesos</a>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Processes")">Procesos</a>
                                     </li>
                                 }
                             </ul>
