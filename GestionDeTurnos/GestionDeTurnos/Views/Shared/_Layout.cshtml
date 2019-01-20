@@ -122,6 +122,13 @@
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "CallCenterTurns")">Call Center</a>
                                     </li>
                                 }
+
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Historial Medico")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "MedicalPersons")">Historial Medico</a>
+                                    </li>
+                                }
                             </ul>
                         </li>
 

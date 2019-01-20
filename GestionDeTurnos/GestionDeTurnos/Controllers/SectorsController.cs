@@ -31,11 +31,23 @@ namespace GestionDeTurnos.Controllers
         public JsonResult GetSectores()
         {
             List<Sector> list = new List<Sector>();
+            List<SectorViewModel> listvm = new List<SectorViewModel>();
             try
             {
                 list = db.Sectors.ToList();
 
-                return Json(list, JsonRequestBehavior.AllowGet);
+                foreach (var item in list)
+                {
+                    SectorViewModel sectorViewModel = new SectorViewModel
+                    {
+                        Descripcion = item.Descripcion,
+                        Id = item.Id,
+                        Medico = item.Medico==false?"NO":"SI"
+                    };
+                    listvm.Add(sectorViewModel);
+                } 
+
+                return Json(listvm, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {

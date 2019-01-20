@@ -173,7 +173,8 @@ namespace GestionDeTurnos.Controllers
                         Turno = typesLicense.Codigo + NumeroSecuencia.Value.ToString("0000"),
                         Secuencia = NumeroSecuencia.Value,
                         FechaTurno = callCenterTurn.FechaTurno,
-                        Enable =true
+                        Enable =true,
+                        CallCenterTurnId = callCenterTurn.Id
 
                     };
                     db.Turns.Add(turn);

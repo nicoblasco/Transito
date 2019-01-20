@@ -1,0 +1,188 @@
+﻿@model GestionDeTurnos.ViewModel.MedicalPersonViewModel
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .padding_panel{
+        padding:8px;
+    }
+
+    label.checkbox-inline {
+        font-size: small;
+    }
+
+    .textArea {
+        width: 80%;
+        margin-left: 20px;
+    }
+    .labelArea {
+        margin-left: 20px;
+    }
+
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div id="page-wrapper">
+        <div class="row">
+            <h1 class="page-header">Datos Medicos</h1>
+
+            <div role="form" class="form-horizontal">
+                <div class="col-lg-12">
+                    <!-- /. Panel de Datos del Infractor -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Datos Personales y del Tramite
+                        </div>
+                        <div class="panel-body padding_panel">
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <label>DNI</label>
+                                    <input class="form-control input-sm" value="@Model.DNI" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Apellido</label>
+                                    <input class="form-control input-sm"" value="@Model.Apellido" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Nombre</label>
+                                    <input class="form-control input-sm"" value="@Model.Nombre" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Fecha de Nac</label>
+                                    @Html.EditorFor(model => model.FechaNacimiento, new { htmlAttributes = new { @class = "form-control input-sm input-date", id = "input-FechaNacimiento", name = "FechaNacimiento", @type = "datetime" } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <label>Edad</label>
+                                    <input class="form-control input-sm"" value="@Model.Edad" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="example-datetime-local-input">Fecha/Hora de Ingreso</label>
+                                    <input class="form-control input-sm"" value="@Model.FechaIngreso" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Tipo de Tramite</label>
+                                    <input class="form-control input-sm"" value="@Model.TipoTramite" type="text" disabled>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label>Nro Turno</label>
+                                    <input class="form-control input-sm"" value="@Model.NumeroTurno" type="text" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /. FIN Panel de Datos del Infractor -->
+                    <!-- /. Panel de Datos Medicos -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Datos Medicos
+                        </div>
+                        <div class="panel-body padding_panel">
+                            <form>
+                                <div class="form-group">
+                                    <input id="nroTurn" name="TurnId" class="form-control" value="@Model.TurnId" type="hidden">
+                                    <input id="PersonId" name="PersonId" class="form-control" value="@Model.PersonId" type="hidden">
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-2">
+                                        <label>AVOI</label>
+                                        <input id="Avoi" name="Avoi" class="form-control input-sm" " placeholder="AVOI" type="number" required>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label>AVOD</label>
+                                        <input id="Avod" name="Avod" class="form-control input-sm" " placeholder="AVOD" type="number" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <label class="checkbox-inline">
+                                            <input id="Fuma" name="Fuma" type="checkbox">Fuma
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="Profesional" name="Profesional" type="checkbox">Profesional
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="HTA" name="HTA" type="checkbox">HTA
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <label class="checkbox-inline">
+                                            <input id="DBT" name="DBT" type="checkbox">DBT
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="GAA" name="GAA" type="checkbox">G.A.A
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
+                                        </label>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="labelArea">Observaciones</label>
+                                    <textarea id="Observacion" name="Observacion" class="form-control textArea" rows="3"></textarea>
+                                </div>
+                                <input value="Guardar" class="btn btn-primary pull-right">
+
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+        </div>
+        <!-- /.ro -->
+    </div>
+    <!-- /#page-wrapper -->
+}
+@section scripts {
+    @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+
+    <script>
+        $(document).ready(function () {
+
+            //Datepicker
+            $.datetimepicker.setLocale('es');
+
+            $('.input-date').datetimepicker({
+                timepicker: false,
+                format: 'd/m/Y',
+                scrollInput: false,
+                date: new Date(Date.now())
+            });
+
+            $('#input-FechaNacimiento').datetimepicker({
+                locale: 'es',
+                sideBySide: true
+                //    date: new Date(Date.now())
+            });
+
+            $("#input-FechaNacimiento").prop('required', true);
+
+
+        });
+    </script>
+}

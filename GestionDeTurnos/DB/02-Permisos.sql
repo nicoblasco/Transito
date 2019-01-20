@@ -21,5 +21,6 @@ insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Mon
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Atencion al cliente',1,'Trackings',1,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Busquedas',1,'Turns',1,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Call Center',1,'Call Center',1,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
+insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Historial Medico',1,'Historial Medico',1,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
 
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Licencias',1,'Licenses',1,(select Id from [dbo].[Modules] where Descripcion='Licencias'))

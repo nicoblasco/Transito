@@ -43,6 +43,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Descripción</th>
+                                <th>Sector Medico</th>
                             </tr>
                         </thead>
                     </table>
@@ -82,6 +83,10 @@
                             <label>Descripción</label>
                             <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
+                        <div class="form-group">
+                            <input type="checkbox" class="form-check-input" id="input-Medico" name="inputMedico">
+                            <label class="form-check-label" for="input-Medico">Es Sector Medico?</label>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -115,6 +120,12 @@
                             <label>Descripción</label>
                             <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" class="form-check-input" id="input-Medico" name="inputMedico">
+                            <label class="form-check-label" for="input-Medico">Es Sector Medico?</label>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -147,7 +158,8 @@
                   },
            "columns": [
                { "data": "Id" },
-               { "data": "Descripcion" }
+               { "data": "Descripcion" },
+               { "data": "Medico" }
            ],
            responsive: true
        });
@@ -233,6 +245,7 @@
             $("#div-loader").show();
             var object = new Object();
             object.Descripcion = $("#input-Descripcion").val();
+            object.Medico = $("#input-Medico").prop('checked');
             var data = JSON.stringify(object);
 
 
@@ -304,6 +317,7 @@
             var object = new Object();
             object.Id = $('#editarModal').find('input#input-Id').val();
             object.Descripcion = $('#editarModal').find('input#input-Descripcion').val();
+            object.Medico = $('#editarModal').find("input#input-Medico").prop('checked');
             var data = JSON.stringify(object);
 
             //Antes de editar, verifico que no este duplicando el Rol
@@ -372,6 +386,7 @@
             success: function (result) {
                 $('#editarModal').find('input#input-Id').val(result.Id);
                 $('#editarModal').find('input#input-Descripcion').val(result.Descripcion);
+                $('#editarModal').find('input#input-Medico').prop('checked', result.Medico);
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -390,6 +405,7 @@
     $('.modal').on('hidden.bs.modal', function (e) {
         $(".modal-body input").val(""),
             $(this).removeData('bs.modal');
+        $(".form-check-input").prop('checked', false); 
         $("form").validate().resetForm();
     });
 

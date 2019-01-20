@@ -27,7 +27,11 @@ namespace GestionDeTurnos.Models
 
         public TimeSpan? Tiempo { get; set; }
 
+        public int? CallCenterTurnId { get; set; }
+        public virtual CallCenterTurn CallCenterTurn { get; set; }
 
         public bool Enable { get; set; }
+
+
     }
 }

@@ -948,6 +948,17 @@ namespace GestionDeTurnos.Controllers
             db.Entry(turn).State = EntityState.Modified;
             db.SaveChanges();
 
+            if (turn.CallCenterTurnId!=null)
+            {
+                CallCenterTurn callCenterTurn = db.CallCenterTurns.Find(turn.CallCenterTurnId);
+                callCenterTurn.Asignado = false;
+                db.Entry(callCenterTurn).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            
+
+
+
             AuditHelper.Auditar("Baja", "Id -" + turn.Id.ToString() + " / Turno -" + turn.Turno, "Turns", ModuleDescription, WindowDescription);
 
             var responseObject = new

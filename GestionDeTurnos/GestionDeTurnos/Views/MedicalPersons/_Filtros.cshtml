@@ -1,0 +1,318 @@
+﻿
+<style>
+    .minimo {
+        min-height: 0px !important;
+        position: inherit;
+        margin: 0 0 0 250px;
+        padding: 0 30px;
+        border-left: 1px solid #e7e7e7;
+    }
+
+    .input-group {
+        width: 100%;
+    }
+
+    .btn-ghost-neutral {
+        border: 1px solid #222222;
+        color: #222222;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .list .list-body .list-filters .filters button {
+        display: inline-block;
+        float: right;
+    }
+
+    .filters {
+        background-color: #eaeaea;
+        padding-top: 25px;
+        padding-left: 25px;
+    }
+
+    .btn-filtro {
+        border: 1px solid #222222;
+        color: #222222;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .alert {
+        display: block;
+        width: 100%;
+        font-size: 14px;
+        color: #666666;
+        margin: 30px 0 10px;
+        padding: 15px;
+        border-radius: 0;
+        line-height: 1.3;
+    }
+
+    .tag {
+        display: inline-block;
+        border: 1px solid #0089e0;
+        padding: 5px 10px;
+        border-radius: 2px;
+        margin: 10px 5px 5px 0;
+        width: auto;
+        /*background-color: #dae0e0;*/
+        background: #0089e0;
+        color: #fff;
+    }
+
+    .alert > p + p {
+        margin-top: 5px;
+    }
+
+    .tag p {
+        width: auto;
+        font-family: unset;
+        color: white;
+    }
+
+    .alert > p, .alert > ul {
+        margin-bottom: 0;
+    }
+
+    .tag .close {
+        float: none;
+        font-size: 18px;
+        vertical-align: middle;
+        padding: 0 0 2px 15px;
+        outline: none;
+        color: white;
+    }
+
+    .alert button {
+        text-shadow: none;
+        opacity: 1;
+    }
+
+    button.close {
+        padding: 0;
+        cursor: pointer;
+        background: transparent;
+        border: 0;
+        -webkit-appearance: none;
+    }
+
+    .close {
+        float: right;
+        font-size: 21px;
+        font-weight: bold;
+        line-height: 1;
+        color: white;
+        text-shadow: 0 1px 0 #fff;
+        opacity: .2;
+        filter: alpha(opacity=20);
+    }
+
+
+    p {
+        font-size: 14px;
+        display: inline-block;
+    }
+
+    .btn2 {
+        display: inline-block;
+        font-size: 14px;
+        vertical-align: inherit;
+        font-family: 'Open Sans SemiBold';
+        text-transform: uppercase;
+        text-decoration: none;
+        margin: 10px 2px 20px;
+        padding: 8px 32px 10px;
+        border-radius: 2px;
+        font-weight: normal;
+        text-align: center;
+        touch-action: manipulation;
+        cursor: pointer;
+        background-image: none;
+        white-space: nowrap;
+        line-height: 1.42857143;
+        user-select: none;
+    }
+
+    .label-size {
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+        .label-size a {
+            float: left;
+            height: 24px;
+            line-height: 24px;
+            position: relative;
+            font-size: 12px;
+            margin-bottom: 9px;
+            margin-left: 20px;
+            padding: 0 10px 0 12px;
+            background: #0089e0;
+            color: #fff;
+            text-decoration: none;
+            -moz-border-radius-bottomright: 4px;
+            -webkit-border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            -moz-border-radius-topright: 4px;
+            -webkit-border-top-right-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+            .label-size a:before {
+                content: "";
+                float: left;
+                position: absolute;
+                top: 0;
+                left: -12px;
+                width: 0;
+                height: 0;
+                border-color: transparent #0089e0 transparent transparent;
+                border-style: solid;
+                border-width: 12px 12px 12px 0;
+            }
+
+            .label-size a:after {
+                content: "";
+                position: absolute;
+                top: 10px;
+                left: 0;
+                float: left;
+                width: 4px;
+                height: 4px;
+                -moz-border-radius: 2px;
+                -webkit-border-radius: 2px;
+                border-radius: 2px;
+                background: #fff;
+                -moz-box-shadow: -1px -1px 2px #004977;
+                -webkit-box-shadow: -1px -1px 2px #004977;
+                box-shadow: -1px -1px 2px #004977;
+            }
+
+            .label-size a:hover {
+                background: #555;
+            }
+
+                .label-size a:hover:before {
+                    border-color: transparent #555 transparent transparent;
+                }
+</style>
+
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <button id="btn-filter" class="btn2 btn-filtro btn btn-ghost-neutral pull-right"><span class="fa fa-filter"></span>Filtros</button>
+                </div>
+            </div>
+            <div class="filters">
+                <div class="row">
+
+
+
+                    <div class="col-lg-2">
+                        <div class="input-group">
+                            <label for="condicion">DNI </label>
+                            <input id="DNI" name="DNI" class="form-control input-sm">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="input-group">
+                            <label for="condicion">Apellido </label>
+                            <input id="Apellido" name="Apellido" class="form-control input-sm">
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <div class="input-group">
+                            <label for="condicion">Nombre </label>
+                            <input id="Nombre" name="Nombre" class="form-control input-sm">
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <label for="condicion">Tipo de Turno</label>
+                            @Html.DropDownList("ddlTipo", new SelectList(ViewBag.listaLicencias, "Id", "Referencia"), "Seleccione ", htmlAttributes:
+                            new
+                            {
+                                @class = "select-buscador form-control input-sm",
+                                @style= "width: 100%"
+                            }
+                            )
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="input-group">
+                            <label for="fecha-inicio">Fecha Desde </label>
+                            <span class="fa fa-calendar" aria-hidden="true"></span>
+                            <input class="form-control input-sm input-date" id="fecha-inicio" type="text" name="FechaDesde">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="input-group">
+                            <label for="fecha-fin">Fecha Hasta </label>
+                            <span class="fa fa-calendar" aria-hidden="true"></span>
+                            <input class="form-control input-sm input-date" id="fecha-fin" type="text" name="FechaHasta">
+
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button id="btn-apply" class="btn2 btn-ghost-neutral pull-right">APLICAR</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="tags-group">
+                    <div class="alert tag" id="tagTipo">
+                        <p class="tagId" style="display:none"></p>
+                        <p class="tagValue"></p>
+                        <button type="button" class="close">×</button>
+                    </div>
+                    <div class="alert tag" id="tagDNI">
+                        <p class="tagId" style="display:none"></p>
+                        <p class="tagValue"></p>
+                        <button type="button" class="close">×</button>
+                    </div>
+                    <div class="alert tag" id="tagApellido">
+                        <p class="tagId" style="display:none"></p>
+                        <p class="tagValue"></p>
+                        <button type="button" class="close">×</button>
+                    </div>
+                    <div class="alert tag" id="tagNombre">
+                        <p class="tagId" style="display:none"></p>
+                        <p class="tagValue"></p>
+                        <button type="button" class="close">×</button>
+                    </div>
+                    <div class="alert tag" id="tagFechaDesde">
+                        <p class="tagId" style="display:none"></p>
+                        <p class="tagValue"></p>
+                        <button type="button" class="close">×</button>
+                    </div>
+                    <div class="alert tag" id="tagFechaHasta">
+                        <p class="tagId" style="display:none"></p>
+                        <p class="tagValue"></p>
+                        <button type="button" class="close">×</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+

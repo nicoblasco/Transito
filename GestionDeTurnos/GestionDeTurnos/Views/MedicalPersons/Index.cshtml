@@ -1,0 +1,468 @@
+﻿
+@model GestionDeTurnos.ViewModel.MedicalPersonViewModel
+
+
+<style>
+    .padding_panel {
+        padding: 8px;
+    }
+
+    label.checkbox-inline {
+        font-size: small;
+    }
+
+    .textArea {
+        width: 80%;
+        margin-left: 20px;
+    }
+
+    .labelArea {
+        margin-left: 20px;
+    }
+</style>
+
+<div id="page-wrapper">
+    <!-- /.ro -->
+    <div class="row">
+        @Html.Partial("_Filtros")
+        @Html.Partial("_TableFull")
+    </div>
+</div>
+
+<!-- /#page-wrapper -->
+<!-- Progress Loader -->
+<div id="div-loader" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
+    <p style="position: absolute; color: White; top: 35%; left: 45%;">
+        <img src="~/Images/loading.gif" alt="Loading..." />
+    </p>
+</div>
+
+
+
+
+
+<!-- Modal -->
+
+
+<div class="modal fade" id="editarModal" role="dialog">
+    <div class="modal-dialog">
+        <form id="form-edit" method="post">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Editar Turno</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group" style="display:none">
+                            <label>ID</label>
+                            <input id="input-Id" name="inputId" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>Fecha de Nacimiento</label>
+
+                                <input id="input-FechaNacimiento" name="FechaNacimiento" class="form-control input-sm">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label>AVOI</label>
+                                <input id="Avoi" name="Avoi" class="form-control input-sm" placeholder="AVOI" type="number" pattern="[0-9]" onkeypress="return !(event.charCode == 46)">
+                            </div>
+                            <div class="col-sm-6">
+                                <label>AVOD</label>
+                                <input id="Avod" name="Avod" class="form-control input-sm" placeholder="AVOD" type="number" pattern="[0-9]" onkeypress="return !(event.charCode == 46)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12" style="margin:5px">
+                                <label class="checkbox-inline">
+                                    <input id="Fuma" name="Fuma" type="checkbox">Fuma
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="Profesional" name="Profesional" type="checkbox">Profesional
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
+                                </label>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12" style="margin:5px">
+                                <label class="checkbox-inline">
+                                    <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="HTA" name="HTA" type="checkbox">HTA
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="DBT" name="DBT" type="checkbox">DBT
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="GAA" name="GAA" type="checkbox">G.A.A
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="labelArea">Observaciones</label>
+                            <textarea id="Observacion" name="Observacion" class="form-control textArea" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section scripts {
+    @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+    @Scripts.Render("~/Scripts/dataTables.buttons.min.js")
+    @Scripts.Render("~/Scripts/buttons.flash.min.js")
+    @Scripts.Render("~/Scripts/jszip.min.js")
+    @Scripts.Render("~/Scripts/pdfmake.min.js")
+    @Scripts.Render("~/Scripts/vfs_fonts.js")
+    @Scripts.Render("~/Scripts/buttons.html5.min.js")
+    @Scripts.Render("~/Scripts/buttons.print.min.js")
+    <script>
+
+
+    $(document).ready(function () {
+        var table = $('#dataTables-Index').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+                "ajax":
+                {
+                    url: "@Url.Action("GetAll", "MedicalPersons")",
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "id", defaultContent: '', className: 'px100' },
+                    { "data": "DNI", className: 'px100' },
+                    { "data": "Apellido", className: 'px100' },
+                    { "data": "Nombre", className: 'px100' },
+                    { "data": "FechaIngreso", className: 'px100' },
+                    { "data": "FechaNacimiento", className: 'px100' },
+                    { "data": "TipoTramite", className: 'px100' },
+                    { "data": "Avoi", className: 'px100' },
+                    { "data": "Avod", className: 'px100' },
+                    { "data": "Fuma", className: 'px100' },
+                    { "data": "ConduceConAnteojos", className: 'px100' },
+                    { "data": "VisionMonocular", className: 'px100' },
+                    { "data": "Discromatopsia", className: 'px100' },
+                    { "data": "HTA", className: 'px100' },
+                    { "data": "DBT", className: 'px100' },
+                    { "data": "GAA", className: 'px100' },
+                    { "data": "AcidoUrico", className: 'px100' },
+                    { "data": "Colesterol", className: 'px100' },
+                    { "data": "Observacion", className: 'px100' }
+                ],
+                rowId: 'Id',
+                responsive: true,
+                ordering: true,
+                searching: false,
+               // "order": [[1, "desc"]],
+                scrollX: true,
+                //"autoWidth": true,
+                "fnCreatedRow": function (nRow, aData, iDataIndex) {
+                    //Agrego las
+                    // Add a class to the cell in the first column
+                    $(nRow).children(':nth-child(1)').addClass('td-btn');
+
+                        $('td:eq(0)', nRow).append("<span class='fa fa-eye span-btn' type='button' value='C' data-toggle='tooltip' data-placement='top' title='Ver' id='btn_Ver'/> ");
+
+
+                }
+
+            });
+
+
+    });
+
+
+
+
+
+    $(document).on('click', '#btn_Ver', function () {
+        $('#editarModal').modal('toggle');
+
+        var idTurno = $(this).parents().closest('tr').attr('id')
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Get")',
+            data: {
+                id: idTurno
+            },
+            cache: false,
+            success: function (result) {
+                $('#editarModal').find('input#input-Id').val(result.Id).prop('disabled', true);
+                $('#editarModal').find("#input-FechaNacimiento").val(result.FechaNacimiento).prop('disabled', true);
+                $('#editarModal').find("#Avoi").val(result.Avoi).prop('disabled', true);
+                $('#editarModal').find("#Avod").val(result.Avod).prop('disabled', true);
+                $('#nuevoModal').find("#Fuma").prop('checked', result.Fuma).prop('disabled', true);
+                $('#editarModal').find("#Profesional").prop('checked', result.Profesional).prop('disabled', true);
+                $('#editarModal').find("#ConduceConAnteojos").prop('checked', result.ConduceConAnteojos).prop('disabled', true);
+                $('#editarModal').find("#VisionMonocular").prop('checked', result.VisionMonocular).prop('disabled', true);
+                $('#editarModal').find("#Discromatopsia").prop('checked', result.Discromatopsia).prop('disabled', true);
+                $('#editarModal').find("#HTA").prop('checked', result.HTA).prop('disabled', true);
+                $('#editarModal').find("#DBT").prop('checked', result.DBT).prop('disabled', true);
+                $('#editarModal').find("#GAA").prop('checked', result.GAA).prop('disabled', true);
+                $('#editarModal').find("#AcidoUrico").prop('checked', result.AcidoUrico).prop('disabled', true);
+                $('#editarModal').find("#Colesterol").prop('checked', result.Colesterol).prop('disabled', true);
+                $('#editarModal').find("#Observacion").val(result.Observacion).prop('disabled', true);
+                $('#editarModal').find('.btn-primary').prop('disabled', true);
+
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                    $('#editarModal').modal('hide');
+            }
+        });
+    });
+
+
+        //Reinicio los modal
+        $('.modal').on('hidden.bs.modal', function (e) {
+            $(".modal-body input").val(""),
+                $(this).removeData('bs.modal');
+            $("checkbox").prop('checked', false);
+            $("form").validate().resetForm();
+        });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $(".select-buscador").select2();
+
+            //Datepicker
+            $.datetimepicker.setLocale('es');
+
+            $('.input-date').datetimepicker({
+                timepicker: false,
+                format: 'd/m/Y',
+                scrollInput: false,
+                date: new Date(Date.now())
+            });
+
+            $('.input-datelong').datetimepicker({
+                timepicker: true,
+                format: 'd/m/Y H:i',
+                scrollInput: false
+             //   date: new Date(Date.now())
+            });
+
+            $('#fecha-inicio').datetimepicker({
+                locale: 'es',
+                date: new Date(Date.now())
+            });
+            $('#fecha-fin').datetimepicker({
+                locale: 'es',
+                date: new Date(Date.now())
+            });
+
+            $('#input-FechaTurno').datetimepicker({
+                locale: 'es',
+                sideBySide: true
+            //    date: new Date(Date.now())
+            });
+
+            $('.tags-group').find('.alert').hide();
+
+        });
+
+        $(".filters").hide();
+
+        $("#btn-filter").click(function () {
+            $(this).toggleClass('btn-ghost-neutral btn-neutral').blur();
+            $('.filters').slideToggle(400);
+        });
+
+        $("#btn-apply").click(function () {
+            $('.filters').slideToggle(400, function () {
+                $('#btn-filter').toggleClass('btn-ghost-neutral btn-neutral');
+                completarTags();
+                buscarTurnos();
+            });
+        });
+
+
+        $('.tags-group').find(".close").click(function () {
+            var idTag = $(this).parents('.alert').attr('id');
+            $(this).parents('.alert').hide();
+            var child = $(this).parents('.alert');
+            child.children('.tagId').text('');
+            child.children('.tagValue').text('');
+
+            //Limpio el combo del tag que cerro
+            switch (idTag) {
+                case "tagDNI":
+                    $('#DNI').val('');
+                    break;
+                case "tagNombre":
+                    $('#Nombre').val('');
+                    break;
+                case "tagApellido":
+                    $('#Apellido').val('');
+                    break;
+                case "TipoTramite":
+                    $('#ddlTipo').val('').change();
+                    break;
+                case "tagFechaDesde":
+                    $('#fecha-inicio').val('');
+                    break;
+                case "tagFechaHasta":
+                    $('#fecha-fin').val('');
+                    break;
+
+                default:
+            }
+
+
+            buscarTurnos();
+        });
+
+        function buscarTurnos() {
+            $("#div-loader").show();
+            var DNI = $('#tagDNI').find('.tagId').text();
+            var Nombre = $('#tagNombre').find('.tagId').text();
+            var Apellido = $('#tagApellido').find('.tagId').text();
+            var Tipo = $('#tagTipo').find('.tagId').text();
+            var FechaTurnoDesde = $('#tagFechaDesde').find('.tagId').text();
+            var FechaTurnoHasta = $('#tagFechaHasta').find('.tagId').text();
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Search")",
+                        data: JSON.stringify({
+                            "DNI": DNI,
+                            "Nombre": Nombre,
+                            "Apellido": Apellido,
+                            "Tipo": Tipo,
+                            "FechaTurnoDesde": FechaTurnoDesde,
+                            "FechaTurnoHasta": FechaTurnoHasta
+                        }),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8;',
+                        success: function (dataNew) {
+                            $("#div-loader").hide();
+                            if (dataNew.length > 0) {
+                                var datatable = $('#dataTables-Index').DataTable();
+                                datatable.rows().remove().draw();
+                                datatable.rows.add(dataNew); // Add new data
+                                datatable.columns.adjust().draw(); // Redraw the DataTable
+                            }
+                            else {
+                                var datatable = $('#dataTables-Index').DataTable();
+                                datatable.rows().remove().draw();
+                                datatable.rows.add(dataNew); // Add new data
+                                datatable.columns.adjust().draw(); // Redraw the DataTable
+                            }
+                        }
+                    });
+            }
+
+            function completarTags() {
+                //Tomo el valor de cada uno de los combos
+
+                if ($('#ddlTipo').val() != null && $('#ddlTipo').val() != '') {
+                    $('#tagTipo').find('.tagId').text($("#ddlTipo option:selected").text());
+                    $('#tagTipo').find('.tagValue').text($("#ddlTipo option:selected").text());
+                    $('#tagTipo').css("display", "inline-block");
+                }
+                else {
+                    $('#tagTipo').find('.tagId').text('');
+                    $('#tagTipo').find('.tagValue').text('');
+                    $('#tagTipo').hide();
+                }
+
+                if ($('#DNI').val() != null && $('#DNI').val() != '') {
+                    $('#tagDNI').find('.tagId').text($('#DNI').val());
+                    $('#tagDNI').find('.tagValue').text($('#DNI').val());
+                    $('#tagDNI').css("display", "inline-block");
+                }
+                else {
+                    $('#tagDNI').find('.tagId').text('');
+                    $('#tagDNI').find('.tagValue').text('');
+                    $('#tagDNI').hide();
+                }
+
+                if ($('#Apellido').val() != null && $('#Apellido').val() != '') {
+                    $('#tagApellido').find('.tagId').text($('#Apellido').val());
+                    $('#tagApellido').find('.tagValue').text($('#Apellido').val());
+                    $('#tagApellido').css("display", "inline-block");
+                }
+                else {
+                    $('#tagApellido').find('.tagId').text('');
+                    $('#tagApellido').find('.tagValue').text('');
+                    $('#tagApellido').hide();
+                }
+
+                if ($('#Nombre').val() != null && $('#Nombre').val() != '') {
+                    $('#tagNombre').find('.tagId').text($('#Nombre').val());
+                    $('#tagNombre').find('.tagValue').text($('#Nombre').val());
+                    $('#tagNombre').css("display", "inline-block");
+                }
+                else {
+                    $('#tagNombre').find('.tagId').text('');
+                    $('#tagNombre').find('.tagValue').text('');
+                    $('#tagNombre').hide();
+                }
+
+                if ($('#fecha-inicio').val() != null && $('#fecha-inicio').val() != '') {
+                    $('#tagFechaDesde').find('.tagId').text($('#fecha-inicio').val());
+                    $('#tagFechaDesde').find('.tagValue').text($('#fecha-inicio').val());
+                    $('#tagFechaDesde').css("display", "inline-block");
+                }
+                else {
+                    $('#tagFechaDesde').find('.tagId').text('');
+                    $('#tagFechaDesde').find('.tagValue').text('');
+                    $('#tagFechaDesde').hide();
+                }
+
+                if ($('#fecha-fin').val() != null && $('#fecha-fin').val() != '') {
+                    $('#tagFechaHasta').find('.tagId').text($('#fecha-fin').val());
+                    $('#tagFechaHasta').find('.tagValue').text($('#fecha-fin').val());
+                    $('#tagFechaHasta').css("display", "inline-block");
+                }
+                else {
+                    $('#tagFechaHasta').find('.tagId').text('');
+                    $('#tagFechaHasta').find('.tagValue').text('');
+                    $('#tagFechaHasta').hide();
+                }
+
+
+            }
+
+
+
+    </script>
+}
+
+
+
+

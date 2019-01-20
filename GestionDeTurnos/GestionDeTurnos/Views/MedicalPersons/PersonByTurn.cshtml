@@ -1,0 +1,679 @@
+﻿
+@model GestionDeTurnos.ViewModel.MedicalPersonViewModel
+
+
+<style>
+    .padding_panel {
+        padding: 8px;
+    }
+
+    label.checkbox-inline {
+        font-size: small;
+    }
+
+    .textArea {
+        width: 80%;
+        margin-left: 20px;
+    }
+
+    .labelArea {
+        margin-left: 20px;
+    }
+</style>
+
+<div id="page-wrapper">
+    <div class="row">
+        <h1 class="page-header">Datos Medicos</h1>
+
+        <div role="form" class="form-horizontal">
+            <div class="col-lg-12">
+                <!-- /. Panel de Datos del Infractor -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Datos Personales y del Tramite
+                    </div>
+                    <div class="panel-body padding_panel">
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <label>DNI</label>
+                                <input class="form-control input-sm" value="@Model.DNI" type="text" disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Apellido</label>
+                                <input class="form-control input-sm" value="@Model.Apellido" type="text" disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Nombre</label>
+                                <input class="form-control input-sm" value="@Model.Nombre" type="text" disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Fecha de Nac</label>
+                                <input class="form-control input-sm" value="@Model.FechaNacimiento" id="FechaDeNacimiento" type="text" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <label>Edad</label>
+                                <input class="form-control input-sm" value="@Model.Edad" type="text" id="Edad" disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="example-datetime-local-input">Fecha/Hora de Ingreso</label>
+                                <input class="form-control input-sm" value="@Model.FechaIngreso" type="text" disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Tipo de Tramite</label>
+                                <input class="form-control input-sm" value="@Model.TipoTramite" type="text" disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Nro Turno</label>
+                                <input class="form-control input-sm" value="@Model.NumeroTurno" type="text" disabled>
+                            </div>
+
+                            <input id="TurnId" name="TurnId" class="form-control" value="@Model.TurnId" type="hidden">
+                            <input id="PersonId" name="PersonId" class="form-control" value="@Model.PersonId" type="hidden">
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <button type="button" id="btnNuevo" class="btn btn-primary" data-toggle="modal" data-target="#nuevoModal">
+                Nueva Historia
+            </button>
+            <input type="button" class="btn btn-secondary" value="Volver" onclick="location.href='@Url.Action("Index", "Trackings")'" />
+        </div>
+    </div>
+
+    <!-- /.ro -->
+    <div class="row">
+        @Html.Partial("_Table");
+    </div>
+</div>
+
+    <!-- /#page-wrapper -->
+    <!-- Progress Loader -->
+    <div id="div-loader" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
+        <p style="position: absolute; color: White; top: 35%; left: 45%;">
+            <img src="~/Images/loading.gif" alt="Loading..." />
+        </p>
+    </div>
+
+
+
+
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="nuevoModal" role="dialog">
+        <div class="modal-dialog">
+            <form id="form-create" method="post">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Nueva Historia Clinica</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Fecha de Nacimiento</label>
+                                    @Html.EditorFor(model => model.FechaNacimiento, new { htmlAttributes = new { @class = "form-control input-sm input-date", id = "input-FechaNacimiento", name = "FechaNacimiento", @type = "datetime" } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <label>AVOI</label>
+                                    <input id="Avoi" name="Avoi" class="form-control input-sm"  placeholder="AVOI" type="number" pattern="[0-9]" onkeypress="return !(event.charCode == 46)" >
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>AVOD</label>
+                                    <input id="Avod" name="Avod" class="form-control input-sm"  placeholder="AVOD" type="number" pattern="[0-9]" onkeypress="return !(event.charCode == 46)" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12" style="margin:5px">
+                                    <label class="checkbox-inline">
+                                        <input id="Fuma" name="Fuma" type="checkbox">Fuma
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="Profesional" name="Profesional" type="checkbox">Profesional
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12" style="margin:5px">
+                                    <label class="checkbox-inline">
+                                        <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="HTA" name="HTA" type="checkbox">HTA
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="DBT" name="DBT" type="checkbox">DBT
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="GAA" name="GAA" type="checkbox">G.A.A
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
+                                    </label>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="labelArea">Observaciones</label>
+                                <textarea id="Observacion" name="Observacion" class="form-control textArea" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editarModal" role="dialog">
+        <div class="modal-dialog">
+            <form id="form-edit" method="post">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Editar Turno</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form">
+                            <div class="form-group" style="display:none">
+                                <label>ID</label>
+                                <input id="input-Id" name="inputId" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Fecha de Nacimiento</label>
+                                    @Html.EditorFor(model => model.FechaNacimiento, new { htmlAttributes = new { @class = "form-control input-sm input-date", id = "input-FechaNacimiento", name = "FechaNacimiento", @type = "datetime" } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <label>AVOI</label>
+                                    <input id="Avoi" name="Avoi" class="form-control input-sm" placeholder="AVOI" type="number" pattern="[0-9]" onkeypress="return !(event.charCode == 46)" >
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>AVOD</label>
+                                    <input id="Avod" name="Avod" class="form-control input-sm" placeholder="AVOD" type="number" pattern="[0-9]" onkeypress="return !(event.charCode == 46)" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12" style="margin:5px">
+                                    <label class="checkbox-inline">
+                                        <input id="Fuma" name="Fuma" type="checkbox">Fuma
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="Profesional" name="Profesional" type="checkbox">Profesional
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="ConduceConAnteojos" name="ConduceConAnteojos" type="checkbox">Conduce con Anteojos
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="VisionMonocular" name="VisionMonocular" type="checkbox">Visión Monocular
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12" style="margin:5px">
+                                    <label class="checkbox-inline">
+                                        <input id="Discromatopsia" name="Discromatopsia" type="checkbox">Discromatopsia
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="HTA" name="HTA" type="checkbox">HTA
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="DBT" name="DBT" type="checkbox">DBT
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="GAA" name="GAA" type="checkbox">G.A.A
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="AcidoUrico" name="AcidoUrico" type="checkbox">Acido Úrico
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        <input id="Colesterol" name="Colesterol" type="checkbox">Colesterol
+                                    </label>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="labelArea">Observaciones</label>
+                                <textarea id="Observacion" name="Observacion" class="form-control textArea" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+
+    @section scripts {
+        @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+        @Scripts.Render("~/Scripts/dataTables.buttons.min.js")
+        @Scripts.Render("~/Scripts/buttons.flash.min.js")
+        @Scripts.Render("~/Scripts/jszip.min.js")
+        @Scripts.Render("~/Scripts/pdfmake.min.js")
+        @Scripts.Render("~/Scripts/vfs_fonts.js")
+        @Scripts.Render("~/Scripts/buttons.html5.min.js")
+        @Scripts.Render("~/Scripts/buttons.print.min.js")
+        <script>
+
+
+    $(document).ready(function () {
+
+        $.datetimepicker.setLocale('es');
+
+        $('.input-date').datetimepicker({
+            timepicker: false,
+            format: 'd/m/Y',
+            scrollInput: false,
+            date: new Date(Date.now())
+        });
+
+        $('#input-FechaNacimiento').datetimepicker({
+            locale: 'es',
+            sideBySide: true
+        });
+
+        var idPerson = $('#PersonId').val();
+                var Action;
+        Action = "@Url.Action("GetHistoriaClinica", "MedicalPersons",new { PersonId = "_Switch" })".replace("_Switch", idPerson);
+        var table = $('#dataTables-Index').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+                "ajax":
+                {
+                    url: "_Action".replace("_Action",Action),
+                    type: "post",
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "id", defaultContent: '', className: 'px100' },
+                    { "data": "FechaIngreso", className: 'px100' },
+                    { "data": "TipoTramite", className: 'px100' },
+                    { "data": "Avoi", className: 'px100' },
+                    { "data": "Avod", className: 'px100' },
+                    { "data": "Fuma", className: 'px100' },
+                    { "data": "ConduceConAnteojos", className: 'px100' },
+                    { "data": "VisionMonocular", className: 'px100' },
+                    { "data": "Discromatopsia", className: 'px100' },
+                    { "data": "HTA", className: 'px100' },
+                    { "data": "DBT", className: 'px100' },
+                    { "data": "GAA", className: 'px100' },
+                    { "data": "AcidoUrico", className: 'px100' },
+                    { "data": "Colesterol", className: 'px100' },
+                    { "data": "Observacion", className: 'px100' }
+                ],
+                rowId: 'Id',
+                responsive: true,
+                ordering: true,
+                searching: false,
+               // "order": [[1, "desc"]],
+                scrollX: true,
+                //"autoWidth": true,
+                "fnCreatedRow": function (nRow, aData, iDataIndex) {
+                    //Agrego las
+                    // Add a class to the cell in the first column
+                    $(nRow).children(':nth-child(1)').addClass('td-btn');
+
+                        //Ver
+                        $('td:eq(0)', nRow).append("<span class='fa fa-eye span-btn' type='button' value='C' data-toggle='tooltip' data-placement='top' title='Ver' id='btn_Ver'/> ");
+
+                            //Modificar
+                       $('td:eq(0)', nRow).append("<span class='fa fa-pencil span-btn' type='button' value='E' data-toggle='tooltip' data-placement='top' title='Modificar' id='btn_Editar' />");
+
+                       $('td:eq(0)', nRow).append("<span data-toggle='modal' data-target='#eliminar-modal'><span class='fa fa-trash span-btn-dtl' type='button' value='D' data-toggle='tooltip' data-placement='top' title='Eliminar' id='btn_Eliminar' /></span>");
+
+
+                }
+
+            });
+
+
+    });
+
+
+
+        $("#form-create").validate({
+                rules: {
+                    Avoi: { required: true},
+                    Avod: { required: true },
+                    FechaNacimiento: { required: true }
+                },
+                messages: {
+                    Avoi: {
+                        required: "Este campo es requerido."
+                    },
+                    Avod: {
+                        required: "Este campo es requerido."
+                    },
+                    FechaNacimiento: {
+                        required: "Este campo es requerido."
+                    }
+                },
+                submitHandler: function (form) {
+                    $("#div-loader").show();
+                    var object = new Object();
+                    object.PersonId = $("#PersonId").val();
+                    object.TurnId = $("#TurnId").val();
+                    object.FechaNacimiento = $('#nuevoModal').find("#input-FechaNacimiento").val();
+                    object.Avoi = $('#nuevoModal').find("#Avoi").val();
+                    object.Avod = $('#nuevoModal').find("#Avod").val();
+                    object.Fuma = $('#nuevoModal').find("#Fuma").prop('checked');
+                    object.Profesional = $('#nuevoModal').find("#Profesional").prop('checked');
+                    object.ConduceConAnteojos = $('#nuevoModal').find("#ConduceConAnteojos").prop('checked');
+                    object.VisionMonocular = $('#nuevoModal').find("#VisionMonocular").prop('checked');
+                    object.Discromatopsia = $('#nuevoModal').find("#Discromatopsia").prop('checked');
+                    object.HTA = $('#nuevoModal').find("#HTA").prop('checked');
+                    object.DBT = $('#nuevoModal').find("#DBT").prop('checked');
+                    object.GAA = $('#nuevoModal').find("#GAA").prop('checked');
+                    object.AcidoUrico = $('#nuevoModal').find("#AcidoUrico").prop('checked');
+                    object.Colesterol = $('#nuevoModal').find("#Colesterol").prop('checked');
+                    object.Observacion = $('#nuevoModal').find("#Observacion").val();
+            
+                    var data = JSON.stringify(object);
+
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("Crear")',
+                            data: data,
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            success: function (dataResponse) {
+                                $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                                $('#nuevoModal').modal('hide');
+                                $("#div-loader").hide();
+                                if (dataResponse.responseCode == 0)
+                                {
+                                    updateFechaNacimiento($('#nuevoModal').find("#input-FechaNacimiento").val());
+                                    $("#div-loader").hide();
+                                    Lobibox.notify('success', {
+                                        title: 'Exito',
+                                        msg: 'Los cambios se han grabado correctamente.'
+                                    });
+                                } else {
+                                        Lobibox.notify('error', {
+                                            title: 'Error',
+                                            msg: 'Ah ocurrido un error, intente nuevamente.'
+                                    });
+                                }
+                            },
+                            error: function (response) {
+                                $("#div-loader").hide();
+                                    Lobibox.notify('error', {
+                                        title: 'Error',
+                                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                                    });
+                            }
+                        });
+                    },
+                    errorElement: "p"
+            });
+
+
+    $(document).on('click', '#btn_Editar', function () {
+        $('#editarModal').modal('toggle');
+
+        var idTurno = $(this).parents().closest('tr').attr('id');
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Get")',
+            data: {
+                id: idTurno
+            },
+            cache: false,
+            success: function (result) {
+                $('#editarModal').find('input#input-Id').val(result.Id);
+                $('#editarModal').find("#input-FechaNacimiento").val(result.FechaNacimiento);
+                $('#editarModal').find("#Avoi").val(result.Avoi);
+                $('#editarModal').find("#Avod").val(result.Avod);
+                $('#nuevoModal').find("#Fuma").prop('checked', result.Fuma);
+                $('#editarModal').find("#Profesional").prop('checked', result.Profesional);
+                $('#editarModal').find("#ConduceConAnteojos").prop('checked', result.ConduceConAnteojos);
+                $('#editarModal').find("#VisionMonocular").prop('checked', result.VisionMonocular);
+                $('#editarModal').find("#Discromatopsia").prop('checked', result.Discromatopsia);
+                $('#editarModal').find("#HTA").prop('checked', result.HTA);
+                $('#editarModal').find("#DBT").prop('checked', result.DBT);
+                $('#editarModal').find("#GAA").prop('checked', result.GAA);
+                $('#editarModal').find("#AcidoUrico").prop('checked', result.AcidoUrico);
+                $('#editarModal').find("#Colesterol").prop('checked', result.Colesterol);
+                $('#editarModal').find("#Observacion").val(result.Observacion);
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                    $('#editarModal').modal('hide');
+            }
+        });
+    });
+
+    $(document).on('click', '#btn_Ver', function () {
+        $('#editarModal').modal('toggle');
+
+        var idTurno = $(this).parents().closest('tr').attr('id')
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Get")',
+            data: {
+                id: idTurno
+            },
+            cache: false,
+            success: function (result) {
+                $('#editarModal').find('input#input-Id').val(result.Id).prop('disabled', true);
+                $('#editarModal').find("#input-FechaNacimiento").val(result.FechaNacimiento).prop('disabled', true);
+                $('#editarModal').find("#Avoi").val(result.Avoi).prop('disabled', true);
+                $('#editarModal').find("#Avod").val(result.Avod).prop('disabled', true);
+                $('#nuevoModal').find("#Fuma").prop('checked', result.Fuma).prop('disabled', true);
+                $('#editarModal').find("#Profesional").prop('checked', result.Profesional).prop('disabled', true);
+                $('#editarModal').find("#ConduceConAnteojos").prop('checked', result.ConduceConAnteojos).prop('disabled', true);
+                $('#editarModal').find("#VisionMonocular").prop('checked', result.VisionMonocular).prop('disabled', true);
+                $('#editarModal').find("#Discromatopsia").prop('checked', result.Discromatopsia).prop('disabled', true);
+                $('#editarModal').find("#HTA").prop('checked', result.HTA).prop('disabled', true);
+                $('#editarModal').find("#DBT").prop('checked', result.DBT).prop('disabled', true);
+                $('#editarModal').find("#GAA").prop('checked', result.GAA).prop('disabled', true);
+                $('#editarModal').find("#AcidoUrico").prop('checked', result.AcidoUrico).prop('disabled', true);
+                $('#editarModal').find("#Colesterol").prop('checked', result.Colesterol).prop('disabled', true);
+                $('#editarModal').find("#Observacion").val(result.Observacion).prop('disabled', true);
+                $('#editarModal').find('.btn-primary').prop('disabled', true);
+
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                    $('#editarModal').modal('hide');
+            }
+        });
+    });   
+
+    $(document).on('click', '#btn_Eliminar', function () {
+        Delete(this);
+    });
+
+
+        function Delete(a) {
+            var id = $(a).closest('tr').attr('id');
+
+            Lobibox.confirm({
+                title: 'Atención',
+                msg: "¿Esta seguro que desea eliminar el Turno?",
+                callback: function ($this, type, ev) {
+                    if (type === 'yes') {
+                    $.ajax({
+                    url: '@Url.Action("Delete", "MedicalPersons")',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        "id": id
+                    }),
+                    contentType: 'application/json; charset=utf-8;',
+                    success: function (result) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $("#div-loader").hide();
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'Los cambios se han grabado correctamente.'
+                        });
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'});
+                        }
+                     });
+                    };
+}
+
+            });
+            }
+
+
+ $("#form-edit").validate({
+     rules: {
+         Avoi: { required: true },
+         Avod: { required: true },
+         FechaNacimiento: { required: true }
+     },
+     messages: {
+         Avoi: {
+             required: "Este campo es requerido."
+         },
+         Avod: {
+             required: "Este campo es requerido."
+         },
+         FechaNacimiento: {
+             required: "Este campo es requerido."
+         }
+     },
+     submitHandler: function (form) {
+         $("#div-loader").show();
+         var object = new Object();
+         object.Id = $('#editarModal').find("#input-Id").val();
+         object.PersonId = $("#PersonId").val();
+         object.TurnId = $("#TurnId").val();
+         object.FechaNacimiento = $('#editarModal').find("#input-FechaNacimiento").val();
+         object.Avoi = $('#editarModal').find("#Avoi").val();
+         object.Avod = $('#editarModal').find("#Avod").val();
+         object.Fuma = $('#editarModal').find("#Fuma").prop('checked');
+         object.Profesional = $('#editarModal').find("#Profesional").prop('checked');
+         object.ConduceConAnteojos = $('#editarModal').find("#ConduceConAnteojos").prop('checked');
+         object.VisionMonocular = $('#editarModal').find("#VisionMonocular").prop('checked');
+         object.Discromatopsia = $('#editarModal').find("#Discromatopsia").prop('checked');
+         object.HTA = $('#editarModal').find("#HTA").prop('checked');
+         object.DBT = $('#editarModal').find("#DBT").prop('checked');
+         object.GAA = $('#editarModal').find("#GAA").prop('checked');
+         object.AcidoUrico = $('#editarModal').find("#AcidoUrico").prop('checked');
+         object.Colesterol = $('#editarModal').find("#Colesterol").prop('checked');
+         object.Observacion = $('#editarModal').find("#Observacion").val();
+
+            var data = JSON.stringify(object);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Edit")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#editarModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                        {
+                            //Actualizo la fecha de Nacimiento y la Edad
+                            updateFechaNacimiento($('#editarModal').find("#input-FechaNacimiento").val());
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+            });
+
+
+            function updateFechaNacimiento(valor) {
+                $('#FechaDeNacimiento').val(valor);
+                var fecha = valor.split("/");
+                var edad = calcularEdad(fecha);
+                $('#Edad').val(edad);
+
+            }
+
+            function calcularEdad(fecha) {
+                var hoy = new Date();
+                var cumpleanos = new Date(+fecha[2], fecha[1] - 1, +fecha[0]);
+                var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+                var m = hoy.getMonth() - cumpleanos.getMonth();
+
+                if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+                    edad--;
+                }
+
+                return edad;
+            }
+
+        //Reinicio los modal
+        $('.modal').on('hidden.bs.modal', function (e) {
+            $(".modal-body input").val(""),
+                $(this).removeData('bs.modal');
+            $("checkbox").prop('checked', false); 
+            $("form").validate().resetForm();
+        });
+
+        </script>
+    }
+

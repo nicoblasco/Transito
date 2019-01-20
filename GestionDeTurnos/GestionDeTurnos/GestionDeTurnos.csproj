@@ -164,6 +164,7 @@
     <Compile Include="Controllers\LicenseClassesController.cs" />
     <Compile Include="Controllers\LicensesController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MedicalPersonsController.cs" />
     <Compile Include="Controllers\ModulesController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProcessesController.cs" />
@@ -185,6 +186,10 @@
     <Compile Include="Helpers\CompNameHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Helpers\WindowHelper.cs" />
+    <Compile Include="Migrations\201901191649122_prueba.cs" />
+    <Compile Include="Migrations\201901191649122_prueba.Designer.cs">
+      <DependentUpon>201901191649122_prueba.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Audit.cs" />
@@ -192,6 +197,7 @@
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\License.cs" />
     <Compile Include="Models\LicenseClass.cs" />
+    <Compile Include="Models\MedicalPerson.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Person.cs" />
@@ -218,10 +224,13 @@
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LicenseIndexViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
+    <Compile Include="ViewModel\MedicalPersonGridViewModel.cs" />
     <Compile Include="ViewModel\PermissionViewModel.cs" />
+    <Compile Include="ViewModel\MedicalPersonViewModel.cs" />
     <Compile Include="ViewModel\PersonViewModel.cs" />
     <Compile Include="ViewModel\ProcessesViewModel.cs" />
     <Compile Include="ViewModel\ProcessLogsViewModel.cs" />
+    <Compile Include="ViewModel\SectorViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="ViewModel\TrackingViewModel.cs" />
@@ -583,6 +592,12 @@
     <Content Include="Views\Settings\Edit.cshtml" />
     <Content Include="Views\Processes\Index.cshtml" />
     <Content Include="Views\Usuarios\Edit.cshtml" />
+    <Content Include="Views\MedicalPersons\Details.cshtml" />
+    <Content Include="Views\MedicalPersons\PersonByTurn.cshtml" />
+    <Content Include="Views\MedicalPersons\_Table.cshtml" />
+    <Content Include="Views\MedicalPersons\Index.cshtml" />
+    <Content Include="Views\MedicalPersons\_Filtros.cshtml" />
+    <Content Include="Views\MedicalPersons\_TableFull.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />
@@ -606,6 +621,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201901191649122_prueba.resx">
+      <DependentUpon>201901191649122_prueba.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

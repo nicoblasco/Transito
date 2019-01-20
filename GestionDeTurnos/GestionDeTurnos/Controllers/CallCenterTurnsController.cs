@@ -260,7 +260,6 @@ namespace GestionDeTurnos.Controllers
             CallCenterTurn callCenterTurn = db.CallCenterTurns.Find(id);
             db.CallCenterTurns.Remove(callCenterTurn);
             db.SaveChanges();
-            db.SaveChanges();
 
             AuditHelper.Auditar("Baja", "Id -" + callCenterTurn.Id.ToString() + " / DNI -" + callCenterTurn.DNI, "CallCenterTurn", ModuleDescription, WindowDescription);
 

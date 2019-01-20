@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     string strId = "";
+    string strTurnoId = "";
     string strTurno="";
     string strEstado = "";
     string strTipoLicencia = "";
@@ -13,6 +14,7 @@
     string strFechaNacimiento = "";
     int intEstadoOrden = 1;
     bool booDisable = !ViewBag.HabilitaLlamarNuevamente;
+    bool booMedico = false;
 
 
 
@@ -20,10 +22,12 @@
     {
         strId = Model.Id.ToString();
         strTurno = Model.Turn.Turno;
+        strTurnoId = Model.Turn.Id.ToString();
         strEstado = Model.Status.Descripcion;
         intEstadoOrden = Model.Status.Orden;
         strNombre = Model.Turn.Person.Nombre;
         strApellido = Model.Turn.Person.Apellido;
+        booMedico = Model.Sector.Medico;
 
 
         if (Model.Status.Orden>2)
@@ -112,8 +116,10 @@
                         <h4 class="page-header" style="margin: 10px 0 20px;">Atendimiento</h4>
                         <div class="panel-body" style="padding: 0px; background-color: #f5f5f5;">
                             <form>
-
+                                @* Tracking Id *@
                                 <input id="TurnId" type="hidden" value=@strId />
+                                @* Turno Id *@
+                                <input id="TurnoId" type="hidden" value=@strTurnoId />
                                 <div class="form-group row" style="margin-bottom: 3px;">
                                     <label for="Turno" class="col-sm-2 col-form-label">Turno</label>
                                     <label id="Turno" class="col-sm-10" style="font-weight: 500">@strTurno </label>
@@ -145,6 +151,21 @@
                                     <label for="Edad" class="col-sm-2 col-form-label">Fecha De Nac </label>
                                     <label id="Edad" class="col-sm-10" style="font-weight: 500">@strFechaNacimiento</label>
                                 </div>
+                                @Html.Hidden("MedicoHidden", booMedico)
+                                @if (intEstadoOrden > 2 && booMedico)
+                                {
+                                    <button type="button" id="btnMedico" class="btn btn-primary">
+                                        Historial Medico
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" id="btnMedico" class="btn btn-primary" style="display:none">
+                                        Historial Medico
+                                    </button>
+                                }
+
+
                             </form>
                         </div>
 
@@ -349,10 +370,12 @@
 
                         //Asigno Parcialmente
                         $("#TurnId").val(result.tracking.Id);
+                        $('#TurnoId').val(result.tracking.Turn.Id);
                         $('#Turno').text(result.tracking.Turn.Turno);
                         $('#Estado').text(result.tracking.Status.Descripcion);
                         $('#Nombre').text(result.tracking.Turn.Person.Nombre);
                         $('#Apellido').text(result.tracking.Turn.Person.Apellido);
+                        $('#MedicoHidden').val(result.tracking.Sector.Medico);
                         $('#btnLlamar').hide();
                         $('#btnLlamarNuevamente').show();
                         $('#btnIniciar').show();
@@ -466,6 +489,11 @@
                         $('#btnFinalizar').show();
                         $('#btnNoEsta').hide();
                         $('#btnIncompleto').show();
+                        
+
+                        if ($('#MedicoHidden').val() == 'True' || $('#MedicoHidden').val() == 'true')
+                            $('#btnMedico').show();
+                        
 
 
                     }
@@ -602,6 +630,12 @@
         });
 
 
+       $(document).on('click', '#btnMedico', function () {
+           var id = $('#TurnoId').val();
+            var baseUrl = "@Url.Action("PersonByTurn", "MedicalPersons", new { id="ID"})";
+            window.location.href = baseUrl.replace("ID",id);
+        });
+
         function IniciarBotones() {
             $('#btnIniciar').show();
             $('#btnFinalizar').hide();
@@ -610,10 +644,12 @@
             $('#btnLlamar').show();
             $('#btnIncompleto').hide();
             $('#btnNoEsta').hide();
-            $('#btnIniciar').hide();            
+            $('#btnIniciar').hide();
+            $('#btnMedico').hide();
 
 
             $('#TurnId').val();
+            $('#TurnoId').val();
             $('#Turno').text("");
             $('#Estado').text("");
             $('#TipoTurno').text("");
