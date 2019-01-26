@@ -20,6 +20,7 @@ namespace GestionDeTurnos.Controllers
         // GET: Modules
         public ActionResult Index()
         {
+
             return View(db.Modules.ToList());
         }
 

@@ -7,22 +7,26 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class SettingsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
-
-
+        public string ModuleDescription = "Configuración";
+        public string WindowDescription = "Sistema";
 
         // GET: Settings/Edit
         public ActionResult Edit()
         {
-            
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             int intTiempoMaximoEspera = db.Settings.Where(x => x.Clave == "TIEMPO_MAXIMO_ESPERA").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             int intCantidadDeLlamados = db.Settings.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             int intNumeroInicialTurno = db.Settings.Where(x => x.Clave == "NUMERO_INICIAL_TURNO").Select(x => x.Numero1).FirstOrDefault() ?? 0;

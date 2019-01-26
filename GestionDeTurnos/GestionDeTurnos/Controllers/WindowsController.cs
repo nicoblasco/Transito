@@ -6,8 +6,10 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
 using GestionDeTurnos.Tags;
+using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
@@ -15,10 +17,13 @@ namespace GestionDeTurnos.Controllers
     public class WindowsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+        public string ModuleDescription = "ABM Maestros";
+        public string WindowDescription = "Sectores";
         // GET: Windows
         public ActionResult Index()
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             return View(db.Windows.ToList());
         }
 

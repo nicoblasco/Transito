@@ -24,11 +24,15 @@ namespace GestionDeTurnos.Controllers
         // GET: Permissions
         public ActionResult Index()
         {
+            //Verifico los Permisos
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             ViewBag.AltaModificacion = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             List<Permission> list = db.Permissions.ToList();
             List<Rol> lRoles = new List<Rol>();
-            lRoles = db.Rols.Where(x => x.Nombre != "Administrador").ToList();
+            lRoles = db.Rols.Where(x => x.IsAdmin!=true).ToList();
             ViewBag.listaRoles = lRoles;
             //return View(db.Permissions.ToList());
             return View(list);

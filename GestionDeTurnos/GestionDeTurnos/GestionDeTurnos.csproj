@@ -178,6 +178,8 @@
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\WindowsController.cs" />
     <Compile Include="Controllers\WorkflowsController.cs" />
+    <Compile Include="Enumerations\CodigosIngreso.cs" />
+    <Compile Include="Enumerations\StatusOrden.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -230,6 +232,7 @@
     <Compile Include="ViewModel\PersonViewModel.cs" />
     <Compile Include="ViewModel\ProcessesViewModel.cs" />
     <Compile Include="ViewModel\ProcessLogsViewModel.cs" />
+    <Compile Include="ViewModel\RolViewModel.cs" />
     <Compile Include="ViewModel\SectorViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
@@ -553,29 +556,22 @@
     <Content Include="sounds\sound5.ogg" />
     <Content Include="sounds\sound6.ogg" />
     <Content Include="Views\Audits\Index.cshtml" />
-    <Content Include="Views\Modules\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Permissions\Index.cshtml" />
     <Content Include="Views\Rols\Index.cshtml" />
     <Content Include="Views\Usuarios\Index.cshtml" />
-    <Content Include="Views\Windows\Index.cshtml" />
     <Content Include="Views\Home\Ingreso.cshtml" />
     <Content Include="Views\Home\AccesoDenegado.cshtml" />
     <Content Include="Views\TypesLicenses\Index.cshtml" />
     <Content Include="Views\Sectors\Index.cshtml" />
     <Content Include="Views\Workflows\Create.cshtml" />
-    <Content Include="Views\Workflows\Delete.cshtml" />
-    <Content Include="Views\Workflows\Details.cshtml" />
     <Content Include="Views\Workflows\Index.cshtml" />
     <Content Include="Views\Turns\Create.cshtml" />
-    <Content Include="Views\Turns\Delete.cshtml" />
     <Content Include="Views\Turns\Details.cshtml" />
     <Content Include="Views\Turns\Edit.cshtml" />
     <Content Include="Views\Turns\Index.cshtml" />
     <Content Include="Views\Turns\Search.cshtml" />
     <Content Include="Views\Terminals\Index.cshtml" />
-    <Content Include="Views\Trackings\Create.cshtml" />
-    <Content Include="Views\Trackings\Delete.cshtml" />
     <Content Include="Views\Trackings\Details.cshtml" />
     <Content Include="Views\Trackings\Edit.cshtml" />
     <Content Include="Views\Trackings\Index.cshtml" />
@@ -598,9 +594,13 @@
     <Content Include="Views\MedicalPersons\Index.cshtml" />
     <Content Include="Views\MedicalPersons\_Filtros.cshtml" />
     <Content Include="Views\MedicalPersons\_TableFull.cshtml" />
+    <Content Include="Views\Home\Ticket.cshtml" />
+    <Content Include="Views\Shared\AccessDenied.cshtml" />
+    <Content Include="Views\Shared\ErrorCustom.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />
+    <Folder Include="Views\Modules\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

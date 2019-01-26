@@ -50,10 +50,11 @@
                                     </div>
                                     <div id="divPrimerPaso">
                                         <div class="form-group">
-                                            <input class="form-control" placeholder="Ingrese DNI" name="DNI" type="number" autofocus required>
+                                            <input class="form-control" placeholder="Ingrese DNI" name="DNI" id="dni" type="number" autofocus required>
                                         </div>
                                         <div class="form-group">
-                                            <button name="Ingresar" id="Ingresar" value="Ingresar" type="submit" class="btn btn-lg btn-success btn-block">Ingresar</button>
+                                            <button name="Ingresar" value="Ingresar" type="submit" class="btn btn-lg btn-success btn-block">Ingresar</button>
+                                            @*<button id="Ingresar"  class="btn btn-lg btn-success btn-block">Ingresar</button>*@
                                         </div>
                                     </div>
                                 </fieldset>
@@ -63,6 +64,19 @@
                 </div>
             </div>
         </div>
+        <div id="printableArea" style="display:none">
+            <h3>Municipalidad de Florencio Varela</h3>
+            <p><strong>Direccion de Transito</strong></p>
+            <p>Por favor aguarde en la sala de espera.</p>
+            <p>Su c&oacute;digo para ser llamado es:</p>
+            <h1><strong>TU2311&nbsp;</strong></h1>
+            <p>&nbsp;Dni: 13577771</p>
+            <p>&nbsp;Apellido: Blasco</p>
+            <p>&nbsp;Nombre: Nicolas</p>
+            <p>&nbsp;Tipo de Turno: Original</p>
+            <p>&nbsp;Fecha y Hora de Turno: 12/01/2019 10:10</p>
+            <p>&nbsp;Fecha emision:&nbsp; 12/01/2019 10:13</p>
+        </div>
 
         @Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")
@@ -70,12 +84,112 @@
         @Scripts.Render("~/bundles/js")
 
     }
+
+
     <script>
        //Espero 60 segundo y lo vuelvo a Index
        window.setTimeout(function () {
            window.location='@Url.Action("Index","Home")';
-       }, 60000);
+        }, 60000);
+
+            $("#Ingresar").click(function () {
+                $("#div-loader").show();
+                var strDni = $('#dni').val();
+                if (strDni != '') {
+                    callAjax(strDni);
+                    @*$.ajax({
+                        url: '@Url.Action("Ingreso", "Home")',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            "DNI": strDni
+                        }),
+                        contentType: 'application/json; charset=utf-8;',
+                        success: function (result) {
+                            $("#div-loader").hide();
+                            if (result.responseCode == 1) {
+                                printTicket();
+                                redirectIndex();
+                                alert("Prueba1");
+                            }                                
+                            else {
+                                redirectAccesoDenegado();
+                                alert("Prueba2");
+                            }
+
+                        },
+                        error: function (response) {
+                            $("#div-loader").hide();
+                            redirectAccesoDenegado();
+                            alert("Prueba3");
+                        }
+                    });//ajax*@
+
+                }//if
+
+        });
+
+
+        function callAjax(strDni) {
+            var prueba = 0;
+            $.ajax({
+                url: '@Url.Action("Ingreso", "Home")',
+                type: 'POST',
+                async: false,
+                data: JSON.stringify({
+                    "DNI": strDni
+                }),
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    $("#div-loader").hide();
+                    if (result.responseCode == 1) {
+                        printTicket();
+                        redirectIndex();
+                    }
+                    else {
+                        redirectAccesoDenegado();
+                    }
+                    return;
+                },
+                error: function (response) {
+                    $("#div-loader").hide();
+                    redirectAccesoDenegado();
+                    alert("Prueba3");
+                }
+            });//ajax
+
+           // return prueba;
+        };
+
+        function redirectAccesoDenegado() {
+            window.location = '@Url.Action("AccesoDenegado","Home")';
+            return false;
+        };
+
+        function redirectIndex() {
+            window.location = '@Url.Action("Index","Home")';
+            return false;
+        };
+
+        function printTicket() {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        };
+
     </script>
+
+    <!-- Progress Loader -->
+    <div id="div-loader" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
+        <p style="position: absolute; color: White; top: 35%; left: 45%;">
+            <img src="~/Images/loading.gif" alt="Loading..." />
+        </p>
+    </div>
+
 </body>
-    
+
 </html>

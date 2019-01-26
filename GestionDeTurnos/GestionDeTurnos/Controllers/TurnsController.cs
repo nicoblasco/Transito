@@ -6,12 +6,15 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GestionDeTurnos.Enumerations;
 using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class TurnsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -20,6 +23,8 @@ namespace GestionDeTurnos.Controllers
         // GET: Turns
         public ActionResult Index()
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             int[] statusOrdenPendiente = { 2, 3};
@@ -111,6 +116,23 @@ namespace GestionDeTurnos.Controllers
             return View();
         }
 
+        public ActionResult SearchByTurn(string NroTurno)
+        {
+
+            List<TypesLicense> lTypesLicense = new List<TypesLicense>();
+            lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
+            ViewBag.listaLicencias = lTypesLicense;
+
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+
+
+            ViewBag.NroTurno = NroTurno;
+            return View("Search");
+
+        }
+
         [HttpPost]
         public JsonResult GetTurnsSearch()
         {
@@ -122,6 +144,7 @@ namespace GestionDeTurnos.Controllers
 
                 foreach (var item in turns)
                 {
+                    string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
                     TurnsSeachViewModel viewModel = new TurnsSeachViewModel
                     {
                         Apellido = item.Person.Apellido,
@@ -132,7 +155,8 @@ namespace GestionDeTurnos.Controllers
                         Ingreso = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
                         Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
                         Tipo = item.TypesLicense.Descripcion,
-                        Turno = item.Turno
+                        Turno = item.Turno,
+                        IncompletoNoSePresento = strEsIncompletoNosePresento
                     };
 
                     turnsSeachViews.Add(viewModel);
@@ -145,6 +169,76 @@ namespace GestionDeTurnos.Controllers
 
                 throw;
             }
+        }
+
+
+        [HttpPost]
+        public JsonResult GetTurnsSearchByTurn(string NroTurno)
+        {
+            try
+            {
+
+                List<TurnsSeachViewModel> turnsSeachViews = new List<TurnsSeachViewModel>();
+                List<Turn> turns = db.Turns.Where(x => x.Enable == true && x.Turno== NroTurno).ToList();
+
+                foreach (var item in turns)
+                {
+                    string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
+                    TurnsSeachViewModel viewModel = new TurnsSeachViewModel
+                    {
+                        Apellido = item.Person.Apellido,
+                        DNI = item.Person.Dni,
+                        FechaTurno = item.FechaTurno.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Id = item.Id,
+                        Nombre = item.Person.Nombre,
+                        Ingreso = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Tipo = item.TypesLicense.Descripcion,
+                        Turno = item.Turno,
+                        IncompletoNoSePresento = strEsIncompletoNosePresento
+
+                    };
+
+                    turnsSeachViews.Add(viewModel);
+                }
+
+                return Json(turnsSeachViews.OrderByDescending(x => x.Id), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        //Verifico si el turno es del dia y si esta incompleto o no se presento
+        private bool EsIncompleto(DateTime FechaIngreso, int TurnId)
+        {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59            
+            
+
+            if (FechaIngreso>=startDateTime && FechaIngreso <= endDateTime)
+            {
+                //Me fijo si ese turno tiene un estadio incompleto o no se presento
+                if (getTrackingIncompletoNosePresento(TurnId) != null)
+                    return true;
+                else
+                    return false;
+
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private Tracking getTrackingIncompletoNosePresento(int TurnId)
+        {
+            int[] statusOrden = { (int)StatusOrden.INCOMPLETO, (int)StatusOrden.NO_SE_PRESENTO };
+            Tracking tracking = db.Trackings.Where(x => x.TurnID == TurnId && x.Enable == true && statusOrden.Contains(x.Status.Orden)).FirstOrDefault();
+            return tracking;
         }
 
 
@@ -173,7 +267,7 @@ namespace GestionDeTurnos.Controllers
                         Status = item.Status.Descripcion,
                         Terminal = item.Terminal?.Descripcion,
                         Turn = item.Turn.Turno,
-                        Usuario = item.Usuario?.Nombreusuario
+                        Usuario = item.Usuario?.Nombreusuario                        
 
                     };
                     trackingsViewModel.Add(viewModel);
@@ -238,6 +332,9 @@ namespace GestionDeTurnos.Controllers
             }
         }
 
+
+
+
         public JsonResult SearchTurn(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo)
         {
             
@@ -254,9 +351,13 @@ namespace GestionDeTurnos.Controllers
         }
 
 
+
+
+
+
         private List<TurnsSeachViewModel> ArmarConsulta(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo)
         {
-            int TipoId=0;
+            int TipoId = 0;
 
             if (!String.IsNullOrEmpty(Tipo))
                 TipoId = Convert.ToInt32(Tipo);
@@ -278,7 +379,7 @@ namespace GestionDeTurnos.Controllers
 
 
                 var lista = db.Turns
-                .Where(x=> x.Enable==true)
+                .Where(x => x.Enable == true)
                 .Where(x => !string.IsNullOrEmpty(NroTurno) ? (x.Turno == NroTurno && x.Turno != null) : true)
                 .Where(x => !string.IsNullOrEmpty(DNI) ? (x.Person.Dni == DNI && x.Person.Dni != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Apellido) ? (x.Person.Apellido == Apellido && x.Person.Apellido != null) : true)
@@ -291,6 +392,7 @@ namespace GestionDeTurnos.Controllers
 
                 foreach (var item in lista)
                 {
+                    string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
                     TurnsSeachViewModel turn = new TurnsSeachViewModel
                     {
                         Apellido = item.Person.Apellido,
@@ -301,7 +403,8 @@ namespace GestionDeTurnos.Controllers
                         Ingreso = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
                         Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
                         Tipo = item.TypesLicense.Descripcion,
-                        Turno = item.Turno
+                        Turno = item.Turno,
+                        IncompletoNoSePresento = strEsIncompletoNosePresento
                     };
 
                     turns.Add(turn);
@@ -810,6 +913,9 @@ namespace GestionDeTurnos.Controllers
         // GET: Turns/Create
         public ActionResult Create()
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             ViewBag.PersonID = new SelectList(db.People, "Id", "Nombre");
             ViewBag.TypesLicenseID = new SelectList(db.TypesLicenses, "Id", "Descripcion");
             return View();
@@ -838,6 +944,8 @@ namespace GestionDeTurnos.Controllers
         // GET: Turns/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -923,6 +1031,9 @@ namespace GestionDeTurnos.Controllers
         // GET: Turns/Edit/5
         public ActionResult Details(int id)
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             Turn turn = db.Turns.Find(id);
             if (turn == null)
             {
@@ -960,6 +1071,41 @@ namespace GestionDeTurnos.Controllers
 
 
             AuditHelper.Auditar("Baja", "Id -" + turn.Id.ToString() + " / Turno -" + turn.Turno, "Turns", ModuleDescription, WindowDescription);
+
+            var responseObject = new
+            {
+                responseCode = 0
+            };
+
+            return Json(responseObject);
+
+
+        }
+
+
+        public JsonResult RellamarTurn(int id)
+        {
+            if (id == 0)
+            {
+                return Json(new { responseCode = "-10" });
+            }
+
+            Tracking tracking = getTrackingIncompletoNosePresento(id);
+            tracking.StatusID = (int) StatusOrden.EN_ESPERA;
+            tracking.TerminalID = null;
+            tracking.UsuarioID = null;
+            tracking.FechaIngreso = null;
+            tracking.FechaSalida = null;
+            tracking.Tiempo = null;
+            tracking.CantidadDeLlamados = 0;
+            tracking.FechaCreacion = DateTime.Now;
+
+            db.Entry(tracking).State = EntityState.Modified;
+            db.SaveChanges();
+
+
+
+            AuditHelper.Auditar("Modificacion", "Id -" + id.ToString() + " / Turno -" + tracking.Turn.Turno, "Trackings", ModuleDescription, WindowDescription);
 
             var responseObject = new
             {

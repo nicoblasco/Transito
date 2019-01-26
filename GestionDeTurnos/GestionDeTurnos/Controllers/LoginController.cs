@@ -1,4 +1,5 @@
-﻿using GestionDeTurnos.Models;
+﻿using GestionDeTurnos.Helpers;
+using GestionDeTurnos.Models;
 using GestionDeTurnos.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace GestionDeTurnos.Controllers
     [NoLoginAttribute]
     public class LoginController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         private Usuario um = new Usuario();
         // GET: Login
         public ActionResult Index()
@@ -36,7 +38,13 @@ namespace GestionDeTurnos.Controllers
 
                 if (rm.response)
                 {
-                    rm.href = Url.Action("Index", "Turns");
+
+                    //Aca deberia a la pantalla default, y si no tiene permiso deberia ir a una pantalla q le indique q no tiene permisos
+                    Rol rol = db.Rols.Find(rm.result);
+
+                    rm.href=rol.Window.Url;
+
+                   // rm.href = Url.Action("Index/Turns");
                 }
             }
             else

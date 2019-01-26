@@ -8,19 +8,24 @@ using System.Web;
 using System.Web.Mvc;
 using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
+using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class TrackingsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         public string ModuleDescription = "Menu Principal";
-        public string WindowDescription = "Busquedas";
+        public string WindowDescription = "Atencion al cliente";
 
 
         // GET: Trackings
         public ActionResult Index()
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             //Obtengo el numero de sector de esta maquina
             string IP = Request.UserHostName;
             string terminalName = CompNameHelper.DetermineCompName(IP);
@@ -510,6 +515,11 @@ namespace GestionDeTurnos.Controllers
 
         public ActionResult Details(int id)
         {
+            string ModuleDescription = "Menu Principal";
+            string WindowDescription = "Busquedas";
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             Tracking tracking = db.Trackings.Find(id);
             if (tracking == null)
             {
@@ -523,6 +533,11 @@ namespace GestionDeTurnos.Controllers
 
         public ActionResult Edit(int id)
         {
+            string ModuleDescription = "Menu Principal";
+            string WindowDescription = "Busquedas";
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             Tracking tracking = db.Trackings.Find(id);
             if (tracking == null)
             {

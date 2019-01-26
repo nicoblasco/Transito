@@ -60,7 +60,7 @@
         if (ViewBagNroTurno == '')
             Action = "@Url.Action("GetTurnsSearch")";
         else
-            Action = "@Url.Action("SearchTurn",new { NroActa = "_Switch" })".replace("_Switch", ViewBagNroTurno);
+            Action = "@Url.Action("GetTurnsSearchByTurn", new { NroTurno = "_Switch" })".replace("_Switch", ViewBagNroTurno);
 
             var table = $('#dataTables-Index').DataTable({
                 "ajax":
@@ -70,7 +70,7 @@
                     dataSrc: ""
                 },
                 "columns": [
-                    { "data": "id", defaultContent: '', className: 'px100' },
+                    { "data": "id", defaultContent: '', className: 'px150' },
                     { "data": "Turno", className: 'px200' },
                     { "data": "FechaTurno", className: 'px200' },
                     { "data": "Ingreso", className: 'px200' },
@@ -102,14 +102,18 @@
                         //Modificar
                         $('td:eq(0)', nRow).append("<span class='fa fa-pencil span-btn' type='button' value='E' data-toggle='tooltip' data-placement='top' title='Modificar' id='btn_Editar' />");
                     }
-
-
-
+                    if (Editar == 'True') {
+                        if (aData.IncompletoNoSePresento == "SI") {
+                            $('td:eq(0)', nRow).append("<span data-toggle='modal' data-target='#eliminar-modal'><span class='fa fa-refresh span-btn-refresh' type='button' value='D' data-toggle='tooltip' data-placement='top' title='Volver a llamar' id='btn_Habilitar' /></span>");
+                        }
+                    }
                     if (Baja == 'True') {
                         //Borrar
 
                         $('td:eq(0)', nRow).append("<span data-toggle='modal' data-target='#eliminar-modal'><span class='fa fa-trash span-btn-dtl' type='button' value='D' data-toggle='tooltip' data-placement='top' title='Eliminar' id='btn_Eliminar' /></span>");
                     }
+
+                    
                 }
 
             });
@@ -177,6 +181,47 @@
         }
 
 
+
+    $(document).on('click', '#btn_Habilitar', function () {
+        Rellamar(this);
+    });
+
+
+        function Rellamar(a) {
+            var id = $(a).closest('tr').attr('id')
+
+            Lobibox.confirm({
+                title: 'Atención',
+                msg: "¿Esta seguro que desea modificar el turno para que vuelva a ser llamado?",
+                callback: function ($this, type, ev) {
+                    if (type === 'yes') {
+                    $.ajax({
+                    url: '@Url.Action("RellamarTurn", "Turns")',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        "id": id
+                    }),
+                    contentType: 'application/json; charset=utf-8;',
+                    success: function (result) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $("#div-loader").hide();
+                        Lobibox.notify('success', {
+                            title: 'Exito',
+                            msg: 'El contribuyente volvera a ser llamado.'
+                        });
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'});
+                        }
+                     });
+                    };
+}
+
+            });
+        }
 
     </script>
 

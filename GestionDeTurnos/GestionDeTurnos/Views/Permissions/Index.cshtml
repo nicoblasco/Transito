@@ -79,8 +79,10 @@
         function refreshdropdown() {
             //var RolId = $('#selectRolCreate').val();
             //$("#dataTables-example").dataTable().fnReloadAjax();
-            var newurl = "@Url.Action("GetPermisos", "Permissions", new { Rolid = "ParamRolId" })".replace("ParamRolId", $('#selectRolCreate').val());
-            $("#dataTables-example").dataTable().fnReloadAjax(newurl);
+            if ($('#selectRolCreate').val() != '') {
+                var newurl = "@Url.Action("GetPermisos", "Permissions", new { Rolid = "ParamRolId" })".replace("ParamRolId", $('#selectRolCreate').val());
+                $("#dataTables-example").dataTable().fnReloadAjax(newurl);
+            }
 
 
             };
@@ -237,68 +239,70 @@
                     });
             }
 
-            var table = $('#dataTables-example').DataTable({
-                 "ajax":
-                  {
-                     url: "@Url.Action("GetPermisos", "Permissions", new { Rolid = "ParamRolId" })".replace("ParamRolId", $('#selectRolCreate').val()),
-                      type: "post",
-                      dataSrc: ""
-                },
-                 "columns": [
-                     { "data": "Id" },
-                     { "data": "Window.Module.Descripcion" },
-                     { "data": "Window.Descripcion" },
-                     { "data": null, defaultContent: '' },
-                     { "data": null, defaultContent: ''},
-                     { "data": null, defaultContent: '' }
+            if (!($('#selectRolCreate').val() == '' || $('#selectRolCreate').val()==null)) {
 
-                 ],
-                "columnDefs": [
-                    { "visible": false, "targets": 1 }
-                ],
-                "ordering": false,
-                rowId: 'Id',
-                "displayLength": 25,
-                "fnCreatedRow": function (nRow, aData, iDataIndex) {
-                    if (aData.Consulta)
+
+                var table = $('#dataTables-example').DataTable({
+                    "ajax":
                     {
-                        $('td:eq(2)', nRow).append("<input class='ConsultaCheckbox' name='consulta' type='checkbox' checked>");
-                    }
-                    else
-                    {
-                        $('td:eq(2)', nRow).append("<input class='ConsultaCheckbox' name='consulta' type='checkbox'>");
-                    }
+                        url: "@Url.Action("GetPermisos", "Permissions", new { Rolid = "ParamRolId" })".replace("ParamRolId", $('#selectRolCreate').val()),
+                        type: "post",
+                        dataSrc: ""
+                    },
+                    "columns": [
+                        { "data": "Id" },
+                        { "data": "Window.Module.Descripcion" },
+                        { "data": "Window.Descripcion" },
+                        { "data": null, defaultContent: '' },
+                        { "data": null, defaultContent: '' },
+                        { "data": null, defaultContent: '' }
 
-                    if (aData.AltaModificacion) {
-                        $('td:eq(3)', nRow).append("<input class='AltaModificacionCheckbox' name='AltaModificacion' type='checkbox' checked>");
-                    }
-                    else {
-                        $('td:eq(3)', nRow).append("<input class='AltaModificacionCheckbox' name='AltaModificacion' type='checkbox'>");
-                    }
-                    if (aData.Baja) {
-                        $('td:eq(4)', nRow).append("<input class='AltaModificacionCheckbox' name='Baja' type='checkbox' checked>");
-                    }
-                    else {
-                        $('td:eq(4)', nRow).append("<input class='BajaCheckbox'  name='Baja' type='checkbox'>");
-                    }
-
-                },
-                "drawCallback": function (settings) {
-                    var api = this.api();
-                    var rows = api.rows({ page: 'current' }).nodes();
-                    var last = null;
-
-                    api.column(1, { page: 'current' }).data().each(function (group, i) {
-                        if (last !== group) {
-                            $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="5" style="color: gray; font-weight: bold;">' + group + '</td></tr>'
-                            );
-
-                            last = group;
+                    ],
+                    "columnDefs": [
+                        { "visible": false, "targets": 1 }
+                    ],
+                    "ordering": false,
+                    rowId: 'Id',
+                    "displayLength": 25,
+                    "fnCreatedRow": function (nRow, aData, iDataIndex) {
+                        if (aData.Consulta) {
+                            $('td:eq(2)', nRow).append("<input class='ConsultaCheckbox' name='consulta' type='checkbox' checked>");
                         }
-                    });
-                }
-            });
+                        else {
+                            $('td:eq(2)', nRow).append("<input class='ConsultaCheckbox' name='consulta' type='checkbox'>");
+                        }
+
+                        if (aData.AltaModificacion) {
+                            $('td:eq(3)', nRow).append("<input class='AltaModificacionCheckbox' name='AltaModificacion' type='checkbox' checked>");
+                        }
+                        else {
+                            $('td:eq(3)', nRow).append("<input class='AltaModificacionCheckbox' name='AltaModificacion' type='checkbox'>");
+                        }
+                        if (aData.Baja) {
+                            $('td:eq(4)', nRow).append("<input class='AltaModificacionCheckbox' name='Baja' type='checkbox' checked>");
+                        }
+                        else {
+                            $('td:eq(4)', nRow).append("<input class='BajaCheckbox'  name='Baja' type='checkbox'>");
+                        }
+
+                    },
+                    "drawCallback": function (settings) {
+                        var api = this.api();
+                        var rows = api.rows({ page: 'current' }).nodes();
+                        var last = null;
+
+                        api.column(1, { page: 'current' }).data().each(function (group, i) {
+                            if (last !== group) {
+                                $(rows).eq(i).before(
+                                    '<tr class="group"><td colspan="5" style="color: gray; font-weight: bold;">' + group + '</td></tr>'
+                                );
+
+                                last = group;
+                            }
+                        });
+                    }
+                });
+            }
 
         });
 

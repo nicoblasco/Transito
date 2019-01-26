@@ -1,14 +1,39 @@
-﻿<!DOCTYPE html>
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
 <html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
+    <title>Dirección de Transito - Municipalidad de Florencio Varela</title>
 </head>
 <body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>Error al procesar la solicitud.</h2>
-    </hgroup>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        img {
+            min-height: 100%;
+            min-width: 100%;
+            height: auto;
+            width: auto;
+            position: absolute;
+            top: -100%;
+            bottom: -100%;
+            left: -100%;
+            right: -100%;
+            margin: auto;
+        }
+    </style>
+    <div>
+        <img src="~/Images/error-404.jpg" runat="server" />
+    </div>
 </body>
 </html>

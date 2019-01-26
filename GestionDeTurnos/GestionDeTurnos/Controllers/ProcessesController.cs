@@ -6,18 +6,25 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class ProcessesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+        public string ModuleDescription = "Configuración";
+        public string WindowDescription = "Procesos";
         // GET: Processes
         public ActionResult Index()
         {
+            //Verifico los Permisos
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             return View(db.Process.ToList());
         }
 

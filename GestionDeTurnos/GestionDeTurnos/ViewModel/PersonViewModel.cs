@@ -19,5 +19,10 @@ namespace GestionDeTurnos.ViewModel
 
         public string DomicilioNro { get; set; }
         public int? Nacionalidad { get; set; }
+        public string Tel_Particular { get; set; }
+
+        public string Tel_Celular { get; set; }
+
+        public string Email { get; set; }
     }
 }

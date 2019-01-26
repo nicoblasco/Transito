@@ -1,4 +1,6 @@
-﻿using GestionDeTurnos.Models;
+﻿using GestionDeTurnos.Enumerations;
+using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -9,12 +11,20 @@ using System.Web.Mvc;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
             return View();
+
+        }
+
+        public ActionResult AccesoDenegado()
+        {
+            return View("AccesoDenegado");
+
         }
 
         public ActionResult ConTurno()
@@ -38,6 +48,7 @@ namespace GestionDeTurnos.Controllers
         {
             if (ModelState.IsValid)
             {
+                
                 if (model == null)
                 {
                     //No tiene turno
@@ -58,7 +69,7 @@ namespace GestionDeTurnos.Controllers
             int? NumeroSecuencia;
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
-            int EstadoInicial = db.Status.Where(x=>x.Orden==1).Select(x=>x.Id) .FirstOrDefault();
+            int EstadoInicial = db.Status.Where(x => x.Orden == 1).Select(x => x.Id).FirstOrDefault();
 
 
             if (ModelState.IsValid)
@@ -76,7 +87,8 @@ namespace GestionDeTurnos.Controllers
                 //Verifico con los datos que vienen del CallCenter
                 List<Setting> setting = db.Settings.ToList();
                 //Que pasa si tengo mas de un turno???
-                CallCenterTurn callCenterTurn = db.CallCenterTurns.Where(x => x.DNI == model.DNI && x.FechaTurno>=startDateTime && x.FechaTurno<=endDateTime && x.Asignado==false ).FirstOrDefault();
+                //CallCenterTurn callCenterTurn = db.CallCenterTurns.Where(x => x.DNI == model.DNI && x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime && x.Asignado == false).FirstOrDefault();
+                CallCenterTurn callCenterTurn = db.CallCenterTurns.Where(x => x.DNI == model.DNI && x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).FirstOrDefault();
                 int? TiempoMaximoEspera = setting.Where(x => x.Clave == "TIEMPO_MAXIMO_ESPERA").FirstOrDefault().Numero1;
 
 
@@ -87,21 +99,31 @@ namespace GestionDeTurnos.Controllers
                 }
 
                 else
-                //Valido si no se paso de tiempo
+                
                 {
-                    if (TiempoMaximoEspera != null)
+                    //si esta asignado vuelvo a emitir el mismo turno
+                    if (callCenterTurn.Asignado)
                     {
-                        //Si es 0 no lo tomo en cuenta
-                        if (TiempoMaximoEspera != 0)
+                        //Busco El turno
+                        Turn turnoold = db.Turns.Where(x => x.CallCenterTurnId == callCenterTurn.Id).FirstOrDefault();
+                        //Reeimprimo
+                        return RedirectToAction("Index");
+                    }
+
+                        //Valido si no se paso de tiempo
+                       if (TiempoMaximoEspera != null)
                         {
-                            DateTime fechaMax = callCenterTurn.FechaTurno.AddMinutes(TiempoMaximoEspera.Value);
-                            if (DateTime.Now > fechaMax)
+                            //Si es 0 no lo tomo en cuenta
+                            if (TiempoMaximoEspera != 0)
                             {
-                                //Se le paso el turno
-                                return View("AccesoDenegado");
+                                DateTime fechaMax = callCenterTurn.FechaTurno.AddMinutes(TiempoMaximoEspera.Value);
+                                if (DateTime.Now > fechaMax)
+                                {
+                                    //Se le paso el turno
+                                    return View("AccesoDenegado");
+                                }
                             }
                         }
-                    }
 
                     //Obtengo el tipo de turno
                     //La relacion entre como viene y como esta en el sistema
@@ -129,7 +151,7 @@ namespace GestionDeTurnos.Controllers
                             Dni = callCenterTurn.DNI,
                             Barrio = callCenterTurn.Barrio,
                             Tel_Celular = callCenterTurn.Tel_Celular,
-                            Tel_Particular= callCenterTurn.Tel_Particular                            
+                            Tel_Particular = callCenterTurn.Tel_Particular
                         };
 
                         //No le paso fecha de vencimiento de la licencia porque esta pasando mal el webservice
@@ -138,7 +160,7 @@ namespace GestionDeTurnos.Controllers
                         //{
                         //    person.Vencimiento_licencia = Convert.ToDateTime(callCenterTurn.Vencimiento_licencia.Substring(0,9));
                         //}
-                            
+
                         db.People.Add(person);
                         db.SaveChanges();
                     }
@@ -173,7 +195,7 @@ namespace GestionDeTurnos.Controllers
                         Turno = typesLicense.Codigo + NumeroSecuencia.Value.ToString("0000"),
                         Secuencia = NumeroSecuencia.Value,
                         FechaTurno = callCenterTurn.FechaTurno,
-                        Enable =true,
+                        Enable = true,
                         CallCenterTurnId = callCenterTurn.Id
 
                     };
@@ -196,7 +218,7 @@ namespace GestionDeTurnos.Controllers
                         TurnID = turn.Id,
                         FechaCreacion = DateTime.Now,
                         StatusID = EstadoInicial,
-                        Enable=true
+                        Enable = true
                     };
 
                     db.Trackings.Add(tracking);
@@ -211,7 +233,7 @@ namespace GestionDeTurnos.Controllers
             return View(model);
         }
 
-        
+
 
 
         public ActionResult About()
@@ -227,5 +249,172 @@ namespace GestionDeTurnos.Controllers
 
             return View();
         }
+
+
+        //public JsonResult Ingreso(string DNI)
+        //{
+
+
+
+
+        //    if (string.IsNullOrEmpty (DNI))
+        //    {
+        //        return Json(new { responseCode = CodigosIngreso.SinTurno }); //Acceso denegado
+        //    }
+
+
+        //    int? NumeroSecuencia;
+        //    DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+        //    DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+        //    int EstadoInicial = db.Status.Where(x => x.Orden == 1).Select(x => x.Id).FirstOrDefault();
+
+
+
+        //    //Con el DNI me fijo si existe la persona
+        //    //Verifico con los datos que vienen del CallCenter
+        //    List<Setting> setting = db.Settings.ToList();
+            
+        //    CallCenterTurn callCenterTurn = db.CallCenterTurns.Where(x => x.DNI == DNI && x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime && x.Asignado == false).FirstOrDefault();
+        //    int? TiempoMaximoEspera = setting.Where(x => x.Clave == "TIEMPO_MAXIMO_ESPERA").FirstOrDefault().Numero1;
+
+
+        //    if (callCenterTurn == null)
+        //    {
+        //    //No tiene turno
+        //        return Json(new { responseCode = CodigosIngreso.SinTurno }); //Acceso denegado
+        //    }
+
+        //    else
+        //        //Valido si no se paso de tiempo
+        //     {
+        //        if (TiempoMaximoEspera != null)
+        //        {
+        //            //Si es 0 no lo tomo en cuenta
+        //            if (TiempoMaximoEspera != 0)
+        //            {
+        //                DateTime fechaMax = callCenterTurn.FechaTurno.AddMinutes(TiempoMaximoEspera.Value);
+        //                if (DateTime.Now > fechaMax)
+        //                {
+        //                    //Se le paso el turno
+        //                    return Json(new { responseCode = -10 }); //Acceso denegado
+        //                }
+        //            }
+        //        }
+
+        //        //Obtengo el tipo de turno
+        //        //La relacion entre como viene y como esta en el sistema
+        //        TypesLicense typesLicense = db.TypesLicenses.Where(x => x.Referencia == callCenterTurn.TipoTramite).FirstOrDefault();
+
+        //        if (typesLicense == null)
+        //        {
+        //            //Le asigno un turno por defecto??
+        //            typesLicense = db.TypesLicenses.Where(x => x.Codigo == "OR").FirstOrDefault();
+
+        //        }
+
+
+        //        //Si paso todas las validaciones
+
+        //        //Verifico si la persona existe, si no existe la doy de alta en el maestro de personas
+
+        //        Person person = db.People.Where(x => x.Dni == DNI).FirstOrDefault();
+        //        if (person == null)
+        //        {
+        //            person = new Person
+        //            {
+        //                Nombre = callCenterTurn.Nombre,
+        //                Apellido = callCenterTurn.Apellido,
+        //                Dni = callCenterTurn.DNI,
+        //                Barrio = callCenterTurn.Barrio,
+        //                Tel_Celular = callCenterTurn.Tel_Celular,
+        //                Tel_Particular = callCenterTurn.Tel_Particular
+        //            };
+
+        //            //No le paso fecha de vencimiento de la licencia porque esta pasando mal el webservice
+
+        //            //if (!String.IsNullOrEmpty(callCenterTurn.Vencimiento_licencia))
+        //            //{
+        //            //    person.Vencimiento_licencia = Convert.ToDateTime(callCenterTurn.Vencimiento_licencia.Substring(0,9));
+        //            //}
+
+        //            db.People.Add(person);
+        //            db.SaveChanges();
+        //        }
+
+        //        //Asigno el turno
+        //        callCenterTurn.Asignado = true;
+        //        db.Entry(callCenterTurn).State = EntityState.Modified;
+
+
+
+        //        //GENERO EL TURNO y Emito el ticket                   
+
+
+
+        //        if (!db.Turns.Where(x => x.FechaIngreso >= startDateTime && x.FechaIngreso <= endDateTime).Any())
+        //            NumeroSecuencia = 1;
+        //        else
+        //            NumeroSecuencia = db.Turns.Where(x => x.FechaIngreso >= startDateTime && x.FechaIngreso <= endDateTime).Max(x => x.Secuencia);
+
+        //        if (NumeroSecuencia == null)
+        //            NumeroSecuencia = (typesLicense.NumeroInicial == 0) ? 1 : typesLicense.NumeroInicial;
+        //        else
+        //            NumeroSecuencia = NumeroSecuencia + 1;
+
+
+        //        Turn turn = new Turn
+        //        {
+        //            FechaIngreso = DateTime.Now,
+        //            PersonID = person.Id,
+        //            TypesLicenseID = typesLicense.Id,
+        //            //Armo el codigo del dia
+        //            Turno = typesLicense.Codigo + NumeroSecuencia.Value.ToString("0000"),
+        //            Secuencia = NumeroSecuencia.Value,
+        //            FechaTurno = callCenterTurn.FechaTurno,
+        //            Enable = true,
+        //            CallCenterTurnId = callCenterTurn.Id
+
+        //        };
+        //        db.Turns.Add(turn);
+
+
+
+        //        db.SaveChanges();
+
+
+        //        //Obtengo el primer Sector del Workflow para el tipo de tramite
+        //        List<Workflow> workflows = db.Workflows.Where(x => x.TypesLicenseID == typesLicense.Id).ToList();
+
+        //        SectorWorkflow sectorWorkflow = db.SectorWorkflows.Where(x => x.Workflow.TypesLicenseID == typesLicense.Id && x.Orden == 1).FirstOrDefault();
+
+
+        //        Tracking tracking = new Tracking
+        //        {
+        //            SectorID = sectorWorkflow.SectorID,
+        //            TurnID = turn.Id,
+        //            FechaCreacion = DateTime.Now,
+        //            StatusID = EstadoInicial,
+        //            Enable = true
+        //        };
+
+        //        db.Trackings.Add(tracking);
+        //        db.SaveChanges();
+
+
+        //        }
+
+
+            
+
+
+        //    var responseObject = new
+        //    {
+        //        responseCode = CodigosIngreso.OK
+        //    };
+
+        //    return Json(responseObject);
+
+
+        //}
     }
 }

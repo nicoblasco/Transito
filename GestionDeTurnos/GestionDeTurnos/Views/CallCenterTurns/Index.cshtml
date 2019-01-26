@@ -177,7 +177,7 @@
                 responsive: true,
                 ordering: true,
                 searching: false,
-               // "order": [[1, "desc"]],
+                //"order": [[0, "desc"]],
                 scrollX: true,
                 //"autoWidth": true,
                 "fnCreatedRow": function (nRow, aData, iDataIndex) {
@@ -206,7 +206,7 @@
                     //}
 
 
-                    if (aData.Asignado == "NO") {
+                    if (aData.Asignado == "NO" && !(aData.UsuarioId == '' || aData.UsuarioId ==null) ) {
                         if (Baja == 'True') {
                             //Borrar
 
@@ -475,7 +475,6 @@ $("#form-create").validate({
                                     msg: 'Ah ocurrido un error, intente nuevamente.'
                             });
                         }
-                        habilitaBotones(false);
                     },
                     error: function (response) {
                         $("#div-loader").hide();
@@ -608,7 +607,7 @@ $("#form-create").validate({
                 case "tagApellido":
                     $('#Apellido').val('');
                     break;
-                case "TipoTramite":
+                case "tagTipo":
                     $('#ddlTipo').val('').change();
                     break;
                 case "tagFechaDesde":

@@ -31,5 +31,10 @@ namespace GestionDeTurnos.Models
 
         public bool Asignado { get; set; }
 
+        public DateTime? FechaModificacion { get; set; }
+
+        public int? UsuarioId { get; set; }
+        public virtual Usuario Usuario { get; set; }
+
     }
 }

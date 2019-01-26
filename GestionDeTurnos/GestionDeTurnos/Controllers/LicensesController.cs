@@ -8,11 +8,13 @@ using System.Web;
 using System.Web.Mvc;
 using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 using Newtonsoft.Json;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class LicensesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -21,6 +23,10 @@ namespace GestionDeTurnos.Controllers
 
         public ActionResult Index()
         {
+            //Verifico los Permisos
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             List<Setting> lEstados = new List<Setting>();
             List<Country> lCountries = new List<Country>();
             List<LicenseClass> lClases = new List<LicenseClass>();
@@ -115,7 +121,10 @@ namespace GestionDeTurnos.Controllers
                     Otorgamiendo = license.FechaOtorgamiento?.ToString("dd/MM/yyyy"),
                     Vencimiento = license.FechaVencimiento?.ToString("dd/MM/yyyy"),
                     DomicilioNro = license.Person.CalleNro,
-                    SelectedClases = new int[license.LicenseClasses.Count]
+                    SelectedClases = new int[license.LicenseClasses.Count],
+                    Email = license.Person.Email,
+                    Tel_Celular = license.Person.Tel_Celular,
+                    Tel_Particular = license.Person.Tel_Particular
 
             };
 
@@ -159,7 +168,9 @@ namespace GestionDeTurnos.Controllers
             license.Person.CalleNro = licenseIndexViewModel.DomicilioNro;
             license.FechaOtorgamiento =  string.IsNullOrEmpty(licenseIndexViewModel.Otorgamiendo) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Otorgamiendo);
             license.FechaVencimiento = string.IsNullOrEmpty(licenseIndexViewModel.Vencimiento) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Vencimiento);
-
+            license.Person.Email = licenseIndexViewModel.Email;
+            license.Person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
+            license.Person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
 
             if (license.LicenseClasses != null)
             {
@@ -220,6 +231,10 @@ namespace GestionDeTurnos.Controllers
             license.FechaRecibo = DateTime.Now;
             license.FechaRetiro = null;
             license.Estado = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS" && x.Numero1 == 2).Select(x => x.Texto1).FirstOrDefault();
+            license.Person.Email = licenseIndexViewModel.Email;
+            license.Person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
+            license.Person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
+
 
             if (license.LicenseClasses != null)
             {
@@ -277,7 +292,9 @@ namespace GestionDeTurnos.Controllers
             license.FechaOtorgamiento = string.IsNullOrEmpty(licenseIndexViewModel.Otorgamiendo) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Otorgamiendo);
             license.FechaVencimiento = string.IsNullOrEmpty(licenseIndexViewModel.Vencimiento) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Vencimiento);
             license.FechaRetiro = DateTime.Now;
-
+            license.Person.Email = licenseIndexViewModel.Email;
+            license.Person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
+            license.Person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
             license.Estado = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS" && x.Numero1 == 3).Select(x => x.Texto1).FirstOrDefault();
 
             if (license.LicenseClasses != null)
@@ -355,6 +372,9 @@ namespace GestionDeTurnos.Controllers
                 person.Calle = licenseIndexViewModel.Domicilio;
                 person.StreetId = licenseIndexViewModel.CalleId;
                 person.CalleNro = licenseIndexViewModel.DomicilioNro;
+                person.Email = licenseIndexViewModel.Email;
+                person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
+                person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
                 //Actualizo la persona
                 if (person.Id>0)
                 {                    
@@ -437,7 +457,11 @@ namespace GestionDeTurnos.Controllers
                         FechaDeNacimiento = person.FechaNacimiento?.ToString("dd/MM/yyyy"),
                         Id = person.Id,
                         Nacionalidad = person.CountryId,
-                        Nombre = person.Nombre
+                        Nombre = person.Nombre,
+                        Email = person.Email,
+                        Tel_Celular = person.Tel_Celular,
+                        Tel_Particular = person.Tel_Particular
+                        
                     };
                     return Json(viewModel, JsonRequestBehavior.AllowGet);
                 }

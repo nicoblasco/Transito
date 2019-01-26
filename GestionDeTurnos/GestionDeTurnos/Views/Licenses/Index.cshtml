@@ -219,6 +219,18 @@
                                         @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
                                         @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
                                     </div>
+                                    <div class="form-group">
+                                        <label>Tel.Particular</label>
+                                        <input id="input-TelParticular" name="inputTelParticular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tel.Celular</label>
+                                        <input id="input-TelCelular" name="inputTelCelular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input id="input-Email" name="inputEmail" class="form-control input-width" autocomplete="off">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -306,6 +318,18 @@
                                         <label>Clases</label>
                                         @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
                                         @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tel.Particular</label>
+                                        <input id="input-TelParticular" name="inputTelParticular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tel.Celular</label>
+                                        <input id="input-TelCelular" name="inputTelCelular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input id="input-Email" name="inputEmail" class="form-control input-width" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -395,6 +419,18 @@
                                         @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
                                         @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
                                     </div>
+                                    <div class="form-group">
+                                        <label>Tel.Particular</label>
+                                        <input id="input-TelParticular" name="inputTelParticular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tel.Celular</label>
+                                        <input id="input-TelCelular" name="inputTelCelular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input id="input-Email" name="inputEmail" class="form-control input-width" autocomplete="off">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -483,6 +519,18 @@
                                         @*<input class="form-control input-sm input-width" id="input-Clases" type="text" name="inputClases">*@
                                         @Html.DropDownList("SelectedClases", new SelectList(ViewBag.Clases, "Id", "Codigo"), new { @class = "form-control input-sm input-width js-example-basic-multiple", multiple = "multiple", id = "input-Clases" })
                                     </div>
+                                    <div class="form-group">
+                                        <label>Tel.Particular</label>
+                                        <input id="input-TelParticular" name="inputTelParticular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tel.Celular</label>
+                                        <input id="input-TelCelular" name="inputTelCelular" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input id="input-Email" name="inputEmail" class="form-control input-width" autocomplete="off">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -558,6 +606,20 @@
                 }
             });
 
+            $('#recibidoModal').find('#input-Domicilio').autocomplete({
+                lookup: callesJson,
+                onSelect: function (suggestion) {
+                    $('#recibidoModal').find("#input-CalleId").val(suggestion.data);
+                }
+            });
+
+            $('#entregadoModal').find('#input-Domicilio').autocomplete({
+                lookup: callesJson,
+                onSelect: function (suggestion) {
+                    $('#entregadoModal').find("#input-CalleId").val(suggestion.data);
+                }
+            });
+            
 
             //Cargo la grilla
 
@@ -608,9 +670,9 @@
         });
 
         function refreshdropdown() {            
-            var newurl = "@Url.Action("GetLicencias", "Licenses", new { Estado = "ParamEstado", Dni = "ParamDNI" })".replace("ParamEstado", $('#selectEstado').val()).replace("ParamDNI", $('#inputBuscar').val());
+            @*var newurl = "@Url.Action("GetLicencias", "Licenses", new { Estado = "ParamEstado", Dni = "ParamDNI" })".replace("ParamEstado", $('#selectEstado').val()).replace("ParamDNI", $('#inputBuscar').val());
             habilitaBotones(false, null);
-            $("#dataTables-Index").dataTable().fnReloadAjax(newurl);
+            $("#dataTables-Index").dataTable().fnReloadAjax(newurl);*@
 
             $("#div-loader").show();
             var DNI = $('#inputBuscar').val();
@@ -668,6 +730,9 @@
                 $(modal).find('#input-Otorgamiendo').val(result.Otorgamiendo);
                 $(modal).find('#input-Vencimiento').val(result.Vencimiento);
                 $(modal).find('#input-Clases').val(result.SelectedClases).trigger('change');
+                $(modal).find('#input-TelParticular').val(result.Tel_Particular);
+                $(modal).find('#input-TelCelular').val(result.Tel_Celular);
+                $(modal).find('#input-Email').val(result.Email);
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -754,6 +819,9 @@
             object.Otorgamiendo = $('#editarModal').find('#input-Otorgamiendo').val();
             object.Vencimiento = $('#editarModal').find('#input-Vencimiento').val();
             object.SelectedClases = $('#editarModal').find('#input-Clases').val();
+            object.Tel_Particular = $('#editarModal').find('#input-TelParticular').val();
+            object.Tel_Celular = $('#editarModal').find('#input-TelCelular').val();
+            object.Email = $('#editarModal').find('#input-Email').val();
 
             var data = JSON.stringify(object);
 
@@ -851,6 +919,9 @@ $("#form-create").validate({
             object.Otorgamiendo = $('#createModal').find('#input-Otorgamiendo').val();
             object.Vencimiento = $('#createModal').find('#input-Vencimiento').val();
             object.SelectedClases = $('#createModal').find('#input-Clases').val();
+            object.Tel_Particular = $('#createModal').find('#input-TelParticular').val();
+            object.Tel_Celular = $('#createModal').find('#input-TelCelular').val();
+            object.Email = $('#createModal').find('#input-Email').val();
 
             var data = JSON.stringify(object);
 
@@ -923,6 +994,9 @@ $("#form-create").validate({
                         $('#createModal').find('#input-Domicilio').val(result.Domicilio);
                         $('#createModal').find('#input-Nro').val(result.DomicilioNro);
                         $('#createModal').find('#input-Nacionalidad').val(result.Nacionalidad);
+                        $('#createModal').find('#input-TelParticular').val(result.Tel_Particular);
+                        $('#createModal').find('#input-TelCelular').val(result.Tel_Celular);
+                        $('#createModal').find('#input-Email').val(result.Email);
                         $("#div-loader").hide();
                     },
                         error: function (response) {
@@ -997,6 +1071,9 @@ $("#form-create").validate({
             object.Otorgamiendo = $('#recibidoModal').find('#input-Otorgamiendo').val();
             object.Vencimiento = $('#recibidoModal').find('#input-Vencimiento').val();
             object.SelectedClases = $('#recibidoModal').find('#input-Clases').val();
+            object.Tel_Particular = $('#recibidoModal').find('#input-TelParticular').val();
+            object.Tel_Celular = $('#recibidoModal').find('#input-TelCelular').val();
+            object.Email = $('#recibidoModal').find('#input-Email').val();
 
             var data = JSON.stringify(object);
 
@@ -1094,6 +1171,10 @@ $("#form-entregado").validate({
             object.Otorgamiendo = $('#entregadoModal').find('#input-Otorgamiendo').val();
             object.Vencimiento = $('#entregadoModal').find('#input-Vencimiento').val();
             object.SelectedClases = $('#entregadoModal').find('#input-Clases').val();
+            object.Tel_Particular = $('#entregadoModal').find('#input-TelParticular').val();
+            object.Tel_Celular = $('#entregadoModal').find('#input-TelCelular').val();
+            object.Email = $('#entregadoModal').find('#input-Email').val();
+
 
             var data = JSON.stringify(object);
 

@@ -8,10 +8,12 @@ using System.Web;
 using System.Web.Mvc;
 using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class CallCenterTurnsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -20,6 +22,10 @@ namespace GestionDeTurnos.Controllers
         // GET: CallCenterTurns
         public ActionResult Index()
         {
+            //Verifico los Permisos
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             List<TypesLicense> lTypesLicense = new List<TypesLicense>();
             lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
             ViewBag.listaLicencias = lTypesLicense;
@@ -38,7 +44,7 @@ namespace GestionDeTurnos.Controllers
             {
 
                 List<CallCenterIndexViewModel> turnsSeachViews = new List<CallCenterIndexViewModel>();
-                List<CallCenterTurn> turns = db.CallCenterTurns.Take(1000).ToList();
+                List<CallCenterTurn> turns = db.CallCenterTurns.ToList();
 
                 foreach (var item in turns)
                 {
@@ -51,13 +57,14 @@ namespace GestionDeTurnos.Controllers
                         Nombre = item.Nombre,
                         FechaTurno = item.FechaTurno.ToString("dd/MM/yyyy HH:mm:ss"),
                         Asignado = ConvertSiNo(item.Asignado), 
-                        TipoTramite = item.TipoTramite
+                        TipoTramite = item.TipoTramite,
+                        UsuarioId = item.UsuarioId.ToString()
                     };
 
                     turnsSeachViews.Add(viewModel);
                 }
 
-                return Json(turnsSeachViews.OrderByDescending(x => x.Id), JsonRequestBehavior.AllowGet);
+                return Json(turnsSeachViews.OrderByDescending(x => x.FechaTurno).Take(1000), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -121,7 +128,7 @@ namespace GestionDeTurnos.Controllers
                 .Where(x => !string.IsNullOrEmpty(Tipo) ? (x.TipoTramite == Tipo && x.TipoTramite != null) : true)
                 .Where(x => !string.IsNullOrEmpty(FechaTurnoDesde) ? (x.FechaTurno >= dtFechaDesde && x.FechaTurno != null) : true)
                 .Where(x => !string.IsNullOrEmpty(FechaTurnoHasta) ? (x.FechaTurno <= dtFechaHasta && x.FechaTurno != null) : true)
-                .Select(c => new { c.Id, c.Asignado, c.FechaTurno, c.Apellido, c.Nombre, c.TipoTramite, c.DNI }).OrderByDescending(x => x.FechaTurno).Take(1000);
+                .Select(c => new { c.Id, c.Asignado, c.FechaTurno, c.Apellido, c.Nombre, c.TipoTramite, c.DNI,c.UsuarioId }).OrderByDescending(x => x.FechaTurno).Take(1000);
                 ;
 
                 foreach (var item in lista)
@@ -134,7 +141,9 @@ namespace GestionDeTurnos.Controllers
                         Id = item.Id,
                         Nombre = item.Nombre,
                         TipoTramite = item.TipoTramite,
-                        Asignado = ConvertSiNo(item.Asignado)
+                        Asignado = ConvertSiNo(item.Asignado),
+                        UsuarioId = item.UsuarioId?.ToString()
+
                     };
 
                     turns.Add(turn);
@@ -168,7 +177,8 @@ namespace GestionDeTurnos.Controllers
                     Apellido = callCenterTurn.Apellido,
                     Nombre = callCenterTurn.Nombre,
                     Id = callCenterTurn.Id,
-                    TipoTramite = callCenterTurn.TipoTramite
+                    TipoTramite = callCenterTurn.TipoTramite,
+                    UsuarioId = callCenterTurn.UsuarioId.ToString()
                 };
 
                 return Json(callCenterIndexViewModel, JsonRequestBehavior.AllowGet);
@@ -204,6 +214,8 @@ namespace GestionDeTurnos.Controllers
             callCenterTurn.Asignado = false;
             callCenterTurn.Estado = "ABIERTO";
             callCenterTurn.Fecha = DateTime.Now;
+            callCenterTurn.FechaModificacion = DateTime.Now;
+            callCenterTurn.UsuarioId = SessionHelper.GetUser();
 
             db.CallCenterTurns.Add(callCenterTurn);
             db.SaveChanges();
@@ -232,7 +244,8 @@ namespace GestionDeTurnos.Controllers
             turn.Nombre = callCenterTurn.Nombre;
             turn.TipoTramite = callCenterTurn.TipoTramite;
             turn.FechaTurno = callCenterTurn.FechaTurno;
-
+            turn.FechaModificacion = DateTime.Now;
+            turn.UsuarioId = SessionHelper.GetUser();
 
             db.Entry(turn).State = EntityState.Modified;
 

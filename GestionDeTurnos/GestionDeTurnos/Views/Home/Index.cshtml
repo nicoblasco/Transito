@@ -37,12 +37,17 @@
                                 </div>
                                 <div id="divPrimerPaso">
                                     <div class="form-group">
-                                        <input type="button" value="Con Turno" class="btn btn-success btn-lg" style="width: 200px !important" onclick="location.href='@Url.Action("ConTurno", "Home")'" />
-                                        @*<button id="btnConTurno" type="button" class="btn btn-success btn-lg" style="width: 200px !important">Con Turno</button>*@
+                                        @*<input type="button" value="Con Turno" class="btn btn-success btn-lg" style="width: 200px !important" onclick="location.href='@Url.Action("ConTurno", "Home")'" />*@
+                                        <input type="button" value="Ingresar" class="btn btn-success btn-lg" style="width: 200px !important" onclick="location.href='@Url.Action("ConTurno", "Home")'" />
+                                        @*<div id="printableArea">
+                                            <h1>Print me</h1>
+                                        </div>
+                                        <input type="button" onclick="printDiv('printableArea')" value="print a div!" />*@
+
                                     </div>
-                                    <div class="form-group">
-                                        <input type="button" value="Tramite Iniciado" class="btn btn-success btn-lg" style="width: 200px !important" onclick="location.href='@Url.Action("TramiteIniciado", "Home")'" />
-                                    </div>
+                                    @*<div class="form-group">
+                                            <input type="button" value="Tramite Iniciado" class="btn btn-success btn-lg" style="width: 200px !important" onclick="location.href='@Url.Action("TramiteIniciado", "Home")'" />
+                                        </div>*@
                                 </div>
                             </fieldset>
                         </form>
@@ -52,10 +57,23 @@
         </div>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/js")
+
+    <script>
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        }
+    </script>*@
 
 
 </body>

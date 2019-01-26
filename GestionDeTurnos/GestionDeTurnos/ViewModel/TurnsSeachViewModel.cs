@@ -17,5 +17,7 @@ namespace GestionDeTurnos.ViewModel
         public string Nombre { get; set; }
         public string Apellido { get; set; }
 
+        public string IncompletoNoSePresento { get; set; }
+
     }
 }

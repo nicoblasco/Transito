@@ -1,4 +1,5 @@
 ﻿using GestionDeTurnos.Helpers;
+using GestionDeTurnos.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace GestionDeTurnos.Tags
     // Si no estamos logeado, regresamos al login
     public class AutenticadoAttribute : ActionFilterAttribute
     {
+        
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
@@ -27,16 +29,23 @@ namespace GestionDeTurnos.Tags
 
         public class NoLoginAttribute : ActionFilterAttribute
         {
+            private ApplicationDbContext db = new ApplicationDbContext();
             public override void OnActionExecuting(ActionExecutingContext filterContext)
             {
                 base.OnActionExecuting(filterContext);
 
                 if (SessionHelper.ExistUserInSession())
                 {
+
+                    Rol rol = db.Usuarios.Find(SessionHelper.GetUser()).Rol;
+                    var pos = rol.Window.Url.IndexOf('/');
+                    string strController = rol.Window.Url.Substring(0,pos);
+                    string strAction = rol.Window.Url.Substring(pos+1);
+
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
                     {
-                        controller = "Usuarios",
-                        action = "Index"
+                        controller = strController,
+                        action = strAction
                     }));
                 }
             }

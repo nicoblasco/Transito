@@ -27,6 +27,8 @@ namespace GestionDeTurnos.Models
 
         public string Tel_Celular { get; set; }
 
+        public string Email { get; set; }
+
         public string Barrio { get; set; }
 
         public DateTime? Vencimiento_licencia { get; set; }

@@ -8,10 +8,12 @@ using System.Web;
 using System.Web.Mvc;
 using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class LicenseClassesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -21,6 +23,9 @@ namespace GestionDeTurnos.Controllers
         // GET: TypesLicenses
         public ActionResult Index()
         {
+            //Verifico los Permisos
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             ViewBag.AltaModificacion = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             return View(db.LicenseClasses.ToList());

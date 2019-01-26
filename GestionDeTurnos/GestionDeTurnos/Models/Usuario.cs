@@ -36,8 +36,7 @@ namespace GestionDeTurnos.Models
                         //SessionHelper.AddUserToSession(usuario.UsuarioId.ToString());
                         SessionHelper.AddUserToSessionTicket(usuario.UsuarioId, usuario.Nombreusuario, usuario.RolId.ToString());
 
-
-
+                        rm.result = usuario.RolId;
                         rm.SetResponse(true);
                     }
                     else

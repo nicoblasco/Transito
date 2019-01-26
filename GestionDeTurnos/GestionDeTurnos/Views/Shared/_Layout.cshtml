@@ -240,17 +240,17 @@
     @Scripts.Render("~/bundles/js")
     @RenderSection("scripts", required: false)
 
-    @*<script>
+    <script>
 
         $("#btnBuscarActa").click(function () {
             var value = $("#inputBuscarActa").val();
             if (value == "")
             {
-                var url = '@Url.Action("Index", "Acts")';
+                var url = '@Url.Action("Search", "Turns")';
             }
             else
             {
-                var url = '@Url.Action("SearchNroActa", "Acts", new { NroActa = "__id__" })';
+                var url = '@Url.Action("SearchByTurn", "Turns", new { NroTurno = "__id__" })';
             }
 
             window.location.href = url.replace('__id__', value);
@@ -258,7 +258,7 @@
 
         });
 
-    </script>*@
+    </script>
 
 </body>
 

@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GestionDeTurnos.Models
+namespace GestionDeTurnos.ViewModel
 {
-    public class Rol
+    public class RolViewModel
     {
         public int RolId { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public string IsAdmin { get; set; }
 
-        public int? WindowId { get; set; }
-        public virtual Window Window { get; set; }
+        public string Window { get; set; }
     }
 }

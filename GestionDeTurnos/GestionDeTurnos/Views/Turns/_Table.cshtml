@@ -34,6 +34,16 @@
         width: 20px;
     }
 
+    .span-btn-refresh {
+        color: cadetblue;
+        cursor: pointer;
+        /* margin: 0px; */
+        font-size: 18px;
+        text-align: center;
+        vertical-align: middle;
+        width: 20px;
+    }
+
     .dataTables-Index {
         table-layout: fixed;
     }
@@ -53,6 +63,12 @@
         max-width: 50px;
         word-wrap: break-word;
     }
+
+    .px150 {
+        width: 200px;
+        max-width: 50px;
+        word-wrap: break-word;
+    }
 </style>
 @*@if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Turnos", "Buscar")))
     {*@
@@ -68,7 +84,7 @@
                     <table id="dataTables-Index" class="display nowrap table table-striped table-bordered table-hover" style="font-size:11px">
                         <thead>
                             <tr>
-                                <th class="px100">Acción</th>
+                                <th class="px150">Acción</th>
                                 <th>Turno</th>
                                 <th>FechaTurno</th>
                                 <th>Ingreso</th>

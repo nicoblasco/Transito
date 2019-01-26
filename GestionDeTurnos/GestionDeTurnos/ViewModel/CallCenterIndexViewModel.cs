@@ -30,5 +30,7 @@ namespace GestionDeTurnos.ViewModel
 
 
         public string Asignado { get; set; }
+
+        public string UsuarioId { get; set; }
     }
 }

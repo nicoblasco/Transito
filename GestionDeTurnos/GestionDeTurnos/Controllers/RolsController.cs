@@ -24,8 +24,13 @@ namespace GestionDeTurnos.Controllers
         // GET: Rols
         public ActionResult Index()
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             ViewBag.AltaModificacion = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            List<Window> lWindow = new List<Window>();
+            lWindow = db.Windows.Where(x=>x.Enable==true).OrderBy(x=>x.Descripcion).ToList();
+            ViewBag.listaWindow = lWindow;
             return View(db.Rols.ToList());
         }
 
@@ -37,9 +42,22 @@ namespace GestionDeTurnos.Controllers
             try
             {
                 list = db.Rols.ToList();
-                var json = JsonConvert.SerializeObject(list);
 
-                return Json(list, JsonRequestBehavior.AllowGet);
+                List<RolViewModel> rolViewModels = new List<RolViewModel>();
+                foreach (var item in list)
+                {
+                    RolViewModel rolViewModel = new RolViewModel
+                    {
+                        Descripcion = item.Descripcion,
+                        IsAdmin = item.IsAdmin==true?"SI":"NO",
+                        Nombre = item.Nombre,
+                        Window = item.Window?.Descripcion,
+                        RolId = item.RolId
+                    };
+                    rolViewModels.Add(rolViewModel);
+                }
+
+                return Json(rolViewModels, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
@@ -244,6 +262,11 @@ namespace GestionDeTurnos.Controllers
             {
                 return Json(new { responseCode = "-10" });
             }
+
+            //Borro los Permisos
+
+            List<Permission> permissions = db.Permissions.Where(x => x.RolId == id).ToList();
+            db.Permissions.RemoveRange(permissions);
 
             Rol rol = db.Rols.Find(id);
             db.Rols.Remove(rol);

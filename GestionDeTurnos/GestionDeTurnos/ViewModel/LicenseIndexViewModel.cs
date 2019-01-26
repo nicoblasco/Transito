@@ -27,6 +27,12 @@ namespace GestionDeTurnos.ViewModel
 
         public int? PersonId { get; set; }
 
+        public string Tel_Particular { get; set; }
+
+        public string Tel_Celular { get; set; }
+
+        public string Email { get; set; }
+
         public virtual int[] SelectedClases { get; set; }
 
 

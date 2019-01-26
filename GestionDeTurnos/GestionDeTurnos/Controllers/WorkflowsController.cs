@@ -8,10 +8,12 @@ using System.Web;
 using System.Web.Mvc;
 using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class WorkflowsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

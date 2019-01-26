@@ -1,5 +1,6 @@
 ﻿using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
+using GestionDeTurnos.Tags;
 using GestionDeTurnos.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Web.Mvc;
 
 namespace GestionDeTurnos.Controllers
 {
+    [AutenticadoAttribute]
     public class MedicalPersonsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -19,6 +21,10 @@ namespace GestionDeTurnos.Controllers
         // GET: PersonMedicals
         public ActionResult Index()
         {
+            //Verifico los Permisos
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
+
             List<TypesLicense> lTypesLicense = new List<TypesLicense>();
             lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
             ViewBag.listaLicencias = lTypesLicense;
@@ -30,6 +36,10 @@ namespace GestionDeTurnos.Controllers
 
         public ActionResult PersonByTurn(int? id)
         {
+            //Verifico los Permisos
+            //if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+            //    return View("~/Views/Shared/AccessDenied.cshtml");
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

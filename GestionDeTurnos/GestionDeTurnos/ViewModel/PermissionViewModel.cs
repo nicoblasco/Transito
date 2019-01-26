@@ -69,7 +69,8 @@ namespace GestionDeTurnos.ViewModel
 
                 Rol rol = ctx.Rols.Find(usuario.RolId);
 
-                if (rol.Nombre == "Administrador")
+                //if (rol.Nombre == "Administrador")
+                if (rol.IsAdmin)
                     return true;
                 else
                     return false;

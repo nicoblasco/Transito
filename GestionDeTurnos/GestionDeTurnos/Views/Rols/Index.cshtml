@@ -44,6 +44,8 @@
                                 <th>ID</th>
                                 <th>Perfil</th>
                                 <th>Descripción</th>
+                                <th>Es Administrador?</th>
+                                <th>Pantalla Inicio</th>
                             </tr>
                         </thead>
                     </table>
@@ -87,6 +89,13 @@
                             <label>Descripción</label>
                             <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
+                        <div class="form-group">
+                            <label>Pantalla De Inicio</label>
+                            @Html.DropDownList("selectWindowCreate", new SelectList(ViewBag.listaWindow, "Id", "Descripcion"), new { @class = "form-control" })
+                        </div>
+                        <label class="checkbox-inline">
+                            <input id="IsAdmin" name="IsAdmin" type="checkbox">Es Administrador?
+                        </label>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -123,6 +132,13 @@
                             <label>Descripción</label>
                             <input id="input-Descripcion" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
+                        <div class="form-group">
+                            <label>Pantalla De Inicio</label>
+                            @Html.DropDownList("selectWindowEdit", new SelectList(ViewBag.listaWindow, "Id", "Descripcion"), new { @class = "form-control" })
+                        </div>
+                        <label class="checkbox-inline">
+                            <input id="IsAdmin" name="IsAdmin" type="checkbox">Es Administrador?
+                        </label>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -156,7 +172,9 @@
            "columns": [
                { "data": "RolId" },
                { "data": "Nombre" },
-               { "data": "Descripcion" }
+               { "data": "Descripcion" },
+               { "data": "IsAdmin" },
+               { "data": "Window" }
            ],
            responsive: true
        });
@@ -230,7 +248,8 @@
     $("#form-create").validate({
         rules: {
             inputPerfil: { required: true, minlength: 2, maxlength: 64 },
-            inputDescripcion: { required: true, minlength: 2, maxlength: 64 }
+            inputDescripcion: { required: true, minlength: 2, maxlength: 64 },
+            selectWindowCreate: { required: true}
         },
         messages: {
             inputPerfil: {
@@ -242,6 +261,9 @@
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            selectWindowCreate: {
+                required: "Este campo es requerido."
             }
         },
         submitHandler: function (form) {
@@ -249,6 +271,8 @@
             var rol = new Object();
             rol.Nombre = $("#input-Perfil").val();
             rol.Descripcion = $("#input-Descripcion").val();
+            rol.IsAdmin = $('#nuevoModal').find("#IsAdmin").prop('checked');
+            rol.WindowId = $('#nuevoModal').find("#selectWindowCreate option:selected").val();
             var data = JSON.stringify(rol);
 
 
@@ -306,7 +330,8 @@
     $("#form-edit").validate({
         rules: {
             inputPerfil: { required: true, minlength: 2, maxlength: 64 },
-            inputDescripcion: { required: true, minlength: 2, maxlength: 64 }
+            inputDescripcion: { required: true, minlength: 2, maxlength: 64 },
+            selectWindowCreate: { required: true }
         },
         messages: {
             inputPerfil: {
@@ -318,6 +343,9 @@
                 required: "Este campo es requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            selectWindowCreate: {
+                required: "Este campo es requerido."
             }
         },
         submitHandler: function (form) {
@@ -327,6 +355,8 @@
             rol.RolId = $('#editarModal').find('input#input-Id').val();
             rol.Nombre = $('#editarModal').find('input#input-Perfil').val();
             rol.Descripcion = $('#editarModal').find('input#input-Descripcion').val();
+            rol.IsAdmin = $('#editarModal').find("#IsAdmin").prop('checked');
+            rol.WindowId = $('#editarModal').find("#selectWindowEdit option:selected").val();
             var data = JSON.stringify(rol);
 
             //Antes de editar, verifico que no este duplicando el Rol
@@ -396,6 +426,8 @@
                 $('#editarModal').find('input#input-Id').val(result.RolId);
                 $('#editarModal').find('input#input-Perfil').val(result.Nombre);
                 $('#editarModal').find('input#input-Descripcion').val(result.Descripcion);
+                $('#editarModal').find('input#IsAdmin').prop('checked', result.IsAdmin);
+                $('#editarModal').find('selectWindowEdit').val(result.WindowId);
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -414,6 +446,7 @@
     $('.modal').on('hidden.bs.modal', function (e) {
         $(".modal-body input").val(""),
             $(this).removeData('bs.modal');
+        $("checkbox").prop('checked', false);
         $("form").validate().resetForm();
     });
 
