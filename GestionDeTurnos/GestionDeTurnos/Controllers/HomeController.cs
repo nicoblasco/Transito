@@ -218,7 +218,8 @@ namespace GestionDeTurnos.Controllers
                         TurnID = turn.Id,
                         FechaCreacion = DateTime.Now,
                         StatusID = EstadoInicial,
-                        Enable = true
+                        Enable = true,
+                        Orden =1
                     };
 
                     db.Trackings.Add(tracking);

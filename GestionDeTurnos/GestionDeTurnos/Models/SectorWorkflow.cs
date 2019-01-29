@@ -15,7 +15,7 @@ namespace GestionDeTurnos.Models
         public int SectorID { get; set; }
         public virtual Workflow Workflow { get; set; }
         public virtual Sector Sector { get; set; }
-
+        [Key, Column(Order = 3)]
         public int Orden { get; set; }
     }
 }

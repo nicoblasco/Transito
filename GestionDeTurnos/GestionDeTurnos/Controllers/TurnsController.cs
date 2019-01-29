@@ -300,7 +300,7 @@ namespace GestionDeTurnos.Controllers
                 {
                     Workflow workflow = workflows.Where(x => x.TypesLicenseID == item.TypesLicenseID).FirstOrDefault();
                     int intSectorActual = trackings.Where(x => x.TurnID == item.Id).Select(x => x.SectorID).LastOrDefault();
-                    int intOrdenSectorActual = workflow.SectorWorkflows.Where(x => x.SectorID == intSectorActual).Select(x => x.Orden).FirstOrDefault();
+                    int intOrdenSectorActual = trackings.Where(x => x.TurnID == item.Id).Select(x => x.Orden).LastOrDefault();
 
                     TurnIndexViewModel turn = new TurnIndexViewModel {
                         Id = item.Id,

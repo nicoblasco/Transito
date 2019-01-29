@@ -363,7 +363,7 @@ namespace GestionDeTurnos.Controllers
                     List<SectorWorkflow> sectorWorkflows = db.SectorWorkflows.Where(x => x.Workflow.Id == workflow.Id).ToList();
 
                     //obtengo el orden del sector actual
-                    OrdenDeSectorActual =sectorWorkflows.Where(x => x.SectorID == tracking.SectorID).Select(x => x.Orden).FirstOrDefault() ;
+                    OrdenDeSectorActual = tracking.Orden; //sectorWorkflows.Where(x => x.SectorID == tracking.SectorID).Select(x => x.Orden).FirstOrDefault() ;
 
                     //obtengo el proximo sector
                     SectorProximo = sectorWorkflows.Where(x => x.Orden == OrdenDeSectorActual +1 ).Select(x => x.SectorID).FirstOrDefault();
@@ -379,7 +379,8 @@ namespace GestionDeTurnos.Controllers
                             FechaCreacion = DateTime.Now,
                             Alerta = false,
                             Enable = true,
-                            StatusID = EstadoInicial
+                            StatusID = EstadoInicial,
+                            Orden = OrdenDeSectorActual+1
                         };
 
                         db.Trackings.Add(newtracking);

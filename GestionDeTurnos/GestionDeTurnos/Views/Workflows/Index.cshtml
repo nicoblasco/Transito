@@ -98,27 +98,47 @@
         var arr = [];
         i = 0;
 
-        jQuery(document).ready(function ($) {
+        jQuery(document).ready(function ($) {  
+
+
+            //Logica Multiselect
             $('#multiselect').multiselect({
-                keepRenderingSort: true
-            });
-
-
-
-            $("#btnGuardar").click(function () {
-                var sel = $('[name="to[]"]');
-                var selArray = [];
-                if (sel[0].length == 0)
-                    return;
-                for (var i = 0; i < sel[0].length; i++) {
-                    selArray[i] = sel[0][i].value;
+                //keepRenderingSort: true
+                beforeMoveToRight: function ($left, $right, $options) {
+                    var Id = $('#multiselect option:selected').val();
+                    var Descripcion = $('#multiselect option:selected').first().text();
+                    if (!(Id == '' || Id == null))
+                        {
+                        $('#multiselect_to').append(
+                            '<option value="' + Id + '">' +
+                            Descripcion + '</option>'
+                        );
+                    }
+                },
+                beforeMoveToLeft: function ($left, $right, $options) {
+                    $('#multiselect_to option:selected').remove();
                 }
-
-
-
-                setWorkflow(selArray);
-
             });
+
+        });
+
+
+        $("#btnGuardar").click(function () {
+            var sel = $('[name="to[]"]');
+            var selArray = [];
+            //if (sel[0].length == 0)
+            //    return;
+            if ($(".ddlTypesLicense").val() == '' || $(".ddlTypesLicense").val()== null)
+                return;
+
+
+            for (var i = 0; i < sel[0].length; i++) {
+                selArray[i] = sel[0][i].value;
+            }
+
+
+
+            setWorkflow(selArray);
 
         });
 
@@ -168,22 +188,52 @@
 
         }
 
-        function updateSelect(obj) {
-          var jsUrl = '@Url.Action("GetSectores", "Workflows")'; // ## is the token
+        function updateSelect(obj) {          
 
 
           if ($(obj).val() == '')
-            {
+          {
+              $('#multiselect').empty();
+              $('#multiselect_to').empty();
                 return;
             }
-          src = $(obj);
 
-            // find a control with id=Model (you need to add this to your view)
-            tgt = $("#multiselect");
+            src = $(obj);
 
-            // Get new model dataset via ajax
-            // based on manufacturer
-            // The url parameter points at your web method
+            getLeftSelect();
+            getRightSelect();
+
+
+
+
+
+        }
+
+
+        function getLeftSelect() {
+                                    //Obtengo la grilla izquierda, que se carga una sola vez
+          var jsUrl = '@Url.Action("GetSectoresAll", "Workflows")'; // ## is the token
+
+
+            $.ajax({
+                url: jsUrl,
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8;',
+                // success is called when dataset returns
+                success: function (p) {
+                    $('#multiselect').empty();
+                    $.each(p, function (i, pr) {                       
+                            $('#multiselect').append(
+                                '<option value="' + pr.Id + '">' +
+                                pr.Descripcion + '</option>'
+                            );                       
+                    })
+                }
+            });  
+        }
+
+        function getRightSelect() {
+           var jsUrl = '@Url.Action("GetSectoresSelected", "Workflows")'; // ## is the token
             $.ajax({
                 url: jsUrl,
                     type: 'POST',
@@ -191,38 +241,43 @@
                         "IdTipo": src.val()
                     }),
                     contentType: 'application/json; charset=utf-8;',
-                // success is called when dataset returns
                 success: function (p) {
-                    $('#multiselect').empty();
                     $('#multiselect_to').empty();
                     $.each(p, function (i, pr) {
-                        //$('#multiselect').append(
-                        //    '<option value="' + pr.Id + '">' +
-                        //    pr.Descripcion + '</option>'
-                        //);
-
-                        if (pr.Selected) {
-                            $('#multiselect_to').append(
-                                '<option value="' + pr.Id + '">' +
-                                pr.Descripcion + '</option>'
-                            );
-                        }
-                        else {
-                            $('#multiselect').append(
-                                '<option value="' + pr.Id + '">' +
-                                pr.Descripcion + '</option>'
-                            );
-                        }
+                        $('#multiselect_to').append(
+                            '<option value="' + pr.Id + '">' +
+                            pr.Descripcion + '</option>'
+                        );
 
 
                     })
 
                 }
             });
-
-
-
         }
+
+        $('#multiselect_leftAll').click(function () {
+            if ($('#multiselect').has('option').length > 0)
+                $('#multiselect_to').empty();
+            else {
+                $('#multiselect_to > option').each(function (i, obj) {
+                    //Solo agrego los que no estan
+                    if ($("#multiselect option[value=" + this.value + "]").length == 0)
+                        $('#multiselect').append(this);
+                });
+            }
+
+        });
+
+        $('#multiselect_rightAll').click(function () {
+            $('#multiselect > option').each(function (i, obj) {
+                //Solo agrego los que no estan
+                if ($("#multiselect_to option[value=" + this.value +"]").length==0)
+                    $('#multiselect_to').append(this);
+            });
+        });
+
+
 
     </script>
 }

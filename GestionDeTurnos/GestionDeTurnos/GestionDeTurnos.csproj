@@ -408,6 +408,7 @@
     <Content Include="less\mixins.less" />
     <Content Include="less\notifications.less" />
     <Content Include="less\variables.less" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\expressive.annotations.validate.js" />
     <Content Include="Scripts\expressive.annotations.validate.min.js" />
@@ -526,7 +527,9 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\vfs_fonts.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

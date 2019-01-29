@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="alert alert-danger">
-                                        <h1>@item.Terminal.Sector.Descripcion</h1>
+                                        <h1>@item.Sector.Descripcion</h1>
                                     </div>
                                 </div>
 
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="alert alert-success">
-                                        <h2>@item.Terminal.Sector.Descripcion</h2>
+                                        <h2>@item.Sector.Descripcion</h2>
                                     </div>
                                 </div>
                             }
@@ -156,10 +156,10 @@
 
                      $.each(result, function (k, v) {
                          if (v.Status.Orden === 2) {
-                             $input = $("<div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Terminal.Sector.Descripcion + "</h1></div></div>");
+                             $input = $("<div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
                          }
                          else {
-                             $input = $("<div class='col-md-6'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-success'><h1>" + v.Terminal.Sector.Descripcion + "</h1></div></div>");
+                             $input = $("<div class='col-md-6'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
                          }
                          $input.appendTo($("#divTurnos"));
 

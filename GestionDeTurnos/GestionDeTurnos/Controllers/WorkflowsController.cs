@@ -29,8 +29,86 @@ namespace GestionDeTurnos.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //public JsonResult GetSectores(int IdTipo)
+        //{
+        //    List<Sector> sectors = new List<Sector>();
+        //    List<SectorWorkflow> sectorWorkflows = new List<SectorWorkflow>();
+        //    List<SectorWorkflowViewModel> sectorWorkflowViews = new List<SectorWorkflowViewModel>();
+        //    try
+        //    {
+        //        sectors = db.Sectors.ToList();
+        //        sectorWorkflows = db.SectorWorkflows.Where(x => x.Workflow.TypesLicenseID == IdTipo).ToList();
+
+        //        foreach (var item in sectors)
+        //        {
+        //            SectorWorkflowViewModel sectorWorkflowView = new SectorWorkflowViewModel();
+        //            sectorWorkflowView.Id = item.Id;
+        //            sectorWorkflowView.Descripcion = item.Descripcion;
+
+        //            if (sectorWorkflows.Where(x=> x.SectorID== item.Id).Any())
+        //            {
+        //                //Saco de la lista los que ya estan
+        //                sectorWorkflowView.Selected = true;
+        //                sectorWorkflowView.Orden = sectorWorkflows.Where(x => x.SectorID == item.Id).FirstOrDefault().Orden;
+        //            }
+        //            sectorWorkflowViews.Add(sectorWorkflowView);
+
+        //        }
+
+
+        //        return Json(sectorWorkflowViews.OrderBy(x=>x.Orden), JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+
+        //    }
+        //}
+
+
         [HttpPost]
-        public JsonResult GetSectores(int IdTipo)
+        public JsonResult GetSectoresAll()
+        {
+            List<Sector> sectors = new List<Sector>();
+           // List<SectorWorkflow> sectorWorkflows = new List<SectorWorkflow>();
+           // List<SectorWorkflowViewModel> sectorWorkflowViews = new List<SectorWorkflowViewModel>();
+            try
+            {
+                sectors = db.Sectors.ToList();
+                //sectorWorkflows = db.SectorWorkflows.Where(x => x.Workflow.TypesLicenseID == IdTipo).ToList();
+
+                //foreach (var item in sectors)
+                //{
+                //    SectorWorkflowViewModel sectorWorkflowView = new SectorWorkflowViewModel();
+                //    sectorWorkflowView.Id = item.Id;
+                //    sectorWorkflowView.Descripcion = item.Descripcion;
+
+                //    if (sectorWorkflows.Where(x => x.SectorID == item.Id).Any())
+                //    {
+                //        //Saco de la lista los que ya estan
+                //        sectorWorkflowView.Selected = true;
+                //        sectorWorkflowView.Orden = sectorWorkflows.Where(x => x.SectorID == item.Id).FirstOrDefault().Orden;
+                //    }
+                //    sectorWorkflowViews.Add(sectorWorkflowView);
+
+                //}
+
+
+                return Json(sectors.OrderBy(x => x.Descripcion), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult GetSectoresSelected(int IdTipo)
         {
             List<Sector> sectors = new List<Sector>();
             List<SectorWorkflow> sectorWorkflows = new List<SectorWorkflow>();
@@ -40,24 +118,18 @@ namespace GestionDeTurnos.Controllers
                 sectors = db.Sectors.ToList();
                 sectorWorkflows = db.SectorWorkflows.Where(x => x.Workflow.TypesLicenseID == IdTipo).ToList();
 
-                foreach (var item in sectors)
+                foreach (var item in sectorWorkflows)
                 {
                     SectorWorkflowViewModel sectorWorkflowView = new SectorWorkflowViewModel();
-                    sectorWorkflowView.Id = item.Id;
-                    sectorWorkflowView.Descripcion = item.Descripcion;
+                    sectorWorkflowView.Id = item.SectorID;
+                    sectorWorkflowView.Descripcion = item.Sector.Descripcion;
+                    sectorWorkflowView.Orden = item.Orden;
 
-                    if (sectorWorkflows.Where(x=> x.SectorID== item.Id).Any())
-                    {
-                        //Saco de la lista los que ya estan
-                        sectorWorkflowView.Selected = true;
-                        sectorWorkflowView.Orden = sectorWorkflows.Where(x => x.SectorID == item.Id).FirstOrDefault().Orden;
-                    }
                     sectorWorkflowViews.Add(sectorWorkflowView);
-
                 }
 
 
-                return Json(sectorWorkflowViews.OrderBy(x=>x.Orden), JsonRequestBehavior.AllowGet);
+                return Json(sectorWorkflowViews.OrderBy(x => x.Orden), JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
@@ -123,14 +195,18 @@ namespace GestionDeTurnos.Controllers
 
 
             //Ahora grabo los sectores
-            for (int i = 0; i < workflowIndex.Sectores.Length ; i++)
+            if (workflowIndex.Sectores!= null)
             {
-                SectorWorkflow sectorWorkflow = new SectorWorkflow();
-                sectorWorkflow.WorkflowID = workflow.Id;
-                sectorWorkflow.SectorID = workflowIndex.Sectores[i];
-                sectorWorkflow.Orden = i + 1;
-                db.SectorWorkflows.Add(sectorWorkflow);
+                for (int i = 0; i < workflowIndex.Sectores.Length; i++)
+                {
+                    SectorWorkflow sectorWorkflow = new SectorWorkflow();
+                    sectorWorkflow.WorkflowID = workflow.Id;
+                    sectorWorkflow.SectorID = workflowIndex.Sectores[i];
+                    sectorWorkflow.Orden = i + 1;
+                    db.SectorWorkflows.Add(sectorWorkflow);
+                }
             }
+
             
             db.SaveChanges();
 

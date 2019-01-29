@@ -37,16 +37,34 @@ namespace GestionDeTurnos.Tags
                 if (SessionHelper.ExistUserInSession())
                 {
 
-                    Rol rol = db.Usuarios.Find(SessionHelper.GetUser()).Rol;
-                    var pos = rol.Window.Url.IndexOf('/');
-                    string strController = rol.Window.Url.Substring(0,pos);
-                    string strAction = rol.Window.Url.Substring(pos+1);
-
-                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
+                    try
                     {
-                        controller = strController,
-                        action = strAction
-                    }));
+                        Rol rol = db.Usuarios.Find(SessionHelper.GetUser()).Rol;
+                        var pos = rol.Window.Url.IndexOf('/');
+                        string strController = rol.Window.Url.Substring(0, pos);
+                        string strAction = rol.Window.Url.Substring(pos + 1);
+
+                        filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
+                        {
+                            controller = strController,
+                            action = strAction
+                        }));
+                    }
+                    catch (Exception)
+                    {
+                        string strController = "Usuarios";
+                        string strAction = "Index";
+
+                        filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new
+                        {
+                            controller = strController,
+                            action = strAction
+                        }));
+
+                    } 
+
+
+
                 }
             }
         }
