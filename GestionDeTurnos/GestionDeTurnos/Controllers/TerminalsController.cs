@@ -28,15 +28,35 @@ namespace GestionDeTurnos.Controllers
                 return View("~/Views/Shared/AccessDenied.cshtml");
             ViewBag.AltaModificacion = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
-            string IP = Request.UserHostName;
-            string terminalName = CompNameHelper.DetermineCompName(IP);
-            List<Terminal> list = db.Terminals.ToList();
-            List<Sector> lSectores = new List<Sector>();
-            lSectores = db.Sectors.ToList();
-            ViewBag.listaSectores = lSectores;
-            ViewBag.terminalName = terminalName;
+            try
+            {
+                //string IP = Request.UserHostName;
+                //string terminalName = CompNameHelper.DetermineCompName(IP);
+                string terminalName = Request.UserHostName;
+                List<Terminal> list = db.Terminals.ToList();
+                List<Sector> lSectores = new List<Sector>();
+                lSectores = db.Sectors.ToList();
+                ViewBag.listaSectores = lSectores;
+                ViewBag.terminalName = terminalName;
 
-            return View(list);
+                return View(list);
+            }
+            catch (Exception e)
+            {
+
+                string terminalName = "Prueba";
+                List<Terminal> list = db.Terminals.ToList();
+                List<Sector> lSectores = new List<Sector>();
+                lSectores = db.Sectors.ToList();
+                ViewBag.listaSectores = lSectores;
+                ViewBag.terminalName = terminalName;
+                ViewBag.exception = e.Message;
+                return View(list);
+            }
+
+            //string terminalName = HttpContext.Current.Server.MachineName;
+
+
         }
 
         [HttpPost]

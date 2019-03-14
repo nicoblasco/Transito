@@ -599,7 +599,7 @@
     <Content Include="Views\MedicalPersons\_TableFull.cshtml" />
     <Content Include="Views\Home\Ticket.cshtml" />
     <Content Include="Views\Shared\AccessDenied.cshtml" />
-    <Content Include="Views\Shared\ErrorCustom.cshtml" />
+    <Content Include="Views\Shared\ErrorCustom12.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

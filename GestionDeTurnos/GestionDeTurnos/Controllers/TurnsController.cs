@@ -106,13 +106,15 @@ namespace GestionDeTurnos.Controllers
 
         public ActionResult Search()
         {
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+                return View("~/Views/Shared/AccessDenied.cshtml");
             List<TypesLicense> lTypesLicense = new List<TypesLicense>();
             lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
             ViewBag.listaLicencias = lTypesLicense;
 
-            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
-            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
-            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+            ViewBag.Editar = PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             return View();
         }
 
@@ -123,9 +125,9 @@ namespace GestionDeTurnos.Controllers
             lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
             ViewBag.listaLicencias = lTypesLicense;
 
-            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
-            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
-            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
 
 
             ViewBag.NroTurno = NroTurno;
@@ -342,9 +344,9 @@ namespace GestionDeTurnos.Controllers
             List<TurnsSeachViewModel> turns = new List<TurnsSeachViewModel>();
             turns = ArmarConsulta(NroTurno, DNI, Apellido, Nombre, FechaTurnoDesde, FechaTurnoHasta, Tipo);
 
-            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
-            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
-            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
 
             return Json(turns, JsonRequestBehavior.AllowGet);
 
@@ -956,9 +958,9 @@ namespace GestionDeTurnos.Controllers
                 return HttpNotFound();
             }
             ViewBag.TurnId = turn.Id;
-            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
-            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
-            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.listaTiposLicencia = new List<TypesLicense>(db.TypesLicenses.ToList());
             return View(turn);
         }
@@ -1040,9 +1042,9 @@ namespace GestionDeTurnos.Controllers
                 return HttpNotFound();
             }
             ViewBag.TurnId = turn.Id;
-            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Editar"));
-            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Turnos", "Ver"));
-            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Turnos", "Baja"));
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.listaTiposLicencia = new List<TypesLicense>(db.TypesLicenses.ToList());
             return View(turn);
         }

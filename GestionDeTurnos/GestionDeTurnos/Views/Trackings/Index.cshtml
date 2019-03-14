@@ -181,12 +181,16 @@
                 @if (intEstadoOrden > 1)
                 {
                     <button type="button" id="btnLlamar" class="btn btn-success btn-lg raised" style="display:none"> Llamar </button>
-                    <button type="button" id="btnLlamarNuevamente" class="btn btn-success btn-lg raised" disabled=@booDisable >Llamar Nuevamente</button>
+                    if (intEstadoOrden != 3)
+                    {
+                        <button type="button" id="btnLlamarNuevamente" class="btn btn-success btn-lg raised" disabled=@booDisable>Llamar Nuevamente</button>
+                    }
+
                 }
                 else
                 {
-                    <button type="button" id="btnLlamar" class="btn btn-success btn-lg raised" >Llamar </button>
-                    <button type="button" id="btnLlamarNuevamente" class="btn btn-success btn-lg raised"  style="display:none">Llamar Nuevamente</button>
+                    <button type="button" id="btnLlamar" class="btn btn-success btn-lg raised">Llamar </button>
+                    <button type="button" id="btnLlamarNuevamente" class="btn btn-success btn-lg raised" style="display:none">Llamar Nuevamente</button>
                 }
 
             </div>
@@ -202,12 +206,12 @@
                 {
                     if (intEstadoOrden > 2)
                     {
-                        <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised">Finalizar Atención</button>
+                        <button type="button" id="btnFinalizar" class="btn btn-success btn-lg raised">Finalizar Atención</button>
                         <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised" style="display:none">Iniciar Atención</button>
                     }
                     else
                     {
-                        <button type="button" id="btnFinalizar" class="btn btn-primary btn-lg raised" style="display:none">Finalizar Atención</button>
+                        <button type="button" id="btnFinalizar" class="btn btn-success btn-lg raised" style="display:none">Finalizar Atención</button>
                         <button type="button" id="btnIniciar" class="btn btn-primary btn-lg raised">Iniciar Atención</button>
                     }
                 }
@@ -365,7 +369,9 @@
                     if (result.responseCode == 0) {
                         Lobibox.notify('success', {
                             title: 'Exito',
-                            msg: 'Se ha llamado con exito'
+                            msg: 'Se ha llamado con exito',
+                            delay: 2000,
+                            size: 'mini'
                         });
 
                         //Asigno Parcialmente
@@ -387,7 +393,9 @@
                     if (result.responseCode == 2) {
                         Lobibox.notify('warning', {
                             title: 'Exito',
-                            msg: 'No quedan turnos pendiente'
+                            msg: 'No quedan turnos pendiente',
+                            delay: 2000,
+                            size: 'mini'
                         });
                     }
 
@@ -397,7 +405,9 @@
                     $("#div-loader").hide();
                     Lobibox.notify('error', {
                         title: 'Error',
-                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                        msg: 'Ah ocurrido un error, intente nuevamente.',
+                        delay: 2000,
+                        size: 'mini'
                     });
                 }
             });
@@ -422,7 +432,9 @@
                     if (result.responseCode == 0) {
                         Lobibox.notify('success', {
                             title: 'Exito',
-                            msg: 'Se ha llamado con exito'
+                            msg: 'Se ha llamado con exito',
+                            delay: 2000,
+                            size: 'mini'
                         });
 
                         if (!result.PuedeSeguirLlamando)
@@ -433,7 +445,9 @@
                     if (result.responseCode == 2) {
                         Lobibox.notify('warning', {
                             title: 'Exito',
-                            msg: 'No quedan turnos pendiente'
+                            msg: 'No quedan turnos pendiente',
+                            delay: 2000,
+                            size: 'mini'
                         });
                     }
 
@@ -443,7 +457,9 @@
                     $("#div-loader").hide();
                     Lobibox.notify('error', {
                         title: 'Error',
-                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                        msg: 'Ah ocurrido un error, intente nuevamente.',
+                        delay: 2000,
+                        size: 'mini'
                     });
                 }
             });
@@ -467,7 +483,9 @@
                     if (result.responseCode == 0) {
                         Lobibox.notify('success', {
                             title: 'Exito',
-                            msg: 'Se ha Iniciado con exito'
+                            msg: 'Se ha Iniciado con exito',
+                            delay: 2000,
+                            size: 'mini'
                         });
 
 
@@ -489,6 +507,7 @@
                         $('#btnFinalizar').show();
                         $('#btnNoEsta').hide();
                         $('#btnIncompleto').show();
+                        $('#btnLlamarNuevamente').hide();
                         
 
                         if ($('#MedicoHidden').val() == 'True' || $('#MedicoHidden').val() == 'true')
@@ -504,7 +523,9 @@
                     $("#div-loader").hide();
                     Lobibox.notify('error', {
                         title: 'Error',
-                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                        msg: 'Ah ocurrido un error, intente nuevamente.',
+                        delay: 2000,
+                        size: 'mini'
                     });
                 }
             });
@@ -529,7 +550,9 @@
                     if (result.responseCode == 0) {
                         Lobibox.notify('success', {
                             title: 'Exito',
-                            msg: 'Se ha finalizado con exito'
+                            msg: 'Se ha finalizado con exito',
+                            delay: 2000,
+                            size: 'mini'
                         });
 
 
@@ -544,7 +567,9 @@
                     $("#div-loader").hide();
                     Lobibox.notify('error', {
                         title: 'Error',
-                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                        msg: 'Ah ocurrido un error, intente nuevamente.',
+                        delay: 2000,
+                        size: 'mini'
                     });
                 }
             });
@@ -568,7 +593,9 @@
                     if (result.responseCode == 0) {
                         Lobibox.notify('success', {
                             title: 'Exito',
-                            msg: 'Se ha finalizado con exito'
+                            msg: 'Se ha finalizado con exito',
+                            delay: 2000,
+                            size: 'mini'
                         });
 
 
@@ -583,7 +610,9 @@
                     $("#div-loader").hide();
                     Lobibox.notify('error', {
                         title: 'Error',
-                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                        msg: 'Ah ocurrido un error, intente nuevamente.',
+                        delay: 2000,
+                        size: 'mini'
                     });
                 }
             });
@@ -608,7 +637,9 @@
                     if (result.responseCode == 0) {
                         Lobibox.notify('success', {
                             title: 'Exito',
-                            msg: 'Se ha finalizado con exito'
+                            msg: 'Se ha finalizado con exito',
+                            delay: 2000,
+                            size: 'mini'
                         });
 
 
@@ -623,7 +654,9 @@
                     $("#div-loader").hide();
                     Lobibox.notify('error', {
                         title: 'Error',
-                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                        msg: 'Ah ocurrido un error, intente nuevamente.',
+                        delay: 2000,
+                        size: 'mini'
                     });
                 }
             });

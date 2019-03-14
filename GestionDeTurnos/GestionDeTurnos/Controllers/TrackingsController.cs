@@ -27,8 +27,9 @@ namespace GestionDeTurnos.Controllers
             if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
                 return View("~/Views/Shared/AccessDenied.cshtml");
             //Obtengo el numero de sector de esta maquina
-            string IP = Request.UserHostName;
-            string terminalName = CompNameHelper.DetermineCompName(IP);
+            //string IP = Request.UserHostName;
+            //string terminalName = CompNameHelper.DetermineCompName(IP);
+            string terminalName = Request.UserHostName;
             List<Setting> setting = db.Settings.ToList();
             int[] statusOrden = { 2,3 };
             int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
@@ -95,8 +96,9 @@ namespace GestionDeTurnos.Controllers
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             List<Tracking> list = new List<Tracking>();
-            string IP = Request.UserHostName;
-            string terminalName = CompNameHelper.DetermineCompName(IP);
+            //string IP = Request.UserHostName;
+            //string terminalName = CompNameHelper.DetermineCompName(IP);
+            string terminalName = Request.UserHostName;
             Terminal terminal = db.Terminals.Where(x => x.IP == terminalName).FirstOrDefault();
             try
             {
@@ -170,9 +172,9 @@ namespace GestionDeTurnos.Controllers
 
         public JsonResult Llamar()
         {
-            string IP = Request.UserHostName;
-            string terminalName = CompNameHelper.DetermineCompName(IP);
-
+            //string IP = Request.UserHostName;
+            //string terminalName = CompNameHelper.DetermineCompName(IP);
+            string terminalName = Request.UserHostName;
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             Tracking tracking = new Tracking();

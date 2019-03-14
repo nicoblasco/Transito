@@ -53,11 +53,17 @@ namespace GestionDeTurnos.Controllers
         [HttpPost]
         public JsonResult GetClase(int id)
         {
-            LicenseClass types = new LicenseClass();
+            
             try
             {
-                types = db.LicenseClasses.Find(id);
+               var typesb = db.LicenseClasses.Where(x => x.Id == id).Select(c => new { c.Id, c.Codigo, c.Descripcion }).FirstOrDefault();
 
+                LicenseClass types = new LicenseClass
+                {
+                   Id = typesb.Id,
+                   Codigo = typesb.Codigo,
+                   Descripcion = typesb.Descripcion
+                };
 
                 return Json(types, JsonRequestBehavior.AllowGet);
             }
