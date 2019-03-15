@@ -34,7 +34,7 @@
         }
 
 
-        .col-md-6, .col-md-12, .col-lg-7 {
+        .col-md-6, .col-md-12, .col-lg-7, .col-lg-5, .col-md-4 {
             padding-left: 1px;
             padding-right: 1px;
         }
@@ -45,6 +45,8 @@
             margin-right: 0px;
             width: 100%;
         }
+
+
     </style>
 </head>
 
@@ -60,7 +62,7 @@
                 <!-- Publicidad -->
                 @if (!string.IsNullOrEmpty(ViewBag.Video))
                 {
-                    <div class="col-lg-8">
+                    <div class="col-lg-7">
                         <video autoplay muted loop>
                             <source src=@Url.Content("~/Content/video/video.mp4") type="video/mp4">
                             @*<source src=@Url.Content("~/App_Data/upload/video/video.mp4" ) type="video/mp4">*@
@@ -70,59 +72,78 @@
                 }
 
                 <!-- Turnos -->
-                <div class="col-lg-4">
-                    <div class="col-md-6">
-                        <div class="alert">
-                            <h2>  TURNO</h2>
+                    <div class="col-lg-5">
+                        <div class="col-md-4">
+                            <div class="alert">
+                                <h2>  TURNO</h2>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="alert">
-                            <h2> SECTOR</h2>
+                        <div class="col-md-4">
+                            <div class="alert">
+                                <h2> SECTOR</h2>
+                            </div>
                         </div>
-                    </div>
-                    @*<div id="divTurnosOculto" style="display:none"></div>*@
-                    <div id="divTurnos">
 
-                        @foreach (var item in Model)
-                        {
-                            if (item.Status.Orden == 2)
+                        <div class="col-md-4">
+                            <div class="alert">
+                                <h2> BOX</h2>
+                            </div>
+                        </div>
+
+                        @*<div id="divTurnosOculto" style="display:none"></div>*@
+                        <div id="divTurnos">
+
+                            @foreach (var item in Model)
                             {
-                                <div class="col-md-6">
-                                    <div class="alert alert-danger">
-                                        <h1>@item.Turn.Turno</h1>
+                                if (item.Status.Orden == 2)
+                                {
+                                    <div class="col-md-4 detalle">
+                                        <div class="alert alert-danger">
+                                            <h1>@item.Turn.Turno</h1>
+                                            <div class="oculto Id">@item.Id</div>
+                                            <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-danger">
+                                            <h1>@item.Sector.Descripcion</h1>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-danger">
+                                            <h1>@item.Terminal.Descripcion</h1>
+                                        </div>
+                                    </div>
+
+
+                                }
+
+                                else
+                                {
+                                    <div class="col-md-4 detalle">
+                                        <div class="alert alert-success">
+                                            <h2>@item.Turn.Turno</h2>
+                                        </div>
                                         <div class="oculto Id">@item.Id</div>
                                         <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
                                     </div>
-
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="alert alert-danger">
-                                        <h1>@item.Sector.Descripcion</h1>
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-success">
+                                            <h2>@item.Sector.Descripcion</h2>
+                                        </div>
                                     </div>
-                                </div>
-
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-success">
+                                            <h2>@item.Terminal.Descripcion</h2>
+                                        </div>
+                                    </div>
+                                }
                             }
+                        </div>
 
-                            else
-                            {
-                                <div class="col-md-6">
-                                    <div class="alert alert-success">
-                                        <h2>@item.Turn.Turno</h2>
-                                    </div>
-                                    <div class="oculto Id">@item.Id</div>
-                                    <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="alert alert-success">
-                                        <h2>@item.Sector.Descripcion</h2>
-                                    </div>
-                                </div>
-                            }
-                        }
                     </div>
-
-                </div>
 
             </div>
         </div>
@@ -151,15 +172,17 @@
                      //Aca borro el auxiliar
                      //$('#divTurnosOculto').find('#divTurnos').remove();
                      //$('#divTurnos').clone().prependTo('#divTurnosOculto');
-                     $('#divTurnos').find('.col-md-6').remove();
+                     $('#divTurnos').find('.detalle').remove();
 
 
                      $.each(result, function (k, v) {
                          if (v.Status.Orden === 2) {
-                             $input = $("<div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
+                             //$input = $("<div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
+                             $input = $("<div class='col-md-4 detalle'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-4 detalle sector'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div><div class='col-md-4 detalle sector'><div class='alert alert-danger'><h1>"+v.Terminal.Descripcion+"</h1></div></div>");
                          }
                          else {
-                             $input = $("<div class='col-md-6'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
+                            // $input = $("<div class='col-md-6'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
+                             $input = $("<div class='col-md-4 detalle'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-4 detalle sector'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div><div class='col-md-4 detalle sector'><div class='alert alert-success'><h1>" + v.Terminal.Descripcion + "</h1></div></div>");
                          }
                          $input.appendTo($("#divTurnos"));
 

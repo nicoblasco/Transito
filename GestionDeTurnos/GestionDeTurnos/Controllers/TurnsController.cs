@@ -23,7 +23,7 @@ namespace GestionDeTurnos.Controllers
         // GET: Turns
         public ActionResult Index()
         {
-            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
+            if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, "Monitoreo")))
                 return View("~/Views/Shared/AccessDenied.cshtml");
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
@@ -39,7 +39,10 @@ namespace GestionDeTurnos.Controllers
 
             foreach (var item in trackings.Where(x => x.FechaSalida != null).ToList())
             {
-                timeSpanList.Add(item.Tiempo.Value);                
+                if (item.Tiempo==null)
+                    timeSpanList.Add(new TimeSpan(0));
+                else
+                    timeSpanList.Add(item.Tiempo.Value);                
             }
 
             foreach (var ts in timeSpanList)
