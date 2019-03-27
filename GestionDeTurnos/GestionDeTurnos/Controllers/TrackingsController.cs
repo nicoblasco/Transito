@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GestionDeTurnos.Enumerations;
 using GestionDeTurnos.Helpers;
 using GestionDeTurnos.Models;
 using GestionDeTurnos.Tags;
@@ -68,7 +69,7 @@ namespace GestionDeTurnos.Controllers
         }
 
 
-
+        
         public ActionResult Turnero()
         {
             //Obtengo el numero de sector de esta maquina
@@ -79,7 +80,7 @@ namespace GestionDeTurnos.Controllers
             //  int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
             int[] statusOrden = { 2, 3,4,5,6 };
 
-                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable == true && x.Turn.FechaTurno>= startDateTime && x.Turn.FechaTurno<= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(5).ToList();
+                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Terminal!=null && x.Enable == true && x.Turn.FechaTurno>= startDateTime && x.Turn.FechaTurno<= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(5).ToList();
 
 
 
@@ -558,13 +559,72 @@ namespace GestionDeTurnos.Controllers
         {
             if (ModelState.IsValid)
             {
-                Tracking tracking = db.Trackings.Find(vmtracking.Id);
+                Tracking tracking = db.Trackings.Find(vmtracking.Id);                
                 tracking.StatusID = vmtracking.StatusID;
                 tracking.CantidadDeLlamados = vmtracking.CantidadDeLlamados;
 
-
                 db.Entry(tracking).State = EntityState.Modified;
                 db.SaveChanges();
+
+                int OrdenDeSectorActual;
+                int? SectorProximo;
+
+                if (tracking.Status.Orden == (int)StatusOrden.FINALIZADO)
+                {
+                    string estadoLicencia = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS" && x.Numero1 == 1).FirstOrDefault().Texto1;
+                    int EstadoInicial = db.Status.Where(x => x.Orden == 1).Select(x => x.Id).FirstOrDefault();
+                    //Obtengo el id del workflow del tipo de tramite
+                    Workflow workflow = db.Workflows.Where(x => x.TypesLicenseID == tracking.Turn.TypesLicense.Id).FirstOrDefault();
+
+                    //Obtengo la lista de sectores para el tipo de tramite
+                    List<SectorWorkflow> sectorWorkflows = db.SectorWorkflows.Where(x => x.Workflow.Id == workflow.Id).ToList();
+                    //obtengo el orden del sector actual
+                    OrdenDeSectorActual = tracking.Orden; //sectorWorkflows.Where(x => x.SectorID == tracking.SectorID).Select(x => x.Orden).FirstOrDefault() ;
+
+                    //obtengo el proximo sector
+                    SectorProximo = sectorWorkflows.Where(x => x.Orden == OrdenDeSectorActual + 1).Select(x => x.SectorID).FirstOrDefault();
+
+                    //Si tiene proximo Sector
+
+                    if (SectorProximo != 0)
+                    {
+                        Tracking newtracking = new Tracking
+                        {
+                            SectorID = SectorProximo.Value,
+                            TurnID = tracking.Turn.Id,
+                            FechaCreacion = DateTime.Now,
+                            Alerta = false,
+                            Enable = true,
+                            StatusID = EstadoInicial,
+                            Orden = OrdenDeSectorActual + 1
+                        };
+
+                        db.Trackings.Add(newtracking);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        //Finaliza la atencion
+                        Turn turn = db.Turns.Find(tracking.TurnID);
+                        turn.FechaSalida = DateTime.Now;
+                        turn.Tiempo = turn.FechaSalida - turn.FechaIngreso;
+                        db.Entry(turn).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        //Creo la licencia y la dejo en espera
+                        License license = new License
+                        {
+                            PersonId = turn.PersonID,
+                            TurnId = turn.Id,
+                            TypesLicenseId = turn.TypesLicenseID,
+                            Estado = estadoLicencia
+                        };
+                        db.Licenses.Add(license);
+                        db.SaveChanges();
+                    }
+                }
+
+
                 return RedirectToAction("Search","Turns");
             }
 
