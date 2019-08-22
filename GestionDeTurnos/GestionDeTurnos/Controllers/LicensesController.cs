@@ -124,7 +124,9 @@ namespace GestionDeTurnos.Controllers
                     SelectedClases = new int[license.LicenseClasses.Count],
                     Email = license.Person.Email,
                     Tel_Celular = license.Person.Tel_Celular,
-                    Tel_Particular = license.Person.Tel_Particular
+                    Tel_Particular = license.Person.Tel_Particular,
+                    Sign = license.Firma
+                    
 
             };
 
@@ -296,7 +298,7 @@ namespace GestionDeTurnos.Controllers
             license.Person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
             license.Person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
             license.Estado = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS" && x.Numero1 == 3).Select(x => x.Texto1).FirstOrDefault();
-
+            license.Firma = licenseIndexViewModel.Sign.Replace("undefined","");
             if (license.LicenseClasses != null)
             {
                 List<LicenseClass> LicenseClassAux = new List<LicenseClass>();

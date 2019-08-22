@@ -68,7 +68,78 @@
     }*/
 </style>
 
+<script type="text/javascript">
 
+    var imgWidth;
+    var imgHeight;
+    function StartSign() {
+        var isInstalled = document.documentElement.getAttribute('SigPlusExtLiteExtension-installed');
+        if (!isInstalled) {
+            alert("SigPlusExtLite extension no esta instalada.");
+            return;
+        }
+        var canvasObj = document.getElementById('cnv');
+        canvasObj.getContext('2d').clearRect(0, 0, canvasObj.width, canvasObj.height);
+        $('[name=sigStringData]').val("");
+        $('[name=sigRawData]').val("");
+        imgWidth = canvasObj.width;
+        imgHeight = canvasObj.height;
+        var message = { "firstName": "", "lastName": "", "eMail": "", "location": "", "imageFormat": 1, "imageX": imgWidth, "imageY": imgHeight, "imageTransparency": false, "imageScaling": false, "maxUpScalePercent": 0.0, "rawDataFormat": "ENC", "minSigPoints": 25 };
+
+        top.document.addEventListener('SignResponse', SignResponse, false);
+        var messageData = JSON.stringify(message);
+        var element = document.createElement("MyExtensionDataElement");
+        element.setAttribute("messageAttribute", messageData);
+        document.documentElement.appendChild(element);
+        var evt = document.createEvent("Events");
+        evt.initEvent("SignStartEvent", true, false);
+        element.dispatchEvent(evt);
+    }
+    function SignResponse(event) {
+        var str = event.target.getAttribute("msgAttribute");
+        var obj = JSON.parse(str);
+        SetValues(obj, imgWidth, imgHeight);
+    }
+    function SetValues(objResponse, imageWidth, imageHeight) {
+        var obj = null;
+        if (typeof (objResponse) === 'string') {
+            obj = JSON.parse(objResponse);
+        } else {
+            obj = JSON.parse(JSON.stringify(objResponse));
+        }
+
+        var ctx = document.getElementById('cnv').getContext('2d');
+
+        if (obj.errorMsg != null && obj.errorMsg != "" && obj.errorMsg != "undefined") {
+            alert(obj.errorMsg);
+        }
+        else {
+            if (obj.isSigned) {
+                //document.FORM1.sigRawData.value += obj.imageData;
+                //document.FORM1.sigStringData.value += obj.sigString;
+                $('[name=sigRawData]').val($("input[name=sigRawData]").val() + obj.imageData);
+                $('[name=sigStringData]').val($("input[name=sigStringData]").val() + obj.sigString);
+                $('#form-entregado').find('#bioSigData').val($('[name=sigStringData]').val());
+                
+                var img = new Image();
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
+                }
+                img.src = "data:image/png;base64," + obj.imageData;
+
+                
+            }
+        }
+    }
+    function ClearFormData() {
+        $('[name=sigRawData]').val("");
+        $('[name=sigStringData]').val("");
+        $('#cnv')[0].width = 500; //Reset canvas
+        $('#cnvDetail')[0].width = 500; //Reset canvas
+        //$('#SignBtn').val("Firmar");
+    }
+
+</script>
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
@@ -231,6 +302,32 @@
                                         <label>Email</label>
                                         <input id="input-Email" name="inputEmail" class="form-control input-width" autocomplete="off">
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-8 pull-right">
+                                <div class="sign">
+                                    <div>
+                                        <canvas name="SigImg" id="SigImg" width="500" height="100" style="display:none"></canvas>
+                                        <form action="https://sigplusweb.com/sign_chrome_ff_sigplusextlite.html#">
+                                            <p>
+                                                <input type="HIDDEN" name="bioSigDataDetail" id="bioSigDataDetail">
+                                                <input type="HIDDEN" name="sigImgData">
+                                                <textarea name="sigStringData" rows="20" cols="50" style="display:none">SigString: </textarea>
+                                                <textarea name="sigRawData" rows="20" cols="50" style="display:none">Base64 String: </textarea>
+                                            </p>
+
+                                        </form>
+                                    </div>
+                                    <table border="1" cellpadding="0" width="500">
+                                        <tbody>
+                                            <tr>
+                                                <td height="100" width="500">
+                                                    <canvas id="cnvDetail" name="cnvDetail" width="500" height="100"></canvas>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <br>
                                 </div>
                             </div>
                         </div>
@@ -433,6 +530,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
                     </form>
                 </div>
@@ -456,7 +554,7 @@
                     <h4 class="modal-title">Entregar Licencia</h4>
                 </div>
                 <div class="modal-body height_auto">
-                    <form role="form" class="form-inline height_auto">
+                    <form role="form" name="FORM1" class="form-inline height_auto">
                         <div class="row height_auto">
                             <div class="col-xs-12 col-md-4">
                                 <div class="media">
@@ -531,6 +629,33 @@
                                         <label>Email</label>
                                         <input id="input-Email" name="inputEmail" class="form-control input-width" autocomplete="off">
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-8 pull-right">
+                                <div class="sign">
+                                    <div>
+                                        <canvas name="SigImg" id="SigImg" width="500" height="100"style="display:none"></canvas>
+                                        <form action="https://sigplusweb.com/sign_chrome_ff_sigplusextlite.html#">
+                                            <p>
+                                                <input id="SignBtn" class="btn btn-info" name="SignBtn" type="button" value="Firmar" onclick="StartSign()">&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input  style="display:none" name="bioSigData" id="bioSigData">
+                                                <input type="HIDDEN" name="sigImgData">
+                                                <textarea name="sigStringData" rows="20" cols="50" style="display:none">SigString: </textarea>
+                                                <textarea name="sigRawData" rows="20" cols="50" style="display:none">Base64 String: </textarea>
+                                            </p>
+                                            
+                                        </form>
+                                    </div>
+                                    <table border="1" cellpadding="0" width="500">
+                                        <tbody>
+                                            <tr>
+                                                <td height="100" width="500">
+                                                    <canvas id="cnv" name="cnv" width="500" height="100"></canvas>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <br>
                                 </div>
                             </div>
                         </div>
@@ -619,7 +744,7 @@
                     $('#entregadoModal').find("#input-CalleId").val(suggestion.data);
                 }
             });
-            
+
 
             //Cargo la grilla
 
@@ -652,7 +777,9 @@
                 else {
                     table.$('tr.selected').removeClass('selected');
                     $(this).addClass('selected');
-                    var estado = table.rows({ selected: true }).data()[this.rowIndex-1].Estado;
+                    //var estado = table.rows({ selected: true }).data()[this.rowIndex-1].Estado;
+                    var rows = table.rows('.selected').indexes();
+                    var estado = table.rows(rows).data()[0].Estado;
                     habilitaBotones(true, estado);
 
                 }
@@ -669,7 +796,7 @@
             refreshdropdown();
         });
 
-        function refreshdropdown() {            
+        function refreshdropdown() {
             @*var newurl = "@Url.Action("GetLicencias", "Licenses", new { Estado = "ParamEstado", Dni = "ParamDNI" })".replace("ParamEstado", $('#selectEstado').val()).replace("ParamDNI", $('#inputBuscar').val());
             habilitaBotones(false, null);
             $("#dataTables-Index").dataTable().fnReloadAjax(newurl);*@
@@ -733,6 +860,10 @@
                 $(modal).find('#input-TelParticular').val(result.Tel_Particular);
                 $(modal).find('#input-TelCelular').val(result.Tel_Celular);
                 $(modal).find('#input-Email').val(result.Email);
+                $(modal).find('[name=sigRawData]').val(result.Sign);
+                convertToImage($(modal).find('[name=sigRawData]').val());
+
+                
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -744,10 +875,14 @@
             });
         }
 
+
+
     //Completo el modal edit con los datos de la grilla
         $('#editarModal').on('shown.bs.modal', function (e) {
             var idLicencia = $('#dataTables-Index').find('tr.selected>td').first().text();
+            ClearFormData();
             completeDatos($('#editarModal'), idLicencia);
+            
 
         });
 
@@ -755,15 +890,21 @@
             var idLicencia = $('#dataTables-Index').find('tr.selected>td').first().text();
             completeDatos($('#recibidoModal'), idLicencia);
 
+            //$.when(completeDatos($('#recibidoModal'), idLicencia)).done(
+            //convertToImage(image, $('#recibidoModal').find('[name=sigRawData]').val()))
+
         });
 
         $('#entregadoModal').on('shown.bs.modal', function (e) {
             var idLicencia = $('#dataTables-Index').find('tr.selected>td').first().text();
+            ClearFormData();
+            $('#entregadoModal').find('#SignBtn').val("Firmar");
             completeDatos($('#entregadoModal'), idLicencia);
+
 
         });
 
-  $("#form-edit").validate({
+  $("#form-edit").validate({      
         rules: {
             inputDNI: { required: true, minlength: 7, maxlength: 8 },
             inputApellido: { required: true, minlength: 2, maxlength: 64 },
@@ -968,6 +1109,7 @@ $("#form-create").validate({
                 $(this).removeData('bs.modal');
             $("form").validate().resetForm();
             $('.js-example-basic-multiple').val(null).trigger("change");
+            ClearFormData();
         });
 
 
@@ -1115,12 +1257,13 @@ $("#form-create").validate({
         });
 
 
-$("#form-entregado").validate({
+    $("#form-entregado").validate({
+    ignore: "input[type='text']:hidden",
         rules: {
             inputDNI: { required: true, minlength: 7, maxlength: 8 },
             inputApellido: { required: true, minlength: 2, maxlength: 64 },
-            inputNombre: { required: true, minlength: 2, maxlength: 64 }
-            //inputFechaDeNacimiento: { required: true },
+            inputNombre: { required: true, minlength: 2, maxlength: 64 },
+            bioSigData: { required: true },
             //inputDomicilio: { required: true },
             //inputOtorgamiendo: { required: true },
             //inputVencimiento: { required: true }
@@ -1140,6 +1283,9 @@ $("#form-entregado").validate({
                 required: "Requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            bioSigData: {
+                required: "La firma es requerida"
             }
             //inputFechaDeNacimiento: {
             //    required: "Requerido."
@@ -1174,6 +1320,7 @@ $("#form-entregado").validate({
             object.Tel_Particular = $('#entregadoModal').find('#input-TelParticular').val();
             object.Tel_Celular = $('#entregadoModal').find('#input-TelCelular').val();
             object.Email = $('#entregadoModal').find('#input-Email').val();
+            object.Sign = $('#entregadoModal').find('[name=sigRawData]').val();
 
 
             var data = JSON.stringify(object);
@@ -1232,7 +1379,8 @@ $("#form-entregado").validate({
                         break;
                     case 'ENTREGADA':
                         $('#btnDetalle').removeAttr("disabled");
-                        $('#btnRecibido').removeAttr("disabled");
+                       // $('#btnRecibido').removeAttr("disabled");
+                        $('#btnRecibido').attr("disabled", true);
                         $('#btnEntregado').attr("disabled", true)
                         break;
                 }
@@ -1244,6 +1392,23 @@ $("#form-entregado").validate({
                 $('#btnEntregado').attr("disabled", true);
             }
         };
+
+
+        function convertToImage(imagen) {
+            if (imagen == "" || imagen == undefined)
+                return;
+
+            var img = new Image();
+            var canvasObj = document.getElementById('cnvDetail');
+            var ctx = document.getElementById('cnvDetail').getContext('2d');
+            canvasObj.getContext('2d').clearRect(0, 0, canvasObj.width, canvasObj.height);
+            imgWidth = canvasObj.width;
+            imgHeight = canvasObj.height;
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0, 500, 100);
+            }
+            img.src = "data:image/png;base64," +  imagen;
+        }
 
     </script>
 

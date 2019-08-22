@@ -1,0 +1,4 @@
+1-instalar SigPlusExtLite.exe
+2-Agregar Extension
+https://chrome.google.com/webstore/detail/topaz-sigplusextlite-back/dhcpobccjkdnmibckgpejmbpmpembgco
+3-Probar en https://sigplusweb.com/sign_chrome_ff_sigplusextlite.html

@@ -35,6 +35,8 @@ namespace GestionDeTurnos.ViewModel
 
         public virtual int[] SelectedClases { get; set; }
 
+        public string Sign { get; set; }
+
 
     }
 }
