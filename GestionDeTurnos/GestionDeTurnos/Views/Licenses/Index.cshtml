@@ -120,14 +120,14 @@
                 $('[name=sigRawData]').val($("input[name=sigRawData]").val() + obj.imageData);
                 $('[name=sigStringData]').val($("input[name=sigStringData]").val() + obj.sigString);
                 $('#form-entregado').find('#bioSigData').val($('[name=sigStringData]').val());
-                
+
                 var img = new Image();
                 img.onload = function () {
                     ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
                 }
                 img.src = "data:image/png;base64," + obj.imageData;
 
-                
+
             }
         }
     }
@@ -154,23 +154,59 @@
                 <div class="panel-heading">
                     <form class="form-horizontal">
                         <div class="form-inline">
-                            <label style="display: initial" class="control-label">Estado</label>
-                            @Html.DropDownList("selectEstado", new SelectList(ViewBag.Estados, "Texto1", "Texto1"), "Seleccione", htmlAttributes:
-                            new
-                            {
-                                id = "selectEstado",
-                                @class = "form-control",
-                                @onchange = "refreshdropdown()"
-                            }
-                            )
+                            <div style="margin-bottom:10px">
+                                <label style="display: initial" class="control-label">Estado</label>
+                                @Html.DropDownList("selectEstado", new SelectList(ViewBag.Estados, "Texto1", "Texto1"), "Seleccione", htmlAttributes:
+                                new
+                                {
+                                    id = "selectEstado",
+                                    @class = "form-control",
+                                    @onchange = "refreshdropdown()"
+                                }
+                                )
 
 
-                            <label style="display: initial" class="control-label">DNI</label>
-                            <input id="inputBuscar" type="text" class="form-control" placeholder="Buscar ...">
-                            <button id="btnBuscar" class="btn btn-default" type="button">
-                                <i class="fa fa-search"></i>
-                            </button>
-
+                                <label style="display: initial" class="control-label">DNI</label>
+                                <input id="inputBuscar" type="text" class="form-control" placeholder="Buscar ...">
+                                <button id="btnBuscar" class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                                <button type="button" id="btnMas" class="btn btn-default" data-toggle="modal">
+                                    <i class="fa fa-caret-down"></i>
+                                    Filtros
+                                </button>
+                                <button id="btnLimpiar" class="btn btn-default" type="button">
+                                    <i class="fa fa-eraser"></i>
+                                </button>
+                            </div>
+                            <div id="divFiltro">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b><i>Fecha de Recibo</i></b></div>
+                                    <div class="row">
+                                        <div class="form-inline">
+                                            <label for="fecha-inicio">Desde </label>
+                                            <span class="fa fa-calendar" aria-hidden="true"></span>
+                                            <input class="form-control input-sm input-date" id="fechaReciboDesde" type="text" name="FechaDesde">
+                                            <label for="fecha-fin">Hasta </label>
+                                            <span class="fa fa-calendar" aria-hidden="true"></span>
+                                            <input class="form-control input-sm input-date" id="fechaReciboHasta" type="text" name="FechaHasta">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b><i>Fecha de Entrega</i></b></div>
+                                    <div class="row">
+                                        <div class="form-inline">
+                                            <label for="fecha-inicio">Desde </label>
+                                            <span class="fa fa-calendar" aria-hidden="true"></span>
+                                            <input class="form-control input-sm input-date" id="fechaEntregaDesde" type="text" name="FechaDesde">
+                                            <label for="fecha-fin">Hasta </label>
+                                            <span class="fa fa-calendar" aria-hidden="true"></span>
+                                            <input class="form-control input-sm input-date" id="fechaEntregaHasta" type="text" name="FechaHasta">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -202,6 +238,9 @@
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Estado</th>
+                                <th>Fec. Recibo</th>
+                                <th>Fec. Entrega</th>
+                                <th>Firma</th>
                             </tr>
                         </thead>
                     </table>
@@ -530,7 +569,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </form>
                 </div>
@@ -634,16 +673,16 @@
                             <div class="col-xs-12 col-md-8 pull-right">
                                 <div class="sign">
                                     <div>
-                                        <canvas name="SigImg" id="SigImg" width="500" height="100"style="display:none"></canvas>
+                                        <canvas name="SigImg" id="SigImg" width="500" height="100" style="display:none"></canvas>
                                         <form action="https://sigplusweb.com/sign_chrome_ff_sigplusextlite.html#">
                                             <p>
                                                 <input id="SignBtn" class="btn btn-info" name="SignBtn" type="button" value="Firmar" onclick="StartSign()">&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <input  style="display:none" name="bioSigData" id="bioSigData">
+                                                <input style="display:none" name="bioSigData" id="bioSigData">
                                                 <input type="HIDDEN" name="sigImgData">
                                                 <textarea name="sigStringData" rows="20" cols="50" style="display:none">SigString: </textarea>
                                                 <textarea name="sigRawData" rows="20" cols="50" style="display:none">Base64 String: </textarea>
                                             </p>
-                                            
+
                                         </form>
                                     </div>
                                     <table border="1" cellpadding="0" width="500">
@@ -672,11 +711,19 @@
 
 @section scripts {
     @Scripts.Render("~/Scripts/jquery.datetimepicker.full.min.js")
+    @Scripts.Render("~/Scripts/dataTables.buttons.min.js")
+    @Scripts.Render("~/Scripts/buttons.flash.min.js")
+    @Scripts.Render("~/Scripts/jszip.min.js")
+    @Scripts.Render("~/Scripts/pdfmake.min.js")
+    @Scripts.Render("~/Scripts/vfs_fonts.js")
+    @Scripts.Render("~/Scripts/buttons.html5.min.js")
+    @Scripts.Render("~/Scripts/buttons.print.min.js")
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
         $(document).ready(function () {
 
-            habilitaBotones(false,null);
+            habilitaBotones(false, null);
+            $('#divFiltro').hide();
 
             $(".select-buscador").select2();
 
@@ -749,6 +796,19 @@
             //Cargo la grilla
 
             $('#dataTables-Index').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'print',
+                        text: 'Imprimir',
+                        title: 'Informe de Licencias',
+                        exportOptions: {
+                            stripHtml: false,
+                            columns: [1, 2,3,4, 5,6,7]
+                        },
+                    
+                    }
+                ],
                   "ajax":
                   {
                       url: "@Url.Action("GetLicencias", "Licenses", new { Estado = "ParamEstado" })".replace("ParamEstado", $('#selectEstado').val()),
@@ -760,7 +820,15 @@
                    { "data": "Dni" },
                    { "data": "Nombre" },
                    { "data": "Apellido" },
-                   { "data": "Estado" }
+                   { "data": "Estado" },
+                   { "data": "FechaRecibo" },
+                   { "data": "FechaRetiro" },
+                   {
+                       "data": "Sign", render: function (data, type, row) {
+                           if (data == null)
+                               return null;
+                           return '<img src="data:image/jpeg;base64,' + data + '" width="150px" height="50px" >';
+                       }}
 
                ],
                 responsive: true,
@@ -795,6 +863,27 @@
         $('#btnBuscar').click(function () {
             refreshdropdown();
         });
+        $('#btnMas').click(function () {
+
+            if ($('#divFiltro').css('display') == 'none' || $('#divFiltro').css("visibility") == "hidden") {
+                $('#divFiltro').show();
+            }
+            else
+                $('#divFiltro').hide();
+
+        });
+        $('#btnLimpiar').click(function () {
+            limpiar();
+        });
+
+        function limpiar() {
+            $('#selectEstado').prop('selectedIndex', 0);
+            $('#inputBuscar').val('');
+            $('#fechaReciboDesde').val('');
+            $('#fechaReciboHasta').val('');
+            $('#fechaEntregaDesde').val('');
+            $('#fechaEntregaHasta').val('');
+        }
 
         function refreshdropdown() {
             @*var newurl = "@Url.Action("GetLicencias", "Licenses", new { Estado = "ParamEstado", Dni = "ParamDNI" })".replace("ParamEstado", $('#selectEstado').val()).replace("ParamDNI", $('#inputBuscar').val());
@@ -804,6 +893,10 @@
             $("#div-loader").show();
             var DNI = $('#inputBuscar').val();
             var Estado = $('#selectEstado').val();
+            var FechaReciboDesde =$('#fechaReciboDesde').val();
+            var FechaReciboHasta = $('#fechaReciboHasta').val();
+            var FechaEntregaDesde =$('#fechaEntregaDesde').val();
+            var FechaEntregaHasta = $('#fechaEntregaHasta').val();
 
 
                     $.ajax({
@@ -811,7 +904,12 @@
                         url: "@Url.Action("GetLicencias", "Licenses")",
                         data: JSON.stringify({
                             "Estado": Estado,
-                            "Dni": DNI
+                            "Dni": DNI,
+                            "FechaReciboDesde": FechaReciboDesde,
+                            "FechaReciboHasta": FechaReciboHasta,
+                            "FechaEntregaDesde": FechaEntregaDesde,
+                            "FechaEntregaHasta": FechaEntregaHasta
+
                         }),
                         dataType: "json",
                         contentType: 'application/json; charset=utf-8;',
@@ -863,7 +961,7 @@
                 $(modal).find('[name=sigRawData]').val(result.Sign);
                 convertToImage($(modal).find('[name=sigRawData]').val());
 
-                
+
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -882,7 +980,7 @@
             var idLicencia = $('#dataTables-Index').find('tr.selected>td').first().text();
             ClearFormData();
             completeDatos($('#editarModal'), idLicencia);
-            
+
 
         });
 
@@ -904,7 +1002,7 @@
 
         });
 
-  $("#form-edit").validate({      
+  $("#form-edit").validate({
         rules: {
             inputDNI: { required: true, minlength: 7, maxlength: 8 },
             inputApellido: { required: true, minlength: 2, maxlength: 64 },

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -63,16 +65,40 @@ namespace GestionDeTurnos.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetLicencias(string Estado, string Dni)
+        public JsonResult GetLicencias(string Estado, string Dni, string FechaReciboDesde, string FechaReciboHasta,string FechaEntregaDesde, string FechaEntregaHasta)
         {
             List<LicenseIndexViewModel> list = new List<LicenseIndexViewModel>();
             try
             {
 
+                DateTime? dtFechaReciboDesde = null;
+                DateTime? dtFechaReciboHasta = null;
+                DateTime? dtFechaEntregaDesde = null;
+                DateTime? dtFechaEntregaHasta = null;
+
+
+                if (!String.IsNullOrEmpty(FechaReciboDesde))
+                    dtFechaReciboDesde = Convert.ToDateTime(FechaReciboDesde);
+
+                if (!String.IsNullOrEmpty(FechaReciboHasta))
+                    dtFechaReciboHasta = Convert.ToDateTime(FechaReciboHasta).AddDays(1).AddTicks(-1);
+
+                if (!String.IsNullOrEmpty(FechaEntregaDesde))
+                    dtFechaEntregaDesde = Convert.ToDateTime(FechaEntregaDesde);
+
+                if (!String.IsNullOrEmpty(FechaEntregaHasta))
+                    dtFechaEntregaHasta = Convert.ToDateTime(FechaEntregaHasta).AddDays(1).AddTicks(-1);
+
+
+
                 var licenses = db.Licenses
                 .Where(x => !string.IsNullOrEmpty(Estado) ? (x.Estado == Estado && x.Estado != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Dni) ? (x.Person.Dni == Dni && x.Person.Dni != null) : true)
-                .Select(c => new { c.Id, c.Person, c.Estado}).OrderByDescending(x => x.Id).Take(2000).ToList();
+                .Where(x => !string.IsNullOrEmpty(FechaReciboDesde) ? (x.FechaRecibo >= dtFechaReciboDesde && x.FechaRecibo != null) : true)
+                .Where(x => !string.IsNullOrEmpty(FechaReciboHasta) ? (x.FechaRecibo <= dtFechaReciboHasta && x.FechaRecibo != null) : true)
+                .Where(x => !string.IsNullOrEmpty(FechaEntregaDesde) ? (x.FechaRetiro >= dtFechaEntregaDesde && x.FechaRetiro != null) : true)
+                .Where(x => !string.IsNullOrEmpty(FechaEntregaHasta) ? (x.FechaRetiro <= dtFechaEntregaHasta && x.FechaRetiro != null) : true)
+                .Select(c => new { c.Id, c.Person, c.Estado, c.Firma, c.FechaRecibo,c.FechaRetiro }).OrderByDescending(x => x.Id).Take(2000).ToList();
 
                 foreach (var item in licenses)
                 {
@@ -82,7 +108,10 @@ namespace GestionDeTurnos.Controllers
                         Dni = item.Person.Dni,
                         Estado = item.Estado,
                         Nombre = item.Person.Nombre,
-                        Id = item.Id
+                        Id = item.Id,
+                        Sign = item.Firma,
+                        FechaRecibo = item.FechaRecibo?.ToString("dd/MM/yyyy"),
+                        FechaRetiro = item.FechaRetiro?.ToString("dd/MM/yyyy")                   
                     };
                     list.Add(license);
                 }
