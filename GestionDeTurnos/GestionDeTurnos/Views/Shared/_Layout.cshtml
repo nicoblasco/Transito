@@ -129,6 +129,15 @@
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "MedicalPersons")">Historial Medico</a>
                                     </li>
                                 }
+
+
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Turnero")))
+                                {
+                                    <li>
+                                        <a style="color: whitesmoke" href="@Url.Action("Turnero", "Trackings")">Turnero</a>
+                                    </li>
+                                }
+
                             </ul>
                         </li>
 

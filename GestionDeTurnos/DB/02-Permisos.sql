@@ -9,6 +9,8 @@ insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Ate
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Busquedas',1,'Turns/Search',3,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Call Center',1,'CallCenterTurns/Index',4,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Historial Medico',1,'MedicalPersons/Index',5,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
+insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Historial Medico',1,'MedicalPersons/Index',5,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
+insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Turnero',1,'Trackings/Turnero',7,(select Id from [dbo].[Modules] where Descripcion='Menu Principal'))
 
 insert into [dbo].[Windows] (Descripcion,Enable,Url,Orden,ModuleId) values ('Licencias',1,'Licenses/Index',1,(select Id from [dbo].[Modules] where Descripcion='Licencias'))
 
