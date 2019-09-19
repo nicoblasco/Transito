@@ -65,7 +65,7 @@ namespace GestionDeTurnos.Controllers
             List<Terminal> list = new List<Terminal>();
             try
             {
-                list = db.Terminals.ToList();
+                list = db.Terminals.Where(x=>x.Enable==true).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
@@ -103,7 +103,7 @@ namespace GestionDeTurnos.Controllers
             {
                 var result = from c in db.Terminals
                              where c.Id != id
-                             && c.IP.ToUpper() == IP.ToUpper()
+                             && c.IP.ToUpper() == IP.ToUpper() && c.Enable==true
                              select c;
 
                 var responseObject = new
@@ -173,8 +173,9 @@ namespace GestionDeTurnos.Controllers
             }
 
             Terminal terminal = db.Terminals.Find(id);
-
-            db.Terminals.Remove(terminal);
+            terminal.Enable = false;
+            //db.Terminals.Remove(terminal);
+            db.Entry(terminal).State = EntityState.Modified;
             db.SaveChanges();
 
             //Audito
