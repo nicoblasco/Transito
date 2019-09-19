@@ -187,6 +187,7 @@
     <Compile Include="Helpers\BootstrapExtensions.cs" />
     <Compile Include="Helpers\CompNameHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
+    <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Helpers\WindowHelper.cs" />
     <Compile Include="Migrations\201901191649122_prueba.cs" />
     <Compile Include="Migrations\201901191649122_prueba.Designer.cs">

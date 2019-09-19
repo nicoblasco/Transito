@@ -16,6 +16,5 @@ namespace GestionDeTurnos.Helpers
             return db.Windows.Where(x => x.Descripcion == Pantalla && x.Enable == true && x.ModuleId == ModuleId).Select(x => x.Id).FirstOrDefault();
         }
 
-        
     }
 }
