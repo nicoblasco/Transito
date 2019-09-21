@@ -29,5 +29,8 @@ namespace GestionDeTurnos.Models
         public virtual Turn Turn { get; set; }
 
 
+
+        public string NroRegistro { get; set; }
+
     }
 }

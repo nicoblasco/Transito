@@ -16,8 +16,9 @@ namespace GestionDeTurnos.ViewModel
         public string DNI { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-
+        public string Estado { get; set; }
         public string IncompletoNoSePresento { get; set; }
+
 
     }
 }

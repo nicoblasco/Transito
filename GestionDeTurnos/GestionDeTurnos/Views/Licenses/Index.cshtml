@@ -61,9 +61,13 @@
         height: auto;
     }
 
-    /* Added some padding to make it more readable */
-
-    /*div[class^="col-"] {
+    .error {
+        color: #F00;
+        background-color: #FFF;
+        margin: 0px;
+    }
+        /* Added some padding to make it more readable */
+        /*div[class^="col-"] {
         padding: 40px;
     }*/
 </style>
@@ -294,6 +298,12 @@
                                         <label for="inputDNI">DNI</label>
                                         <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="inputNroRegistro">Nro Registro</label>
+                                        <input id="input-NroRegistro" name="inputNroRegistro" class="form-control input-width" autocomplete="off">
+                                    </div>
+
                                     <div class="form-group">
                                         <label>Apellido</label>
                                         <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
@@ -313,6 +323,13 @@
                                         <label class="label_corto">Nro</label>
                                         <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>Barrio</label>
+                                        <input id="input-Barrio" name="inputBarrio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-BarrioId" name="inputBarrioId" class="form-control" autocomplete="off" style="display:none">
+                                    </div>
+
                                     <div class="form-group">
                                         <label>Nacionalidad</label>
                                         @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
@@ -420,6 +437,12 @@
                                         <label for="inputDNI">DNI</label>
                                         <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="inputNroRegistro">Nro Registro</label>
+                                        <input id="input-NroRegistro" name="inputNroRegistro" class="form-control input-width" autocomplete="off">
+                                    </div>
+
                                     <div class="form-group">
                                         <label>Apellido</label>
                                         <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
@@ -439,6 +462,13 @@
                                         <label class="label_corto">Nro</label>
                                         <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>Barrio</label>
+                                        <input id="input-Barrio" name="inputBarrio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-BarrioId" name="inputBarrioId" class="form-control" autocomplete="off" style="display:none">
+                                    </div>
+
                                     <div class="form-group">
                                         <label>Nacionalidad</label>
                                         @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
@@ -521,6 +551,11 @@
                                         <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
                                     </div>
                                     <div class="form-group">
+                                        <label for="inputNroRegistro">Nro Registro</label>
+                                        <input id="input-NroRegistro" name="inputNroRegistro" class="form-control input-width" autocomplete="off">
+                                    </div>
+
+                                    <div class="form-group">
                                         <label>Apellido</label>
                                         <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
                                     </div>
@@ -539,6 +574,14 @@
                                         <label class="label_corto">Nro</label>
                                         <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
                                     </div>
+
+
+                                    <div class="form-group">
+                                        <label>Barrio</label>
+                                        <input id="input-Barrio" name="inputBarrio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-BarrioId" name="inputBarrioId" class="form-control" autocomplete="off" style="display:none">
+                                    </div>
+
                                     <div class="form-group">
                                         <label>Nacionalidad</label>
                                         @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
@@ -622,6 +665,10 @@
                                         <input id="input-DNI" name="inputDNI" class="form-control input-width" autocomplete="off">
                                     </div>
                                     <div class="form-group">
+                                        <label for="inputNroRegistro">Nro Registro</label>
+                                        <input id="input-NroRegistro" name="inputNroRegistro" class="form-control input-width" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
                                         <label>Apellido</label>
                                         <input id="input-Apellido" name="inputApellido" class="form-control input-width" autocomplete="off">
                                     </div>
@@ -640,6 +687,13 @@
                                         <label class="label_corto">Nro</label>
                                         <input id="input-Nro" name="inputNro" class="form-control input-corto" autocomplete="off">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>Barrio</label>
+                                        <input id="input-Barrio" name="inputBarrio" class="form-control input-width" autocomplete="off">
+                                        <input id="input-BarrioId" name="inputBarrioId" class="form-control" autocomplete="off" style="display:none">
+                                    </div>
+
                                     <div class="form-group">
                                         <label>Nacionalidad</label>
                                         @Html.DropDownList("input-Nacionalidad", new SelectList(ViewBag.Paises, "Id", "Descripcion"), new { @class = "form-control select-buscador input-width" })
@@ -759,10 +813,14 @@
             });
 
 
-            //Cargo las calles
+            //Cargo las calles y Barrios
+
+            //Calles
 
             var varListaCalles = @Html.Raw(Json.Encode(ViewBag.listaCalles));
             var callesJson = $.parseJSON(varListaCalles.Data);
+            var varListaBarrios = @Html.Raw(Json.Encode(ViewBag.listaBarrios));
+            var barriosJson = $.parseJSON(varListaBarrios.Data);
 
             $('#editarModal').find('#input-Domicilio').autocomplete({
                 lookup: callesJson,
@@ -789,6 +847,35 @@
                 lookup: callesJson,
                 onSelect: function (suggestion) {
                     $('#entregadoModal').find("#input-CalleId").val(suggestion.data);
+                }
+            });
+
+            //Barrios
+            $('#editarModal').find('#input-Barrio').autocomplete({
+                lookup: barriosJson,
+                onSelect: function (suggestion) {
+                    $('#editarModal').find("#input-BarrioId").val(suggestion.data);
+                }
+            });
+
+            $('#createModal').find('#input-Barrio').autocomplete({
+                lookup: barriosJson,
+                onSelect: function (suggestion) {
+                    $('#createModal').find("#input-BarrioId").val(suggestion.data);
+                }
+            });
+
+            $('#recibidoModal').find('#input-Barrio').autocomplete({
+                lookup: barriosJson,
+                onSelect: function (suggestion) {
+                    $('#recibidoModal').find("#input-BarrioId").val(suggestion.data);
+                }
+            });
+
+            $('#entregadoModal').find('#input-Barrio').autocomplete({
+                lookup: barriosJson,
+                onSelect: function (suggestion) {
+                    $('#entregadoModal').find("#input-BarrioId").val(suggestion.data);
                 }
             });
 
@@ -958,6 +1045,8 @@
                 $(modal).find('#input-TelParticular').val(result.Tel_Particular);
                 $(modal).find('#input-TelCelular').val(result.Tel_Celular);
                 $(modal).find('#input-Email').val(result.Email);
+                $(modal).find('#input-Barrio').val(result.Barrio);
+                $(modal).find('#input-NroRegistro').val(result.NroRegistro);
                 $(modal).find('[name=sigRawData]').val(result.Sign);
                 convertToImage($(modal).find('[name=sigRawData]').val());
 
@@ -1061,6 +1150,9 @@
             object.Tel_Particular = $('#editarModal').find('#input-TelParticular').val();
             object.Tel_Celular = $('#editarModal').find('#input-TelCelular').val();
             object.Email = $('#editarModal').find('#input-Email').val();
+            object.Barrio = $('#editarModal').find('#input-Barrio').val();
+            object.BarrioId = $('#editarModal').find('#input-BarrioId').val();
+            object.NroRegistro = $('#editarModal').find('#input-NroRegistro').val();
 
             var data = JSON.stringify(object);
 
@@ -1161,6 +1253,9 @@ $("#form-create").validate({
             object.Tel_Particular = $('#createModal').find('#input-TelParticular').val();
             object.Tel_Celular = $('#createModal').find('#input-TelCelular').val();
             object.Email = $('#createModal').find('#input-Email').val();
+            object.Barrio = $('#createModal').find('#input-Barrio').val();
+            object.BarrioId = $('#createModal').find('#input-BarrioId').val();
+            object.NroRegistro = $('#createModal').find('#input-NroRegistro').val();
 
             var data = JSON.stringify(object);
 
@@ -1228,10 +1323,12 @@ $("#form-create").validate({
                     success: function (result) {
                         $('#createModal').find('#input-PersonId').val(result.Id);
                         $('#createModal').find('#input-DNI').val(result.Dni);
+                        $('#createModal').find('#input-NroRegistro').val(result.NroRegistro);
                         $('#createModal').find('#input-Apellido').val(result.Apellido);
                         $('#createModal').find('#input-Nombre').val(result.Nombre);
                         $('#createModal').find('#input-FechaDeNacimiento').val(result.FechaDeNacimiento);
                         $('#createModal').find('#input-Domicilio').val(result.Domicilio);
+                        $('#createModal').find('#input-Barrio').val(result.Barrio);
                         $('#createModal').find('#input-Nro').val(result.DomicilioNro);
                         $('#createModal').find('#input-Nacionalidad').val(result.Nacionalidad);
                         $('#createModal').find('#input-TelParticular').val(result.Tel_Particular);
@@ -1314,6 +1411,9 @@ $("#form-create").validate({
             object.Tel_Particular = $('#recibidoModal').find('#input-TelParticular').val();
             object.Tel_Celular = $('#recibidoModal').find('#input-TelCelular').val();
             object.Email = $('#recibidoModal').find('#input-Email').val();
+            object.Barrio = $('#recibidoModal').find('#input-Barrio').val();
+            object.BarrioId = $('#recibidoModal').find('#input-BarrioId').val();
+            object.NroRegistro = $('#recibidoModal').find('#input-NroRegistro').val();
 
             var data = JSON.stringify(object);
 
@@ -1362,9 +1462,13 @@ $("#form-create").validate({
             inputApellido: { required: true, minlength: 2, maxlength: 64 },
             inputNombre: { required: true, minlength: 2, maxlength: 64 },
             bioSigData: { required: true },
-            //inputDomicilio: { required: true },
-            //inputOtorgamiendo: { required: true },
-            //inputVencimiento: { required: true }
+            inputOtorgamiendo: { required: true },
+            inputVencimiento: { required: true },
+            inputDomicilio: { required: true },
+            inputBarrio: { required: true },
+            SelectedClases: { required: true },
+            inputTelParticular: { required: true },
+            inputNroRegistro: { required: true },
         },
         messages: {
             inputDNI: {
@@ -1384,19 +1488,28 @@ $("#form-create").validate({
             },
             bioSigData: {
                 required: "La firma es requerida"
+            },
+            inputTelParticular: {
+                required: "Requerido."
+            },
+            inputDomicilio: {
+                required: "Requerido."
+            },
+            inputBarrio: {
+                required: "Requerido."
+            },
+            inputOtorgamiendo: {
+                required: "Requerido."
+            },
+            inputVencimiento: {
+                required: "Requerido."
+            },
+            SelectedClases: {
+                required: "Requerido."
+            },
+            inputNroRegistro: {
+                required: "Requerido."
             }
-            //inputFechaDeNacimiento: {
-            //    required: "Requerido."
-            //},
-            //inputDomicilio: {
-            //    required: "Requerido."
-            //},
-            //inputOtorgamiendo: {
-            //    required: "Requerido."
-            //},
-            //inputVencimiento: {
-            //    required: "Requerido."
-            //}
         },
         submitHandler: function (form) {
             var object = new Object();
@@ -1419,7 +1532,9 @@ $("#form-create").validate({
             object.Tel_Celular = $('#entregadoModal').find('#input-TelCelular').val();
             object.Email = $('#entregadoModal').find('#input-Email').val();
             object.Sign = $('#entregadoModal').find('[name=sigRawData]').val();
-
+            object.Barrio = $('#entregadoModal').find('#input-Barrio').val();
+            object.BarrioId = $('#entregadoModal').find('#input-BarrioId').val();
+            object.NroRegistro = $('#entregadoModal').find('#input-NroRegistro').val();
 
             var data = JSON.stringify(object);
 

@@ -29,8 +29,12 @@ namespace GestionDeTurnos.Models
 
         public string Email { get; set; }
 
-        public string Barrio { get; set; }
 
         public DateTime? Vencimiento_licencia { get; set; }
+
+        public string Barrio { get; set; }
+
+        public int? NighborhoodId { get; set; }
+        public virtual Nighborhood Nighborhood { get; set; }
     }
 }

@@ -146,10 +146,13 @@ namespace GestionDeTurnos.Controllers
 
                 List<TurnsSeachViewModel> turnsSeachViews = new List<TurnsSeachViewModel>();                
                 List<Turn> turns = db.Turns.Take(1000).Where(x=>x.Enable==true).ToList();
+                 
+
 
                 foreach (var item in turns)
                 {
                     string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
+                    string strEstado = GetEstado(item.Id);
                     TurnsSeachViewModel viewModel = new TurnsSeachViewModel
                     {
                         Apellido = item.Person.Apellido,
@@ -161,7 +164,8 @@ namespace GestionDeTurnos.Controllers
                         Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
                         Tipo = item.TypesLicense.Descripcion,
                         Turno = item.Turno,
-                        IncompletoNoSePresento = strEsIncompletoNosePresento
+                        IncompletoNoSePresento = strEsIncompletoNosePresento,
+                        Estado= strEstado
                     };
 
                     turnsSeachViews.Add(viewModel);
@@ -214,6 +218,13 @@ namespace GestionDeTurnos.Controllers
 
                 throw;
             }
+        }
+
+        //Tomo el estado
+        private string GetEstado( int TurnId)
+        {
+            return db.Trackings.Where(x => x.TurnID == TurnId && x.Enable == true).OrderByDescending(x => x.Id).Select(x => x.Status.Descripcion).FirstOrDefault();
+
         }
 
         //Verifico si el turno es del dia y si esta incompleto o no se presento
@@ -316,6 +327,7 @@ namespace GestionDeTurnos.Controllers
                         Ingreso = item.FechaIngreso.ToShortDateString(),
                         Salida = item.FechaSalida?.ToShortDateString(),
                         Estado = trackings.Where(x => x.TurnID == item.Id && x.Enable == true).Select(x => x.Status.Descripcion).LastOrDefault(),
+
                       //  SectorAnterior = workflow.SectorWorkflows.Where(x => x.SectorID != intSectorActual && x.Orden == intOrdenSectorActual -1).Select(x => x.Sector.Descripcion).FirstOrDefault(),
                         SectorActual = trackings.Where(x => x.TurnID == item.Id).Select(x => x.Sector.Descripcion).LastOrDefault(),
                         SectorProximo = workflow.SectorWorkflows.Where(x => x.SectorID != intSectorActual && x.Orden == intOrdenSectorActual +1).Select(x => x.Sector.Descripcion).FirstOrDefault()

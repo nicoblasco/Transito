@@ -202,6 +202,7 @@
     <Compile Include="Models\LicenseClass.cs" />
     <Compile Include="Models\MedicalPerson.cs" />
     <Compile Include="Models\Module.cs" />
+    <Compile Include="Models\Nighborhood.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Process.cs" />

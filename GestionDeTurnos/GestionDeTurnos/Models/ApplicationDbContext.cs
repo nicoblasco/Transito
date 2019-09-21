@@ -75,5 +75,7 @@ namespace GestionDeTurnos.Models
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.Street> Streets { get; set; }
 
         public System.Data.Entity.DbSet<GestionDeTurnos.Models.MedicalPerson> MedicalPersons { get; set; }
+
+        public System.Data.Entity.DbSet<GestionDeTurnos.Models.Nighborhood> Nighborhoods { get; set; }
     }
 }

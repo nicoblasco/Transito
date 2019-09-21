@@ -17,6 +17,9 @@ namespace GestionDeTurnos.ViewModel
         public string Domicilio { get; set; }
         public int? CalleId { get; set; }
 
+        public string Barrio { get; set; }
+        public int? BarrioId { get; set; }
+
         public string DomicilioNro { get; set; }
         public int? Nacionalidad { get; set; }
         public string Tel_Particular { get; set; }

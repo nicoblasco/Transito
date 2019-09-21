@@ -39,6 +39,7 @@ namespace GestionDeTurnos.Controllers
             ViewBag.Paises = lCountries;
             ViewBag.Clases = lClases;
             ViewBag.listaCalles = GetCalles();
+            ViewBag.listaBarrios = GetBarrios();                                      
             ViewBag.AltaModificacion = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             return View(db.Licenses.ToList());
@@ -154,7 +155,10 @@ namespace GestionDeTurnos.Controllers
                     Email = license.Person.Email,
                     Tel_Celular = license.Person.Tel_Celular,
                     Tel_Particular = license.Person.Tel_Particular,
-                    Sign = license.Firma
+                    Sign = license.Firma,
+                    Barrio = license.Person.Barrio,
+                    BarrioId = license.Person.NighborhoodId,
+                    NroRegistro=license.NroRegistro
                     
 
             };
@@ -197,11 +201,14 @@ namespace GestionDeTurnos.Controllers
             license.Person.Calle = licenseIndexViewModel.Domicilio;
             license.Person.StreetId = licenseIndexViewModel.CalleId;
             license.Person.CalleNro = licenseIndexViewModel.DomicilioNro;
+            license.Person.Barrio = licenseIndexViewModel.Barrio;
+            license.Person.NighborhoodId = licenseIndexViewModel.BarrioId;
             license.FechaOtorgamiento =  string.IsNullOrEmpty(licenseIndexViewModel.Otorgamiendo) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Otorgamiendo);
             license.FechaVencimiento = string.IsNullOrEmpty(licenseIndexViewModel.Vencimiento) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Vencimiento);
             license.Person.Email = licenseIndexViewModel.Email;
             license.Person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
             license.Person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
+            license.NroRegistro = licenseIndexViewModel.NroRegistro;
 
             if (license.LicenseClasses != null)
             {
@@ -257,6 +264,8 @@ namespace GestionDeTurnos.Controllers
             license.Person.Calle = licenseIndexViewModel.Domicilio;
             license.Person.StreetId = licenseIndexViewModel.CalleId;
             license.Person.CalleNro = licenseIndexViewModel.DomicilioNro;
+            license.Person.Barrio = licenseIndexViewModel.Barrio;
+            license.Person.NighborhoodId = licenseIndexViewModel.BarrioId;
             license.FechaOtorgamiento = string.IsNullOrEmpty(licenseIndexViewModel.Otorgamiendo) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Otorgamiendo);
             license.FechaVencimiento = string.IsNullOrEmpty(licenseIndexViewModel.Vencimiento) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Vencimiento);
             license.FechaRecibo = DateTime.Now;
@@ -265,6 +274,7 @@ namespace GestionDeTurnos.Controllers
             license.Person.Email = licenseIndexViewModel.Email;
             license.Person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
             license.Person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
+            license.NroRegistro = licenseIndexViewModel.NroRegistro;
 
 
             if (license.LicenseClasses != null)
@@ -328,6 +338,9 @@ namespace GestionDeTurnos.Controllers
             license.Person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
             license.Estado = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS" && x.Numero1 == 3).Select(x => x.Texto1).FirstOrDefault();
             license.Firma = licenseIndexViewModel.Sign.Replace("undefined","");
+            license.NroRegistro = licenseIndexViewModel.NroRegistro;
+            license.Person.Barrio = licenseIndexViewModel.Barrio;
+            license.Person.NighborhoodId = licenseIndexViewModel.BarrioId;
             if (license.LicenseClasses != null)
             {
                 List<LicenseClass> LicenseClassAux = new List<LicenseClass>();
@@ -406,6 +419,10 @@ namespace GestionDeTurnos.Controllers
                 person.Email = licenseIndexViewModel.Email;
                 person.Tel_Particular = licenseIndexViewModel.Tel_Particular;
                 person.Tel_Celular = licenseIndexViewModel.Tel_Celular;
+                person.Barrio = licenseIndexViewModel.Barrio;
+                person.NighborhoodId = licenseIndexViewModel.BarrioId;
+
+
                 //Actualizo la persona
                 if (person.Id>0)
                 {                    
@@ -432,6 +449,7 @@ namespace GestionDeTurnos.Controllers
                     }
 
                     license.PersonId = person.Id;
+                    license.NroRegistro = license.NroRegistro;
                     license.FechaOtorgamiento = string.IsNullOrEmpty(licenseIndexViewModel.Otorgamiendo) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Otorgamiendo);
                     license.FechaVencimiento = string.IsNullOrEmpty(licenseIndexViewModel.Vencimiento) ? (DateTime?)null : DateTime.Parse(licenseIndexViewModel.Vencimiento);
                     license.Estado = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS" && x.Numero1 == 1).Select(x => x.Texto1).FirstOrDefault();
@@ -485,6 +503,8 @@ namespace GestionDeTurnos.Controllers
                         Dni = person.Dni,
                         Domicilio = person.Calle,
                         DomicilioNro = person.CalleNro,
+                        BarrioId = person.NighborhoodId,
+                        Barrio = person.Barrio,
                         FechaDeNacimiento = person.FechaNacimiento?.ToString("dd/MM/yyyy"),
                         Id = person.Id,
                         Nacionalidad = person.CountryId,
@@ -508,6 +528,28 @@ namespace GestionDeTurnos.Controllers
             {
 
                 throw;
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult GetBarrios()
+        {
+            List<Nighborhood> list = new List<Nighborhood>();
+            try
+            {
+                //Filtro los habilitados
+                list = db.Nighborhoods.ToList();
+                var json = JsonConvert.SerializeObject(list.Select(item =>
+                                  new { data = item.Codigo.ToString(), value = item.Nombre }));
+
+                return Json(json, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+
             }
         }
 

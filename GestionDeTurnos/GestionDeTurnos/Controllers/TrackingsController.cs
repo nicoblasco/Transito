@@ -34,7 +34,7 @@ namespace GestionDeTurnos.Controllers
             List<Setting> setting = db.Settings.ToList();
             int[] statusOrden = { 2,3 };
             int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
-            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName).FirstOrDefault();
+            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName && x.Enable==true).FirstOrDefault();
             ViewBag.HabilitaLlamarNuevamente = true;
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
@@ -100,7 +100,7 @@ namespace GestionDeTurnos.Controllers
             //string IP = Request.UserHostName;
             //string terminalName = CompNameHelper.DetermineCompName(IP);
             string terminalName = Request.UserHostName;
-            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName).FirstOrDefault();
+            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName && x.Enable==true ).FirstOrDefault();
             try
             {
                 list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno<= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
@@ -181,7 +181,7 @@ namespace GestionDeTurnos.Controllers
             Tracking tracking = new Tracking();
             Status status= db.Status.Where(x => x.Orden == 2).FirstOrDefault();
 
-            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName).FirstOrDefault();
+            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName && x.Enable == true).FirstOrDefault();
             
 
             if (terminal == null)
