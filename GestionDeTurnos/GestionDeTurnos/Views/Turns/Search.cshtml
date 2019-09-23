@@ -299,6 +299,9 @@
                 case "tagFechaHasta":
                     $('#fecha-fin').val('');
                     break;
+                case "tagEstado":
+                    $('#ddlEstado').val('').change();
+                    break;
 
                 default:
             }
@@ -316,6 +319,7 @@
             var FechaTurnoDesde = $('#tagFechaDesde').find('.tagId').text();
             var FechaTurnoHasta = $('#tagFechaHasta').find('.tagId').text();
             var Tipo = $('#tagTipo').find('.tagId').text();
+            var Estado = $('#tagEstado').find('.tagValue').text();
 
                     $.ajax({
                         type: "POST",
@@ -327,7 +331,8 @@
                             "Nombre": Nombre,
                             "FechaTurnoDesde": FechaTurnoDesde,
                             "FechaTurnoHasta": FechaTurnoHasta,
-                            "Tipo": Tipo
+                            "Tipo": Tipo,
+                            "Estado": Estado
                         }),
                         dataType: "json",
                         contentType: 'application/json; charset=utf-8;',
@@ -426,6 +431,18 @@
                     $('#tagFechaHasta').find('.tagId').text('');
                     $('#tagFechaHasta').find('.tagValue').text('');
                     $('#tagFechaHasta').hide();
+                }
+
+
+                if ($('#ddlEstado').val() != null && $('#ddlEstado').val() != '') {
+                    $('#tagEstado').find('.tagId').text($('#ddlEstado').val());
+                    $('#tagEstado').find('.tagValue').text($("#ddlEstado option:selected").text());
+                    $('#tagEstado').css("display", "inline-block");
+                }
+                else {
+                    $('#tagEstado').find('.tagId').text('');
+                    $('#tagEstado').find('.tagValue').text('');
+                    $('#tagEstado').hide();
                 }
 
             }

@@ -218,12 +218,6 @@
                     <div class="col-lg-2">
                         <div class="input-group">
                             <label for="condicion">Tipo de Turno</label>
-                            @*<select id="Estado" class="select-buscador form-control input-sm" style="width: 100%">
-            <option value="" selected></option>
-            <option value="OR">No Retenido</option>
-            <option value="DU">Duplicado</option>
-            <option value="RE">Renovacion</option>
-        </select>*@
                             @Html.DropDownList("ddlTipo", new SelectList(ViewBag.listaLicencias, "Id", "Descripcion"), "Seleccione ", htmlAttributes:
                             new
                             {
@@ -276,7 +270,18 @@
 
                         </div>
                     </div>
-
+                    <div class="col-lg-2">
+                        <div class="input-group">
+                            <label for="condicion">Estado</label>
+                            @Html.DropDownList("ddlEstado", new SelectList(ViewBag.listaEstados, "Id", "Descripcion"), "Seleccione ", htmlAttributes:
+                            new
+                            {
+                                @class = "select-buscador form-control input-sm",
+                                @style= "width: 100%"
+                            }
+                            )
+                        </div>
+                    </div>
 
 
                 </div>
@@ -324,6 +329,12 @@
                         <p class="tagValue"></p>
                         <button type="button" class="close">×</button>
                     </div>
+                    <div class="alert tag" id="tagEstado">
+                        <p class="tagId" style="display:none"></p>
+                        <p class="tagValue"></p>
+                        <button type="button" class="close">×</button>
+                    </div>
+
                 </div>
             </div>
         </div>

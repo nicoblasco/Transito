@@ -112,8 +112,11 @@ namespace GestionDeTurnos.Controllers
             if (!PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription)))
                 return View("~/Views/Shared/AccessDenied.cshtml");
             List<TypesLicense> lTypesLicense = new List<TypesLicense>();
+            List<Status> lStatus = new List<Status>();
             lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
+            lStatus = db.Status.OrderBy(x => x.Descripcion).ToList();
             ViewBag.listaLicencias = lTypesLicense;
+            ViewBag.listaEstados = lStatus;
 
             ViewBag.Editar = PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
@@ -125,8 +128,11 @@ namespace GestionDeTurnos.Controllers
         {
 
             List<TypesLicense> lTypesLicense = new List<TypesLicense>();
+            List<Status> lStatus = new List<Status>();
             lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
+            lStatus = db.Status.OrderBy(x => x.Descripcion).ToList();
             ViewBag.listaLicencias = lTypesLicense;
+            ViewBag.listaEstados = lStatus;
 
             ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
@@ -189,10 +195,13 @@ namespace GestionDeTurnos.Controllers
 
                 List<TurnsSeachViewModel> turnsSeachViews = new List<TurnsSeachViewModel>();
                 List<Turn> turns = db.Turns.Where(x => x.Enable == true && x.Turno== NroTurno).ToList();
+              //  List<Tracking> trackings = db.Trackings.Where(x => x.Turn.Turno== NroTurno && x.Enable == true).ToList();
 
                 foreach (var item in turns)
                 {
                     string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
+                    string strEstado = GetEstado(item.Id);
+
                     TurnsSeachViewModel viewModel = new TurnsSeachViewModel
                     {
                         Apellido = item.Person.Apellido,
@@ -204,7 +213,9 @@ namespace GestionDeTurnos.Controllers
                         Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
                         Tipo = item.TypesLicense.Descripcion,
                         Turno = item.Turno,
-                        IncompletoNoSePresento = strEsIncompletoNosePresento
+                        IncompletoNoSePresento = strEsIncompletoNosePresento,
+                        Estado= strEstado
+
 
                     };
 
@@ -352,12 +363,12 @@ namespace GestionDeTurnos.Controllers
 
 
 
-        public JsonResult SearchTurn(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo)
+        public JsonResult SearchTurn(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo, string Estado)
         {
             
 
             List<TurnsSeachViewModel> turns = new List<TurnsSeachViewModel>();
-            turns = ArmarConsulta(NroTurno, DNI, Apellido, Nombre, FechaTurnoDesde, FechaTurnoHasta, Tipo);
+            turns = ArmarConsulta(NroTurno, DNI, Apellido, Nombre, FechaTurnoDesde, FechaTurnoHasta, Tipo, Estado);
 
             ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
@@ -372,7 +383,7 @@ namespace GestionDeTurnos.Controllers
 
 
 
-        private List<TurnsSeachViewModel> ArmarConsulta(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo)
+        private List<TurnsSeachViewModel> ArmarConsulta(string NroTurno, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo, string Estado)
         {
             int TipoId = 0;
 
@@ -409,7 +420,9 @@ namespace GestionDeTurnos.Controllers
 
                 foreach (var item in lista)
                 {
+
                     string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
+                    string strEstado = GetEstado(item.Id);
                     TurnsSeachViewModel turn = new TurnsSeachViewModel
                     {
                         Apellido = item.Person.Apellido,
@@ -421,10 +434,11 @@ namespace GestionDeTurnos.Controllers
                         Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
                         Tipo = item.TypesLicense.Descripcion,
                         Turno = item.Turno,
-                        IncompletoNoSePresento = strEsIncompletoNosePresento
+                        IncompletoNoSePresento = strEsIncompletoNosePresento,
+                        Estado = GetEstado(item.Id)
                     };
 
-                    turns.Add(turn);
+                    turns.Add(turn) ;
 
                 }
 
@@ -435,7 +449,7 @@ namespace GestionDeTurnos.Controllers
                 throw;
             }
 
-            return turns;
+            return turns.Where(x => !string.IsNullOrEmpty(Estado) ? (x.Estado == Estado ) : true).ToList();
         }
 
         [HttpPost]
