@@ -129,13 +129,13 @@
                             </div>
                         </div>
                     </div>
-                    <a id="btnTiempoDemora" href="#">
+                    @*<a id="btnTiempoDemora" href="#">
                         <div class="panel-footer">
                             <span class="pull-left">Ver Detalle</span>
                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                             <div class="clearfix"></div>
                         </div>
-                    </a>
+                    </a>*@
                 </div>
             </div>
             <div class="col-lg-2 col-md-6">
@@ -151,13 +151,13 @@
                             </div>
                         </div>
                     </div>
-                    <a id="btnTurnosPendientes" href="#">
+                    @*<a id="btnTurnosPendientes" href="#">
                         <div class="panel-footer">
                             <span class="pull-left">Ver Detalle</span>
                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                             <div class="clearfix"></div>
                         </div>
-                    </a>
+                    </a>*@
                 </div>
             </div>
             <div class="col-lg-2 col-md-6">
@@ -173,13 +173,13 @@
                             </div>
                         </div>
                     </div>
-                    <a id="btnTurnosEnProceso" href="#">
+                    @*<a id="btnTurnosEnProceso" href="#">
                         <div class="panel-footer">
                             <span class="pull-left">Ver Detalle</span>
                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                             <div class="clearfix"></div>
                         </div>
-                    </a>
+                    </a>*@
                 </div>
             </div>
             <div class="col-lg-2 col-md-6">
@@ -195,18 +195,18 @@
                             </div>
                         </div>
                     </div>
-                    <a id="btnTurnosFinalizados" href="#">
+                    @*<a id="btnTurnosFinalizados" href="#">
                         <div class="panel-footer">
                             <span class="pull-left">Ver Detalle</span>
                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                             <div class="clearfix"></div>
                         </div>
-                    </a>
+                    </a>*@
                 </div>
             </div>
         </div>
         <!-- /#row -->
-        <div class="col-lg-12">
+        <div class="col-lg-12" style="display:none">
             <div class="panel panel-default">
                 <!-- /.panel-heading -->
                 <div class="panel-body">
@@ -264,11 +264,12 @@
         return color;
     }
 </script>
-    <script>
+<script>
 
         $(document).ready(function () {
 
-            $('#dataTables-Index').DataTable({
+            //Desestimada la grilla
+            @*$('#dataTables-Index').DataTable({
                 "ajax":
                 {
                     url: "@Url.Action("GetTurns", "Turns")",
@@ -288,7 +289,7 @@
                     { "data": "SectorProximo" }
                 ],
                 responsive: true
-            });
+            });*@
         });
 
 
@@ -521,7 +522,7 @@
                            });
 
                            //Borro todo lo que hay adentro
-                           
+
                            //Creo el contenedor
                            var chart = "<div class='panel panel-default'><div class='panel-heading'>" + title +"</div><div class='panel-body'><div><canvas id='myChart'></canvas></div></div></div>";
                            $('.Chart1').append(chart);
@@ -531,8 +532,8 @@
                                data: {
                                    labels: findLabel,
                                    datasets: [{
-                                       data: findNumber, 
-                                       backgroundColor: findColor                                        
+                                       data: findNumber,
+                                       backgroundColor: findColor
 
                                    }]
                                }
@@ -574,8 +575,8 @@
                                data: {
                                    labels: findLabel,
                                    datasets: [{
-                                       data: findNumber, 
-                                       backgroundColor: findColor                                        
+                                       data: findNumber,
+                                       backgroundColor: findColor
 
                                    }]
                                }
@@ -586,7 +587,7 @@
 
         }
 
-    </script>
+</script>
 
 
 }

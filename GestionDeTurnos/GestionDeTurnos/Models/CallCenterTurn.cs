@@ -36,5 +36,7 @@ namespace GestionDeTurnos.Models
         public int? UsuarioId { get; set; }
         public virtual Usuario Usuario { get; set; }
 
+        public string Llamado { get; set; }
+
     }
 }

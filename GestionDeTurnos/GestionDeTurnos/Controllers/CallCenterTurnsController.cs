@@ -58,7 +58,8 @@ namespace GestionDeTurnos.Controllers
                         FechaTurno = item.FechaTurno.ToString("dd/MM/yyyy HH:mm:ss"),
                         Asignado = ConvertSiNo(item.Asignado), 
                         TipoTramite = item.TipoTramite,
-                        UsuarioId = item.UsuarioId.ToString()
+                        UsuarioId = item.UsuarioId.ToString(),
+                        Llamado = item.Llamado
                     };
 
                     turnsSeachViews.Add(viewModel);
@@ -82,12 +83,12 @@ namespace GestionDeTurnos.Controllers
         }
 
 
-        public JsonResult SearchTurn(string DNI, string Nombre, string Tipo,string Apellido, string FechaTurnoDesde, string FechaTurnoHasta,string  Asignado )
+        public JsonResult SearchTurn(string DNI, string Nombre, string Tipo,string Apellido, string FechaTurnoDesde, string FechaTurnoHasta,string  Asignado, string Multa )
         {
 
 
             List<CallCenterIndexViewModel> turns = new List<CallCenterIndexViewModel>();
-            turns = ArmarConsulta(Asignado, DNI, Apellido, Nombre, FechaTurnoDesde, FechaTurnoHasta, Tipo);
+            turns = ArmarConsulta(Asignado, DNI, Apellido, Nombre, FechaTurnoDesde, FechaTurnoHasta, Tipo, Multa);
 
             ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Call Center", "Editar"));
             ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Call Center", "Ver"));
@@ -98,7 +99,7 @@ namespace GestionDeTurnos.Controllers
         }
 
 
-        private List<CallCenterIndexViewModel> ArmarConsulta(string Asignado, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo)
+        private List<CallCenterIndexViewModel> ArmarConsulta(string Asignado, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo,string Multa)
         {
 
 
@@ -108,6 +109,10 @@ namespace GestionDeTurnos.Controllers
             bool boolAsignado =false;
             if (Asignado == "SI")
                 boolAsignado = true;
+
+            bool boolMulta = false;
+            if (Multa == "SI")
+                boolMulta = true;
 
             if (!String.IsNullOrEmpty(FechaTurnoDesde))
                 dtFechaDesde = Convert.ToDateTime(FechaTurnoDesde);
@@ -122,13 +127,14 @@ namespace GestionDeTurnos.Controllers
 
                 var lista = db.CallCenterTurns
                 .Where(x => !string.IsNullOrEmpty(Asignado) ? (x.Asignado == boolAsignado) : true)
+                .Where(x => !string.IsNullOrEmpty(Multa) ? (string.IsNullOrEmpty( x.Llamado) == !boolMulta) : true)
                 .Where(x => !string.IsNullOrEmpty(DNI) ? (x.DNI == DNI && x.DNI != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Apellido) ? (x.Apellido == Apellido && x.Apellido != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Nombre) ? (x.Nombre == Nombre && x.Nombre != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Tipo) ? (x.TipoTramite == Tipo && x.TipoTramite != null) : true)
                 .Where(x => !string.IsNullOrEmpty(FechaTurnoDesde) ? (x.FechaTurno >= dtFechaDesde && x.FechaTurno != null) : true)
                 .Where(x => !string.IsNullOrEmpty(FechaTurnoHasta) ? (x.FechaTurno <= dtFechaHasta && x.FechaTurno != null) : true)
-                .Select(c => new { c.Id, c.Asignado, c.FechaTurno, c.Apellido, c.Nombre, c.TipoTramite, c.DNI,c.UsuarioId }).OrderByDescending(x => x.FechaTurno).Take(1000);
+                .Select(c => new { c.Id, c.Asignado, c.FechaTurno, c.Apellido, c.Nombre, c.TipoTramite, c.DNI,c.UsuarioId, c.Llamado }).OrderByDescending(x => x.FechaTurno).Take(1000);
                 ;
 
                 foreach (var item in lista)
@@ -142,7 +148,8 @@ namespace GestionDeTurnos.Controllers
                         Nombre = item.Nombre,
                         TipoTramite = item.TipoTramite,
                         Asignado = ConvertSiNo(item.Asignado),
-                        UsuarioId = item.UsuarioId?.ToString()
+                        UsuarioId = item.UsuarioId?.ToString(),
+                        Llamado = item.Llamado
 
                     };
 

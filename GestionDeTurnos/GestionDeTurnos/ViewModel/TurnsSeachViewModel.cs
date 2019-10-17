@@ -18,7 +18,8 @@ namespace GestionDeTurnos.ViewModel
         public string Apellido { get; set; }
         public string Estado { get; set; }
         public string IncompletoNoSePresento { get; set; }
-
+        public string SectorActual { get; set; }
+        public string SectorProximo { get; set; }
 
     }
 }

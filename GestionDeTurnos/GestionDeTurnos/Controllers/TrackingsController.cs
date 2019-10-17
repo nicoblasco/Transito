@@ -80,7 +80,7 @@ namespace GestionDeTurnos.Controllers
             //  int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
             int[] statusOrden = { 2, 3,4,5,6 };
 
-                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Terminal!=null && x.Enable == true && x.Turn.FechaTurno>= startDateTime && x.Turn.FechaTurno<= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(5).ToList();
+                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Terminal!=null && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(10).ToList();
 
 
 
@@ -103,7 +103,7 @@ namespace GestionDeTurnos.Controllers
             Terminal terminal = db.Terminals.Where(x => x.IP == terminalName && x.Enable==true ).FirstOrDefault();
             try
             {
-                list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno<= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
+                list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
@@ -127,7 +127,7 @@ namespace GestionDeTurnos.Controllers
             
             try
             {
-                List<Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable == true && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).OrderByDescending(x => x.FechaCreacion).Take(5).ToList();
+                List<Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderByDescending(x => x.FechaCreacion).Take(10).ToList();
 
                 return Json(trackings, JsonRequestBehavior.AllowGet);
             }
@@ -191,7 +191,7 @@ namespace GestionDeTurnos.Controllers
 
             try
             {
-                tracking = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).OrderBy(x => x.FechaCreacion).FirstOrDefault();
+                tracking = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderBy(x => x.FechaCreacion).FirstOrDefault();
 
                 if (tracking==null)
                 {

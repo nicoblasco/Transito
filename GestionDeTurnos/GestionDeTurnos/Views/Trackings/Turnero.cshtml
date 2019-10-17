@@ -46,6 +46,37 @@
             width: 100%;
         }
 
+        /*.detalle {
+            height:10px;
+        }*/
+
+
+        /*.alert {
+            padding-top: inherit;
+        }*/
+
+        .alert {
+            padding-top: 3px;
+            padding-bottom: 3px;
+            margin-bottom: 0px;
+        }
+
+        h1 {
+            max-height: 26px;
+            min-height: 26px;
+            width: max-content;
+            font-size: 29px;
+        }
+
+        .sector {
+            padding-left: 1px;
+        }
+
+        /*@@media screen and (max-width: 1px) {
+        h1{
+            font-size:14px;
+        }
+}*/
 
     </style>
 </head>
@@ -158,7 +189,8 @@
     @Scripts.Render("~/bundles/sound")
     <script type="text/javascript">
 
-        
+
+
         refreshTurns();
 
         function refreshTurns() {
@@ -193,6 +225,7 @@
 
 
                      window.setTimeout(refreshTurns, 5000);
+                     //window.setTimeout(refreshTurns, 500000000);
 
                     }
                 });

@@ -150,6 +150,7 @@ namespace GestionDeTurnos.Controllers
                 return Json(new { responseCode = "-10" });
             }
 
+            terminal.Enable = true;
             db.Entry(terminal).State = EntityState.Modified;
             db.SaveChanges();
 

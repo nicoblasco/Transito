@@ -33,9 +33,9 @@ namespace GestionDeTurnos.Controllers
             var totalTicks = 0L;
             var totalTicksDemora = 0L;
             List<CallCenterTurn> centerTurns = db.CallCenterTurns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).ToList();
-            List<Turn> turns = db.Turns.Where(x =>  x.FechaTurno >= startDateTime && x.Enable == true && x.FechaTurno <= endDateTime).OrderBy(x => new {x.FechaIngreso }).ToList();
+            List<Turn> turns = db.Turns.Where(x =>  x.FechaIngreso >= startDateTime && x.Enable == true && x.FechaIngreso <= endDateTime).OrderBy(x => new {x.FechaIngreso }).ToList();
 
-            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime).ToList();
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).ToList();
 
             foreach (var item in trackings.Where(x => x.FechaSalida != null).ToList())
             {
@@ -158,7 +158,8 @@ namespace GestionDeTurnos.Controllers
                 foreach (var item in turns)
                 {
                     string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
-                    string strEstado = GetEstado(item.Id);
+                    // string strEstado = GetEstado(item.Id);
+                    TurnTrackingViewModel turnTrackingViewModel = GetTracking(item.Id, item.TypesLicenseID);
                     TurnsSeachViewModel viewModel = new TurnsSeachViewModel
                     {
                         Apellido = item.Person.Apellido,
@@ -171,7 +172,10 @@ namespace GestionDeTurnos.Controllers
                         Tipo = item.TypesLicense.Descripcion,
                         Turno = item.Turno,
                         IncompletoNoSePresento = strEsIncompletoNosePresento,
-                        Estado= strEstado
+                        Estado = turnTrackingViewModel.Estado,
+                        SectorActual = turnTrackingViewModel.SectorActual,
+                        SectorProximo = turnTrackingViewModel.SectorProximo
+                        // Estado= strEstado
                     };
 
                     turnsSeachViews.Add(viewModel);
@@ -200,7 +204,8 @@ namespace GestionDeTurnos.Controllers
                 foreach (var item in turns)
                 {
                     string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
-                    string strEstado = GetEstado(item.Id);
+                    //string strEstado = GetEstado(item.Id);
+                    TurnTrackingViewModel turnTrackingViewModel = GetTracking(item.Id, item.TypesLicenseID);
 
                     TurnsSeachViewModel viewModel = new TurnsSeachViewModel
                     {
@@ -214,7 +219,10 @@ namespace GestionDeTurnos.Controllers
                         Tipo = item.TypesLicense.Descripcion,
                         Turno = item.Turno,
                         IncompletoNoSePresento = strEsIncompletoNosePresento,
-                        Estado= strEstado
+                        Estado = turnTrackingViewModel.Estado,
+                        SectorActual= turnTrackingViewModel.SectorActual,
+                        SectorProximo = turnTrackingViewModel.SectorProximo
+                        //Estado= strEstado
 
 
                     };
@@ -237,6 +245,44 @@ namespace GestionDeTurnos.Controllers
             return db.Trackings.Where(x => x.TurnID == TurnId && x.Enable == true).OrderByDescending(x => x.Id).Select(x => x.Status.Descripcion).FirstOrDefault();
 
         }
+
+        private TurnTrackingViewModel GetTracking(int turnId, int typeLicenseID)
+        {
+            List<Workflow> workflows = db.Workflows.ToList();
+            string sectorActual = "";
+            string sectorProximo = "";
+
+            //Obtengo el ultimo estado
+            List<Tracking> trackings = db.Trackings.Where(x => x.TurnID == turnId && x.Enable == true).ToList();
+            //Obtengo el workflow para el tipo de tramite
+            Workflow workflow = workflows.Where(x => x.TypesLicenseID == typeLicenseID).FirstOrDefault();
+
+
+            int intSectorActual = trackings.Where(x => x.TurnID == turnId).Select(x => x.SectorID).LastOrDefault();
+            int intOrdenSectorActual = trackings.Where(x => x.TurnID == turnId).Select(x => x.Orden).LastOrDefault();
+
+            string status = trackings.Where(x => x.TurnID == turnId).Select(x => x.Status.Descripcion).LastOrDefault();
+
+            if (status != "FINALIZADO")
+            {
+                sectorActual = trackings.Where(x => x.TurnID == turnId).Select(x => x.Sector.Descripcion).LastOrDefault();
+                sectorProximo = workflow.SectorWorkflows.Where(x => x.SectorID != intSectorActual && x.Orden == intOrdenSectorActual + 1).Select(x => x.Sector.Descripcion).FirstOrDefault();
+            }
+
+            
+
+            TurnTrackingViewModel turnTrackingViewModel = new TurnTrackingViewModel
+            {
+                Estado= status,
+                SectorActual= sectorActual,
+                SectorProximo = sectorProximo,
+                TurnID = turnId
+            };
+
+            return turnTrackingViewModel;
+        }
+
+
 
         //Verifico si el turno es del dia y si esta incompleto o no se presento
         private bool EsIncompleto(DateTime FechaIngreso, int TurnId)
@@ -317,9 +363,9 @@ namespace GestionDeTurnos.Controllers
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             try
             {
-                List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Enable == true && x.Turn.FechaTurno <= endDateTime).ToList();
+                List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Enable == true && x.Turn.FechaIngreso <= endDateTime).ToList();
                 List<TurnIndexViewModel> turnsvm = new List<TurnIndexViewModel>();
-                List<Turn> turns = db.Turns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime && x.Enable == true).OrderBy(x => new { x.FechaIngreso }).Take(1000).ToList();
+                List<Turn> turns = db.Turns.Where(x => x.FechaIngreso >= startDateTime && x.FechaIngreso <= endDateTime && x.Enable == true).OrderBy(x => new { x.FechaIngreso }).Take(1000).ToList();
                 //Obtengo el primer Sector del Workflow para el tipo de tramite
                 List<Workflow> workflows = db.Workflows.ToList();
 
@@ -415,14 +461,15 @@ namespace GestionDeTurnos.Controllers
                 .Where(x => !string.IsNullOrEmpty(Tipo) ? (x.TypesLicense.Id == TipoId && x.TypesLicense.Descripcion != null) : true)
                 .Where(x => !string.IsNullOrEmpty(FechaTurnoDesde) ? (x.FechaTurno >= dtFechaDesde && x.FechaTurno != null) : true)
                 .Where(x => !string.IsNullOrEmpty(FechaTurnoHasta) ? (x.FechaTurno <= dtFechaHasta && x.FechaTurno != null) : true)
-                .Select(c => new { c.Id, c.Turno, c.FechaTurno, c.FechaIngreso, c.FechaSalida, c.TypesLicense, c.Person }).OrderByDescending(x => x.FechaTurno).Take(1000);
+                .Select(c => new { c.Id, c.Turno, c.FechaTurno, c.FechaIngreso, c.FechaSalida, c.TypesLicense, c.Person, c.TypesLicenseID }).OrderByDescending(x => x.FechaTurno).Take(1000);
                 ;
 
                 foreach (var item in lista)
                 {
 
                     string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
-                    string strEstado = GetEstado(item.Id);
+                    TurnTrackingViewModel turnTrackingViewModel = GetTracking(item.Id, item.TypesLicenseID);
+                    //string strEstado = GetEstado(item.Id);
                     TurnsSeachViewModel turn = new TurnsSeachViewModel
                     {
                         Apellido = item.Person.Apellido,
@@ -435,7 +482,10 @@ namespace GestionDeTurnos.Controllers
                         Tipo = item.TypesLicense.Descripcion,
                         Turno = item.Turno,
                         IncompletoNoSePresento = strEsIncompletoNosePresento,
-                        Estado = GetEstado(item.Id)
+                        Estado = turnTrackingViewModel.Estado,
+                        SectorActual = turnTrackingViewModel.SectorActual,
+                        SectorProximo = turnTrackingViewModel.SectorProximo
+                        //Estado = GetEstado(item.Id)
                     };
 
                     turns.Add(turn) ;
@@ -538,7 +588,7 @@ namespace GestionDeTurnos.Controllers
             List<TurnPromedioViewModel> turnsvm = new List<TurnPromedioViewModel>();
             try
             {
-                List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaSalida != null && x.Enable == true).ToList();
+                List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime && x.FechaSalida != null && x.Enable == true).ToList();
 
                 foreach (var item in trackings)
                 {
@@ -578,7 +628,7 @@ namespace GestionDeTurnos.Controllers
             List<TurnDemoraViewModel> turnsvm = new List<TurnDemoraViewModel>();
             try
             {
-                List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaIngreso == null && x.Enable == true).ToList();
+                List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime && x.FechaIngreso == null && x.Enable == true).ToList();
 
                 foreach (var item in trackings)
                 {
@@ -698,7 +748,7 @@ namespace GestionDeTurnos.Controllers
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
 
             var pl = from r in db.Turns
-                     where r.FechaTurno >= startDateTime && r.FechaTurno<=endDateTime && r.Enable == true
+                     where r.FechaIngreso >= startDateTime && r.FechaIngreso <= endDateTime && r.Enable == true
                      group r by r.TypesLicense.Descripcion into grp
                      select new { key = grp.Key, cnt = grp.Count() };
             try
@@ -721,8 +771,8 @@ namespace GestionDeTurnos.Controllers
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             List<TurnChartViewModel> list = new List<TurnChartViewModel>();
-            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.Enable == true).ToList();
-            List<Turn> turns = db.Turns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime && x.Enable == true).ToList();
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime && x.Enable == true).ToList();
+            List<Turn> turns = db.Turns.Where(x => x.FechaIngreso >= startDateTime && x.FechaIngreso <= endDateTime && x.Enable == true).ToList();
             List<CallCenterTurn> centerTurns = db.CallCenterTurns.Where(x => x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).ToList();
             TurnChartViewModel turn;
 
@@ -776,7 +826,7 @@ namespace GestionDeTurnos.Controllers
         {
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
-            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaSalida!=null && x.Enable == true).ToList();
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime && x.FechaSalida!=null && x.Enable == true).ToList();
 
             var _groupedItems = trackings.GroupBy(i => i.Sector.Descripcion)
                 .Select(g => new {
@@ -803,7 +853,7 @@ namespace GestionDeTurnos.Controllers
         {
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
-            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaSalida != null && x.Enable == true).ToList();
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime && x.FechaSalida != null && x.Enable == true).ToList();
 
             var _groupedItems = trackings.GroupBy(i => i.Terminal.Descripcion)
                 .Select(g => new {
@@ -830,7 +880,7 @@ namespace GestionDeTurnos.Controllers
         {
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
-            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaTurno >= startDateTime && x.Turn.FechaTurno <= endDateTime && x.FechaIngreso == null && x.Enable == true).ToList();
+            List<Tracking> trackings = db.Trackings.Where(x => x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime && x.FechaIngreso == null && x.Enable == true).ToList();
 
             var _groupedItems = trackings.GroupBy(i => i.Sector.Descripcion)
                 .Select(g => new {
@@ -859,7 +909,7 @@ namespace GestionDeTurnos.Controllers
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
 
             var pl = from r in db.Trackings
-                     where r.Turn.FechaTurno >= startDateTime && r.Turn.FechaTurno <= endDateTime && r.Status.Orden == 1 && r.FechaIngreso ==null && r.Enable == true && r.Turn.Enable == true
+                     where r.Turn.FechaIngreso >= startDateTime && r.Turn.FechaIngreso <= endDateTime && r.Status.Orden == 1 && r.FechaIngreso ==null && r.Enable == true && r.Turn.Enable == true
                      group r by r.Sector.Descripcion into grp
                      select new { key = grp.Key, cnt = grp.Count() };
             try
@@ -884,7 +934,7 @@ namespace GestionDeTurnos.Controllers
             int[] statusOrdenPendiente = { 2, 3 };
 
             var pl = from r in db.Trackings 
-                     where r.Turn.FechaTurno >= startDateTime && r.Turn.FechaTurno <= endDateTime && statusOrdenPendiente.Contains(r.Status.Orden) && r.Enable == true && r.Turn.Enable == true
+                     where r.Turn.FechaIngreso >= startDateTime && r.Turn.FechaIngreso <= endDateTime && statusOrdenPendiente.Contains(r.Status.Orden) && r.Enable == true && r.Turn.Enable == true
                      group r by r.Sector.Descripcion into grp
                      select new { key = grp.Key, cnt = grp.Count() };
             try
@@ -909,7 +959,7 @@ namespace GestionDeTurnos.Controllers
             int[] statusOrdenPendiente = { 2, 3 };
 
             var pl = from r in db.Turns
-                     where r.FechaTurno >= startDateTime && r.FechaTurno <= endDateTime && r.FechaSalida!=null && r.Enable == true
+                     where r.FechaIngreso >= startDateTime && r.FechaIngreso <= endDateTime && r.FechaSalida!=null && r.Enable == true
                      group r by r.TypesLicense.Descripcion into grp
                      select new { key = grp.Key, cnt = grp.Count() };
             try
@@ -1167,5 +1217,16 @@ namespace GestionDeTurnos.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+
+        private class TurnTrackingViewModel
+        {
+            public int TurnID { get; set; }
+            public string Estado { get; set; }
+            public string SectorActual { get; set; }
+            public string SectorProximo { get; set; }
+
+        };
     }
 }

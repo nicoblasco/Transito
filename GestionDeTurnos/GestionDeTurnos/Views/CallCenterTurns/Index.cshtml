@@ -171,7 +171,8 @@
                     { "data": "Apellido", className: 'px200' },
                     { "data": "TipoTramite", className: 'px200' },
                     { "data": "FechaTurno", className: 'px200' },
-                    { "data": "Asignado", className: 'px200' }
+                    { "data": "Asignado", className: 'px200' },
+                    { "data": "Llamado", className: 'px200' },
                 ],
                 rowId: 'Id',
                 responsive: true,
@@ -619,6 +620,9 @@ $("#form-create").validate({
                 case "tagAsignado":
                     $('#ddlAsignado').val('').change();
                     break;
+                case "tagMulta":
+                    $('#ddlMulta').val('').change();
+                    break;
 
                 default:
             }
@@ -636,6 +640,7 @@ $("#form-create").validate({
             var FechaTurnoDesde = $('#tagFechaDesde').find('.tagId').text();
             var FechaTurnoHasta = $('#tagFechaHasta').find('.tagId').text();
             var Asignado = $('#tagAsignado').find('.tagId').text();
+            var Multa = $('#tagMulta').find('.tagId').text();
 
 
                     $.ajax({
@@ -648,7 +653,9 @@ $("#form-create").validate({
                             "Tipo": Tipo,
                             "FechaTurnoDesde": FechaTurnoDesde,
                             "FechaTurnoHasta": FechaTurnoHasta,
-                            "Asignado": Asignado
+                            "Asignado": Asignado,
+                            "Multa": Multa
+
                         }),
                         dataType: "json",
                         contentType: 'application/json; charset=utf-8;',
@@ -748,6 +755,17 @@ $("#form-create").validate({
                     $('#tagAsignado').find('.tagId').text('');
                     $('#tagAsignado').find('.tagValue').text('');
                     $('#tagAsignado').hide();
+                }
+
+                if ($('#ddlMulta').val() != null && $('#ddlMulta').val() != '') {
+                    $('#tagMulta').find('.tagId').text($('#ddlMulta').val());
+                    $('#tagMulta').find('.tagValue').text($('#ddlMulta').val());
+                    $('#tagMulta').css("display", "inline-block");
+                }
+                else {
+                    $('#tagMulta').find('.tagId').text('');
+                    $('#tagMulta').find('.tagValue').text('');
+                    $('#tagMulta').hide();
                 }
 
             }
