@@ -1,0 +1,272 @@
+﻿@model IEnumerable<GestionDeTurnos.Models.Tracking>
+
+@{
+    Layout = "~/Views/Shared/_LayoutTurnero.cshtml";    
+}
+
+
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Transito - Municipalidad de Florencio Varela</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <style type="text/css">
+        video {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .alert {
+            margin-bottom: 0px;
+        }
+
+        .oculto {
+            display: none;
+        }
+
+
+        .col-md-6, .col-md-12, .col-lg-7, .col-lg-5, .col-md-4 {
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+
+        .container {
+            padding-left: 0px;
+            margin-left: 0px;
+            margin-right: 0px;
+            width: 100%;
+        }
+
+        /*.detalle {
+            height:10px;
+        }*/
+
+
+        /*.alert {
+            padding-top: inherit;
+        }*/
+
+        .alert {
+            padding-top: 3px;
+            padding-bottom: 3px;
+            margin-bottom: 0px;
+        }
+
+        h1 {
+            max-height: 26px;
+            min-height: 26px;
+            width: max-content;
+            font-size: 29px;
+        }
+
+        .sector {
+            padding-left: 1px;
+        }
+
+        /*@@media screen and (max-width: 1px) {
+        h1{
+            font-size:14px;
+        }
+}*/
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+
+
+                <!-- Publicidad -->
+                @if (!string.IsNullOrEmpty(ViewBag.Video))
+                {
+                    <div class="col-lg-7">
+                        <video autoplay muted loop>
+                            <source src=@Url.Content("~/Content/video/video.mp4") type="video/mp4">
+                            @*<source src=@Url.Content("~/App_Data/upload/video/video.mp4" ) type="video/mp4">*@
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                }
+
+                <!-- Turnos -->
+                    <div class="col-lg-5">
+                        <div class="col-md-4">
+                            <div class="alert">
+                                <h2>  TURNO</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="alert">
+                                <h2> SECTOR</h2>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="alert">
+                                <h2> BOX</h2>
+                            </div>
+                        </div>
+
+                        @*<div id="divTurnosOculto" style="display:none"></div>*@
+                        <div id="divTurnos">
+
+                            @foreach (var item in Model)
+                            {
+                                if (item.Status.Orden == 2)
+                                {
+                                    <div class="col-md-4 detalle">
+                                        <div class="alert alert-danger">
+                                            <h1>@item.Turn.Turno</h1>
+                                            <div class="oculto Id">@item.Id</div>
+                                            <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-danger">
+                                            <h1>@item.Sector.Descripcion</h1>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-danger">
+                                            <h1>@item.Terminal.Descripcion</h1>
+                                        </div>
+                                    </div>
+
+
+                                }
+
+                                else
+                                {
+                                    <div class="col-md-4 detalle">
+                                        <div class="alert alert-success">
+                                            <h2>@item.Turn.Turno</h2>
+                                        </div>
+                                        <div class="oculto Id">@item.Id</div>
+                                        <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
+                                    </div>
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-success">
+                                            <h2>@item.Sector.Descripcion</h2>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 detalle sector">
+                                        <div class="alert alert-success">
+                                            <h2>@item.Terminal.Descripcion</h2>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+<button id="btnSound" onclick='$.playSound("/Scripts/attachments/sounds/sound.mp3")' style="display:none">Prueba</button>
+
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/sound")
+    <script type="text/javascript">
+
+
+
+        refreshTurns();
+
+        function refreshTurns() {
+            var $input;
+             $.ajax({
+                    url: '@Url.Action("GetTurnosTurnero")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8;',
+                 success: function (result) {
+                     //Antes de borrarlos los dejo en un div oculto
+                     //Aca borro el auxiliar
+                     //$('#divTurnosOculto').find('#divTurnos').remove();
+                     //$('#divTurnos').clone().prependTo('#divTurnosOculto');
+                     $('#divTurnos').find('.detalle').remove();
+
+
+                     $.each(result, function (k, v) {
+                         if (v.Status.Orden === 2) {
+                             //$input = $("<div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
+                             $input = $("<div class='col-md-4 detalle'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-4 detalle sector'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div><div class='col-md-4 detalle sector'><div class='alert alert-danger'><h1>"+v.Terminal.Descripcion+"</h1></div></div>");
+                         }
+                         else {
+                            // $input = $("<div class='col-md-6'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
+                             $input = $("<div class='col-md-4 detalle'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-4 detalle sector'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div><div class='col-md-4 detalle sector'><div class='alert alert-success'><h1>" + v.Terminal.Descripcion + "</h1></div></div>");
+                         }
+                         $input.appendTo($("#divTurnos"));
+
+                         if (v.Alerta)
+                             updateAlerta(v.Id, $input);
+
+                     });
+
+
+                     window.setTimeout(refreshTurns, 5000);
+                     //window.setTimeout(refreshTurns, 500000000);
+
+                    }
+                });
+        }
+
+
+        function updateAlerta(id, $input) {
+            $.ajax({
+                url: '@Url.Action("UpdateAlerta", "Trackings")',
+                data: JSON.stringify({
+                    "id": id
+                }),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    if (result.responseCode == 0) {
+                        suenaAlerta($input);
+                    }
+                }
+            });
+        }
+
+
+        function suenaAlerta($input) {
+            //$.playSound('/Scripts/attachments/sounds/sound.mp3');
+            $('#btnSound').click();
+
+            $input.each(function () {
+                var elem = $(this);
+                setInterval(function () {
+                    if (elem.css('visibility') == 'hidden') {
+                        elem.css('visibility', 'visible');
+                    } else {
+                        elem.css('visibility', 'hidden');
+                    }
+                }, 400);
+            });
+
+
+        }
+
+
+    </script>
+}

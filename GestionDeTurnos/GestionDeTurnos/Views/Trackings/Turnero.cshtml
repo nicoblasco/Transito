@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<GestionDeTurnos.Models.Tracking>
 
 @{
-    Layout = "~/Views/Shared/_LayoutTurnero.cshtml";    
+    Layout = "~/Views/Shared/_LayoutTurnero.cshtml";
 }
 
 
@@ -19,164 +19,297 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-    <style type="text/css">
-        video {
-            width: 100% !important;
-            height: 100% !important;
+    <style>
+        .color{
+            background-color:white;
         }
 
-        .alert {
-            margin-bottom: 0px;
-        }
-
-        .oculto {
-            display: none;
-        }
-
-
-        .col-md-6, .col-md-12, .col-lg-7, .col-lg-5, .col-md-4 {
-            padding-left: 1px;
-            padding-right: 1px;
-        }
-
-        .container {
-            padding-left: 0px;
-            margin-left: 0px;
-            margin-right: 0px;
+        .tamañoImagen {
             width: 100%;
         }
 
-        /*.detalle {
-            height:10px;
-        }*/
-
-
-        /*.alert {
-            padding-top: inherit;
-        }*/
-
-        .alert {
-            padding-top: 3px;
-            padding-bottom: 3px;
-            margin-bottom: 0px;
+        .sinMargen {
+            margin-right: -1px;
+            margin-left: -1px;
         }
 
-        h1 {
-            max-height: 26px;
-            min-height: 26px;
-            width: max-content;
-            font-size: 29px;
+        .row-first {
+            height: 80%;
+            overflow: hidden;
         }
 
-        .sector {
-            padding-left: 1px;
+        #divRowTurnoActualHead {
+            height: 100px;
+            /*line-height: 100px;*/
         }
 
-        /*@@media screen and (max-width: 1px) {
-        h1{
-            font-size:14px;
+        #divColumnaTurnoActualHeadClima {
+            margin-top: 35px;
         }
-}*/
+
+        #divColumnaTurnoActualHeadFechaHora {
+            margin-top: 25px;
+            padding: 0;
+        }
+
+        .reloj {
+            color: #3E3E3F;
+            text-align-last: center;
+            font-weight: 800;
+            font-size: 45px;
+        }
+
+        .fecha {
+            color: #3E3E3F;
+            font-size: 13px;
+            text-align-last: center;
+            margin-top: 13px;
+            font-weight: 600;
+        }
+
+
+
+        #divRowTurnoActualBody {
+            height: 350px;
+        }
+        #divRowTurnoFooter {
+            height: 100px;
+        }
+
+        #divColumnaTurnosPasados {
+            padding-top:10px;
+        }
+
+        #divColumnaTurnosPasadosHead {
+            text-align: center;
+            vertical-align:middle;
+        }
+
+        #divRowTurnosPasadosHead {
+            height: 70px;
+            background-color: #18A096;
+            line-height: 70px;
+        }
+
+        #divRowTurnosPasadosSubHead {
+            height: 45px;
+            
+        }
+        #divRowTurnosPasadosBody {
+            height: 450px;
+        }
+
+        #divRowTurnosPasadosBodyTurno {
+            background-color: #3E3E3F;
+            height: 70px;
+            margin-top: 10px;
+            line-height: 70px;
+        }
+
+        .TituloUltimosTurnos {
+            font-size: 45px;
+            color: white;
+        }
+
+        .TituloTurnosActuales {
+            font-size: 45px;
+            color: white;
+        }
+
+        .SubTituloUltimosTurnos {
+            font-size: 30px;
+            color: #18A096;
+            font-style: unset;
+            font-weight: 900 !important;
+        }
+
+        .spanUltimosTurnosTurno {
+            font-size:40px;
+            color: white;
+        }
+
+        .spanUltimosTurnosSector {
+            font-size: 30px;
+            color: white;
+            font-weight: 600 !important;
+        }
+
+        .spanUltimosTurnosBox {
+            font-size: 30px;
+            color: white;
+            font-weight:600!important;
+        }
+
+        .colorTitulo {
+            background-color: #18A096;
+        }
+
+        .borde-columnas {
+            border: 5px solid white;
+            text-align: center;
+        }
+
+        .turnos {
+            background-color: #3E3E3F;
+            font-size: 70px;
+            color: white;
+            line-height: 170px;
+            font-weight: 600;
+        }
+
+        .altoColumnasTurnoActual {
+            height: 200px;
+            
+        }
+
+        #divColumnaTurnoActualFooter {
+            background-color: yellow;
+            font-size: 50px;
+            color: #3E3E3F;
+            line-height: 70px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        div.hidden {
+            border: 1px solid black;
+        }
+
+        div.wrapper:hover div {
+            display: none;
+            background-color: red;
+        }
 
     </style>
+
+
 </head>
 
 
 <body>
+    @* COLUMNA IZQUIERDA  *@
+    <div class="container-fluid sinMargen color">
+        <div class="row sinMargen" id="divRowTurnoActual">
+            <div class="col-lg-6" id="divColumnaTurnoActual">
+                @* HEAD  *@
+                <div class="row sinMargen" id="divRowTurnoActualHead">
+                    <div class="col-lg-12" id="divColumnaTurnoActualHead">
+                        <div class="col-lg-4" id="divColumnaTurnoActualHeadLogo">
+                            <img class="tamañoImagen" src="~/Images/600736_309661239119777_416736846_n.jpg" runat="server" />
+                        </div>
+                        <div class="col-lg-4" id="divColumnaTurnoActualHeadFechaHora">
+                            <div class="widget">
+                                <div class="reloj">
+                                    <span id="horas" class="horas"></span>
+                                    :
+                                    <span id="minutos" class="minutos"></span>
+                                </div>
+                                <div class="fecha">
+                                    <span id="diaSemana" class="diaSemana"></span>
+                                    <span id="dia" class="dia"></span>
+                                    <span>de</span>
+                                    <span id="mes" class="mes"></span>
+                                    <span>de</span>
+                                    <span id="anio" class="anio"></span>
+                                </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-
-
-
-                <!-- Publicidad -->
-                @if (!string.IsNullOrEmpty(ViewBag.Video))
-                {
-                    <div class="col-lg-7">
-                        <video autoplay muted loop>
-                            <source src=@Url.Content("~/Content/video/video.mp4") type="video/mp4">
-                            @*<source src=@Url.Content("~/App_Data/upload/video/video.mp4" ) type="video/mp4">*@
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                }
-
-                <!-- Turnos -->
-                    <div class="col-lg-5">
-                        <div class="col-md-4">
-                            <div class="alert">
-                                <h2>  TURNO</h2>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="alert">
-                                <h2> SECTOR</h2>
+                        <div class="col-lg-4" id="divColumnaTurnoActualHeadClima">
+                            <div class="forecast">
+                                <script type='text/javascript' src='https://darksky.net/widget/default-small/-34.8272,-58.3956/ca12/en.js?width=100%&height=70&title=Full Forecast&textColor=333333&bgColor=transparent&transparency=true&skyColor=undefined&fontFamily=Verdana&customFont=&units=ca'></script>
+
                             </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="alert">
-                                <h2> BOX</h2>
-                            </div>
-                        </div>
-
-                        @*<div id="divTurnosOculto" style="display:none"></div>*@
-                        <div id="divTurnos">
-
-                            @foreach (var item in Model)
-                            {
-                                if (item.Status.Orden == 2)
-                                {
-                                    <div class="col-md-4 detalle">
-                                        <div class="alert alert-danger">
-                                            <h1>@item.Turn.Turno</h1>
-                                            <div class="oculto Id">@item.Id</div>
-                                            <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-md-4 detalle sector">
-                                        <div class="alert alert-danger">
-                                            <h1>@item.Sector.Descripcion</h1>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4 detalle sector">
-                                        <div class="alert alert-danger">
-                                            <h1>@item.Terminal.Descripcion</h1>
-                                        </div>
-                                    </div>
-
-
-                                }
-
-                                else
-                                {
-                                    <div class="col-md-4 detalle">
-                                        <div class="alert alert-success">
-                                            <h2>@item.Turn.Turno</h2>
-                                        </div>
-                                        <div class="oculto Id">@item.Id</div>
-                                        <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
-                                    </div>
-                                    <div class="col-md-4 detalle sector">
-                                        <div class="alert alert-success">
-                                            <h2>@item.Sector.Descripcion</h2>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 detalle sector">
-                                        <div class="alert alert-success">
-                                            <h2>@item.Terminal.Descripcion</h2>
-                                        </div>
-                                    </div>
-                                }
-                            }
                         </div>
 
                     </div>
+                </div>
+                @* BODY  *@
+                <div class="row sinMargen" id="divRowTurnoActualBody">
+                    <div class="row sinMargen" id="divRowTurnoActualBodyTitulo">
+                        <div class="col-lg-6 colorTitulo borde-columnas" id="divColumnaTurnoActualBodyTituloTurno">
+                            <span class="TituloTurnosActuales"><b>TURNO</b></span>
+                        </div>
+                        <div class="col-lg-6 colorTitulo borde-columnas" id="divColumnaTurnoActualBodyTituloBox">
+                            <span class="TituloTurnosActuales"><b>BOX</b></span>
+                        </div>
+                    </div>
+
+                    <div class="row sinMargen turnos" id="divRowTurnoActualBodyTurno">
+                        <div class="col-lg-6 borde-columnas altoColumnasTurnoActual" id="divColumnaTurnoActualBodyTurnoTurno">
+                            <span>OR0007</span> 
+                        </div>
+                        <div class="col-lg-6 borde-columnas altoColumnasTurnoActual" id="divColumnaTurnoActualBodyTurnoBox">
+                            <span>REP</span>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+                @* FOOTER  *@
+                <div class="row sinMargen" id="divRowTurnoFooter">
+                    <div class="col-lg-12" id="divColumnaTurnoActualFooter">
+                        <span>ÁREA MÉDICA</span>
+                    </div>
+                </div>
 
             </div>
+            
+    @* COLUMNA DERECHA  *@
+
+            <div class="col-lg-6" id="divColumnaTurnosPasados">
+                @* HEAD  *@
+                <div class="row sinMargen" id="divRowTurnosPasadosHead">
+                    <div class="col-lg-12" id="divColumnaTurnosPasadosHead">
+                         <span class="TituloUltimosTurnos"><b>ÚLTIMOS TURNOS</b></span>
+                    </div>
+                </div>
+
+                @* SUB HEAD  *@
+                <div class="row sinMargen" id="divRowTurnosPasadosSubHead">
+                    <div class="col-lg-4" id="divColumnaTurnosPasadosSubHeadTurno">
+                        <span class="SubTituloUltimosTurnos">TURNO</span>
+                    </div>
+                    <div class="col-lg-4" id="divColumnaTurnosPasadosSubHeadSector">
+                        <span class="SubTituloUltimosTurnos">SECTOR</span>
+                    </div>
+                    <div class="col-lg-4" id="divColumnaTurnosPasadosSubHeadBox">
+                        <span class="SubTituloUltimosTurnos">BOX</span>
+                    </div>
+                </div>
+
+                @* BODY  *@
+                <div class="row sinMargen" id="divRowTurnosPasadosBody">
+                    <div class="row sinMargen" id="divRowTurnosPasadosBodyTurno">
+                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyTurno">
+                            <span class="spanUltimosTurnosTurno">OR0006</span>
+                        </div>
+                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodySector">
+                            <span class="spanUltimosTurnosSector">PUERTA 2</span>
+                        </div>
+                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyBox">
+                            <span class="spanUltimosTurnosBox">REP</span>
+                        </div>
+                    </div>
+
+
+                    <div class="row sinMargen" id="divRowTurnosPasadosBodyTurno">
+                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyTurno">
+                            <span class="spanUltimosTurnosTurno">OR0006</span>
+                        </div>
+                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodySector">
+                            <span class="spanUltimosTurnosSector">AREA MEDICA</span>
+                        </div>
+                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyBox">
+                            <span class="spanUltimosTurnosBox">RECEPCIÓN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>
@@ -187,86 +320,50 @@
 @section scripts {
 
     @Scripts.Render("~/bundles/sound")
-    <script type="text/javascript">
+
+<script>
 
 
+    $(function () {
+        var actualizarHora = function () {
+            var fecha = new Date(),
+                hora = fecha.getHours(),
+                minutos = fecha.getMinutes(),
+                segundos = fecha.getSeconds(),
+                diaSemana = fecha.getDay(),
+                dia = fecha.getDate(),
+                mes = fecha.getMonth(),
+                anio = fecha.getFullYear(),
+                ampm;
 
-        refreshTurns();
+            var $pHoras = $("#horas"),
+                $pSegundos = $("#segundos"),
+                $pMinutos = $("#minutos"),
+                $pAMPM = $("#ampm"),
+                $pDiaSemana = $("#diaSemana"),
+                $pDia = $("#dia"),
+                $pMes = $("#mes"),
+                $pAnio = $("#anio");
+            var semana = ['Domingo,', 'Lunes,', 'Martes,', 'Miércoles,', 'Jueves,', 'Viernes,', 'Sábado,'];
+            var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-        function refreshTurns() {
-            var $input;
-             $.ajax({
-                    url: '@Url.Action("GetTurnosTurnero")',
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8;',
-                 success: function (result) {
-                     //Antes de borrarlos los dejo en un div oculto
-                     //Aca borro el auxiliar
-                     //$('#divTurnosOculto').find('#divTurnos').remove();
-                     //$('#divTurnos').clone().prependTo('#divTurnosOculto');
-                     $('#divTurnos').find('.detalle').remove();
+            $pDiaSemana.text(semana[diaSemana]);
+            $pDia.text(dia);
+            $pMes.text(meses[mes]);
+            $pAnio.text(anio);
 
+            if (hora < 10) { $pHoras.text("0" + hora) } else { $pHoras.text(hora) };
+            if (minutos < 10) { $pMinutos.text("0" + minutos) } else { $pMinutos.text(minutos) };
+            if (segundos < 10) { $pSegundos.text("0" + segundos) } else { $pSegundos.text(segundos) };
+            $pAMPM.text(ampm);
 
-                     $.each(result, function (k, v) {
-                         if (v.Status.Orden === 2) {
-                             //$input = $("<div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
-                             $input = $("<div class='col-md-4 detalle'><div class='alert alert-danger'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-4 detalle sector'><div class='alert alert-danger'><h1>" + v.Sector.Descripcion + "</h1></div></div><div class='col-md-4 detalle sector'><div class='alert alert-danger'><h1>"+v.Terminal.Descripcion+"</h1></div></div>");
-                         }
-                         else {
-                            // $input = $("<div class='col-md-6'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-6'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div>");
-                             $input = $("<div class='col-md-4 detalle'><div class='alert alert-success'><h1>" + v.Turn.Turno + "</h1><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div></div><div class='col-md-4 detalle sector'><div class='alert alert-success'><h1>" + v.Sector.Descripcion + "</h1></div></div><div class='col-md-4 detalle sector'><div class='alert alert-success'><h1>" + v.Terminal.Descripcion + "</h1></div></div>");
-                         }
-                         $input.appendTo($("#divTurnos"));
-
-                         if (v.Alerta)
-                             updateAlerta(v.Id, $input);
-
-                     });
-
-
-                     window.setTimeout(refreshTurns, 5000);
-                     //window.setTimeout(refreshTurns, 500000000);
-
-                    }
-                });
-        }
+        };
 
 
-        function updateAlerta(id, $input) {
-            $.ajax({
-                url: '@Url.Action("UpdateAlerta", "Trackings")',
-                data: JSON.stringify({
-                    "id": id
-                }),
-                type: 'POST',
-                contentType: 'application/json; charset=utf-8;',
-                success: function (result) {
-                    if (result.responseCode == 0) {
-                        suenaAlerta($input);
-                    }
-                }
-            });
-        }
+        actualizarHora();
+        var intervalo = setInterval(actualizarHora, 1000000000000);
+    });
 
+</script>
 
-        function suenaAlerta($input) {
-            //$.playSound('/Scripts/attachments/sounds/sound.mp3');
-            $('#btnSound').click();
-
-            $input.each(function () {
-                var elem = $(this);
-                setInterval(function () {
-                    if (elem.css('visibility') == 'hidden') {
-                        elem.css('visibility', 'visible');
-                    } else {
-                        elem.css('visibility', 'hidden');
-                    }
-                }, 400);
-            });
-
-
-        }
-
-
-    </script>
 }

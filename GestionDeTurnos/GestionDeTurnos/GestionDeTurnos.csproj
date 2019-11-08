@@ -580,7 +580,7 @@
     <Content Include="Views\Trackings\Details.cshtml" />
     <Content Include="Views\Trackings\Edit.cshtml" />
     <Content Include="Views\Trackings\Index.cshtml" />
-    <Content Include="Views\Trackings\Turnero.cshtml" />
+    <Content Include="Views\Trackings\Turnero2.cshtml" />
     <Content Include="Views\Shared\_LayoutTurnero.cshtml" />
     <Content Include="Views\Turns\_Filtros.cshtml" />
     <Content Include="Views\Turns\_Table.cshtml" />
@@ -602,6 +602,7 @@
     <Content Include="Views\Home\Ticket.cshtml" />
     <Content Include="Views\Shared\AccessDenied.cshtml" />
     <Content Include="Views\Shared\ErrorCustom12.cshtml" />
+    <Content Include="Views\Trackings\Turnero.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\upload\" />

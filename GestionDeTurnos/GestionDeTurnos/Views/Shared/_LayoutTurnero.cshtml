@@ -42,54 +42,54 @@
 <body>
 
     <div id="wrapper">
+        <div class="">
+            <!-- Navigation -->
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; ">
+                @*background-color: white;*@
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @*<img class="img_logo" src="../../Images/logo_muni.png" />*@
+                    <img class="img_logo" src="~/Images/logo_muni.png" runat="server" />
+                </div>
+                <!-- /.navbar-header -->
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; ">
-            @*background-color: white;*@
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @*<img class="img_logo" src="../../Images/logo_muni.png" />*@
-                <img class="img_logo" src="~/Images/logo_muni.png" runat="server" />
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a style="color: whitesmoke" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            @*@SessionHelper.GetUserName()*@
+                            <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="@Url.Action("Logout", "Usuarios")"><i class="fa fa-sign-out fa-fw"></i> Cerrar Sesión</a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-user -->
+                    </li>
+                    <!-- /.dropdown -->
+                </ul>
+                <!-- /.navbar-top-links -->
+            </nav>
             </div>
-            <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown">
-                    <a style="color: whitesmoke" class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        @*@SessionHelper.GetUserName()*@
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li>
-                            <a href="@Url.Action("Logout", "Usuarios")"><i class="fa fa-sign-out fa-fw"></i> Cerrar Sesión</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
-                <!-- /.dropdown -->
-            </ul>
-            <!-- /.navbar-top-links -->
-        </nav>
-
-        @RenderBody()
-    </div>
-    <!-- /#wrapper -->
-    @*<div class="container body-content">
+            @RenderBody()
+        </div>
+        <!-- /#wrapper -->
+        @*<div class="container body-content">
 
         </div>*@
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/js")
-    @RenderSection("scripts", required: false)
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/js")
+        @RenderSection("scripts", required: false)
 
-    @*<script>
+        @*<script>
 
             $("#btnBuscarActa").click(function () {
                 var value = $("#inputBuscarActa").val();
