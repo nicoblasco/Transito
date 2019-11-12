@@ -252,14 +252,23 @@
     <Compile Include="ViewModel\WorkflowIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-colorpicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\bootstrap-responsive.css" />
+    <Content Include="Content\bootstrap-responsive.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\color-picker.min.css" />
     <Content Include="Content\dataTables.bootstrap.css" />
     <Content Include="Content\dataTables.responsive.css" />
+    <Content Include="Content\images\glyphicons-halflings-white.png" />
+    <Content Include="Content\images\glyphicons-halflings.png" />
+    <Content Include="Content\img\alpha.png" />
+    <Content Include="Content\img\hue.png" />
+    <Content Include="Content\img\saturation.png" />
     <Content Include="Content\jquery.dataTables.css" />
     <Content Include="Content\jquery.dataTables.min.css" />
     <Content Include="Content\jquery.datetimepicker.min.css" />
@@ -300,6 +309,7 @@
     <Content Include="Images\sort_desc_disabled.png" />
     <Content Include="Images\switch.png" />
     <Content Include="Scripts\attachments\sounds\sound.mp3" />
+    <Content Include="Scripts\bootstrap-colorpicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -393,6 +403,7 @@
     <Content Include="Scripts\buttons.html5.min.js" />
     <Content Include="Scripts\buttons.print.min.js" />
     <Content Include="Scripts\Chart.min.js" />
+    <Content Include="Scripts\color-picker.min.js" />
     <Content Include="Scripts\CustomValidation.js" />
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
     <Content Include="Scripts\dataTables.buttons.min.js" />
@@ -410,6 +421,7 @@
     <Content Include="less\mixins.less" />
     <Content Include="less\notifications.less" />
     <Content Include="less\variables.less" />
+    <Content Include="Content\less\colorpicker.less" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\expressive.annotations.validate.js" />

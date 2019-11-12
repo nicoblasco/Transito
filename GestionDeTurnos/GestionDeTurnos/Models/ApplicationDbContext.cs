@@ -32,7 +32,8 @@ namespace GestionDeTurnos.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
-
+            Database.SetInitializer<ApplicationDbContext>(null);
+            base.OnModelCreating(modelBuilder);
             //modelBuilder.Entity<Act>()
             //.HasMany(c => c.)
             //.WithOptional()

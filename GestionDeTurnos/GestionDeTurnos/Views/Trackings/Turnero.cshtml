@@ -20,8 +20,8 @@
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
-        .color{
-            background-color:white;
+        .color {
+            background-color: white;
         }
 
         .tamañoImagen {
@@ -72,17 +72,18 @@
         #divRowTurnoActualBody {
             height: 350px;
         }
+
         #divRowTurnoFooter {
             height: 100px;
         }
 
         #divColumnaTurnosPasados {
-            padding-top:10px;
+            padding-top: 10px;
         }
 
         #divColumnaTurnosPasadosHead {
             text-align: center;
-            vertical-align:middle;
+            vertical-align: middle;
         }
 
         #divRowTurnosPasadosHead {
@@ -93,8 +94,8 @@
 
         #divRowTurnosPasadosSubHead {
             height: 45px;
-            
         }
+
         #divRowTurnosPasadosBody {
             height: 450px;
         }
@@ -124,7 +125,7 @@
         }
 
         .spanUltimosTurnosTurno {
-            font-size:40px;
+            font-size: 40px;
             color: white;
         }
 
@@ -137,7 +138,7 @@
         .spanUltimosTurnosBox {
             font-size: 30px;
             color: white;
-            font-weight:600!important;
+            font-weight: 600 !important;
         }
 
         .colorTitulo {
@@ -159,11 +160,9 @@
 
         .altoColumnasTurnoActual {
             height: 200px;
-            
         }
 
-        #divColumnaTurnoActualFooter {
-            background-color: yellow;
+        #divColumnaTurnoActualFooter {            
             font-size: 50px;
             color: #3E3E3F;
             line-height: 70px;
@@ -180,6 +179,21 @@
             background-color: red;
         }
 
+        .oculto {
+            display: none;
+        }
+
+        .navbar-top-links li a:hover {
+            background-color: white !important;
+        }
+
+        .navbar-top-links li a:focus {
+            background-color: white !important;
+        }
+        .navbar-top-links .dropdown-user {
+            right: auto;
+            left: auto;
+        }
     </style>
 
 
@@ -190,7 +204,7 @@
     @* COLUMNA IZQUIERDA  *@
     <div class="container-fluid sinMargen color">
         <div class="row sinMargen" id="divRowTurnoActual">
-            <div class="col-lg-6" id="divColumnaTurnoActual">
+            <div class="col-lg-6" id="divColumnaTurnoActual">                
                 @* HEAD  *@
                 <div class="row sinMargen" id="divRowTurnoActualHead">
                     <div class="col-lg-12" id="divColumnaTurnoActualHead">
@@ -237,10 +251,11 @@
 
                     <div class="row sinMargen turnos" id="divRowTurnoActualBodyTurno">
                         <div class="col-lg-6 borde-columnas altoColumnasTurnoActual" id="divColumnaTurnoActualBodyTurnoTurno">
-                            <span>OR0007</span> 
+                            <span id="spanTurno"></span>
+                            <div id="divTurnoId"></div>
                         </div>
                         <div class="col-lg-6 borde-columnas altoColumnasTurnoActual" id="divColumnaTurnoActualBodyTurnoBox">
-                            <span>REP</span>
+                            <span id="spanBox"></span>
                         </div>
                     </div>
 
@@ -251,20 +266,20 @@
 
                 @* FOOTER  *@
                 <div class="row sinMargen" id="divRowTurnoFooter">
-                    <div class="col-lg-12" id="divColumnaTurnoActualFooter">
-                        <span>ÁREA MÉDICA</span>
+                    <div class="col-lg-12" id="divColumnaTurnoActualFooter" >
+                        <span id="spanSector"></span>
                     </div>
                 </div>
 
             </div>
-            
-    @* COLUMNA DERECHA  *@
+
+            @* COLUMNA DERECHA  *@
 
             <div class="col-lg-6" id="divColumnaTurnosPasados">
                 @* HEAD  *@
                 <div class="row sinMargen" id="divRowTurnosPasadosHead">
                     <div class="col-lg-12" id="divColumnaTurnosPasadosHead">
-                         <span class="TituloUltimosTurnos"><b>ÚLTIMOS TURNOS</b></span>
+                        <span class="TituloUltimosTurnos"><b>ÚLTIMOS TURNOS</b></span>
                     </div>
                 </div>
 
@@ -282,31 +297,25 @@
                 </div>
 
                 @* BODY  *@
-                <div class="row sinMargen" id="divRowTurnosPasadosBody">
-                    <div class="row sinMargen" id="divRowTurnosPasadosBodyTurno">
-                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyTurno">
-                            <span class="spanUltimosTurnosTurno">OR0006</span>
-                        </div>
-                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodySector">
-                            <span class="spanUltimosTurnosSector">PUERTA 2</span>
-                        </div>
-                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyBox">
-                            <span class="spanUltimosTurnosBox">REP</span>
-                        </div>
-                    </div>
+                <div class="row sinMargen " id="divRowTurnosPasadosBody">
+                    @foreach (var item in Model)
+                    {
 
-
-                    <div class="row sinMargen" id="divRowTurnosPasadosBodyTurno">
-                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyTurno">
-                            <span class="spanUltimosTurnosTurno">OR0006</span>
+                        <div class="row sinMargen detalle" id="divRowTurnosPasadosBodyTurno">
+                            <div class="col-lg-4" id="divColumnaTurnosPasadosBodyTurno">
+                                <span class="spanUltimosTurnosTurno">@item.Turn.Turno</span>
+                                <div class="oculto Id">@item.Id</div>
+                                <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
+                            </div>
+                            <div class="col-lg-4" id="divColumnaTurnosPasadosBodySector">
+                                <span class="spanUltimosTurnosSector" style="color:@item.Sector.Color">@item.Sector.Descripcion</span>
+                            </div>
+                            <div class="col-lg-4" id="divColumnaTurnosPasadosBodyBox">
+                                <span class="spanUltimosTurnosBox">@item.Terminal.Descripcion</span>
+                            </div>
                         </div>
-                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodySector">
-                            <span class="spanUltimosTurnosSector">AREA MEDICA</span>
-                        </div>
-                        <div class="col-lg-4" id="divColumnaTurnosPasadosBodyBox">
-                            <span class="spanUltimosTurnosBox">RECEPCIÓN</span>
-                        </div>
-                    </div>
+                    
+                    }
                 </div>
             </div>
 
@@ -320,6 +329,104 @@
 @section scripts {
 
     @Scripts.Render("~/bundles/sound")
+
+    <script type="text/javascript">
+
+
+
+        refreshTurns();
+
+        function refreshTurns() {
+            var $input;
+             $.ajax({
+                    url: '@Url.Action("GetTurnosTurnero")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8;',
+                 success: function (result) {
+                     //Antes de borrarlos los dejo en un div oculto
+                     //Aca borro el auxiliar
+                     //$('#divTurnosOculto').find('#divTurnos').remove();
+                     //$('#divTurnos').clone().prependTo('#divTurnosOculto');
+                     $('#divRowTurnosPasadosBody').find('.detalle').remove();
+                     //$('#spanTurno').text('');
+                     //$('#spanBox').text('');
+                     //$('#spanSector').text('');
+                     //var paso = 0;
+
+                     $.each(result, function (k, v) {
+                         //v.Status.Orden === 2 && paso===0
+                         if (k==0) {  
+                             //paso = 1;
+                             $('#spanTurno').text(v.Turn.Turno);
+                             $('#spanBox').text(v.Terminal.Descripcion);
+                             $('#spanSector').text(v.Sector.Descripcion);
+                             $('#divTurnoId').val(v.Id);
+                             if (v.Sector.Color!='')
+                                 $('#divColumnaTurnoActualFooter').css("background-color", v.Sector.Color);
+                             else
+                                 $('#divColumnaTurnoActualFooter').css("background-color", "white");
+                         }
+                         else {
+                             if (v.Id != $('#divTurnoId').val()) {
+                                 $input = $("<div class='row sinMargen detalle' id='divRowTurnosPasadosBodyTurno'><div class='col-lg-4' id='divColumnaTurnosPasadosBodyTurno'><span class='spanUltimosTurnosTurno'>" + v.Turn.Turno + "</span><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodySector'><span class='spanUltimosTurnosSector' style='color: " + v.Sector.Color + "'>" + v.Sector.Descripcion + "</span></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodyBox'><span class='spanUltimosTurnosBox'>" + v.Terminal.Descripcion + "</span></div></div>");
+                                 $input.appendTo($("#divRowTurnosPasadosBody"));
+                             }
+
+                            
+                         }
+                         
+
+                         if (v.Alerta)
+                             updateAlerta(v.Id, $('#divRowTurnoActualBody'));
+
+                     });
+
+
+                     window.setTimeout(refreshTurns, 5000);
+                    // window.setTimeout(refreshTurns, 500000000);
+
+                    }
+                });
+        }
+
+
+        function updateAlerta(id, $input) {
+            $.ajax({
+                url: '@Url.Action("UpdateAlerta", "Trackings")',
+                data: JSON.stringify({
+                    "id": id
+                }),
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8;',
+                success: function (result) {
+                    if (result.responseCode == 0) {
+                        suenaAlerta($input);
+                    }
+                }
+            });
+        }
+
+
+        function suenaAlerta($input) {
+            //$.playSound('/Scripts/attachments/sounds/sound.mp3');
+            $('#btnSound').click();
+
+            //$input.each(function () {
+            //    var elem = $(this);
+            //    setInterval(function () {
+            //        if (elem.css('visibility') == 'hidden') {
+            //            elem.css('visibility', 'visible');
+            //        } else {
+            //            elem.css('visibility', 'hidden');
+            //        }
+            //    }, 400);
+            //});
+
+
+        }
+
+
+    </script>
 
 <script>
 
@@ -360,7 +467,7 @@
         };
 
 
-        actualizarHora();
+        //actualizarHora();
         var intervalo = setInterval(actualizarHora, 1000000000000);
     });
 

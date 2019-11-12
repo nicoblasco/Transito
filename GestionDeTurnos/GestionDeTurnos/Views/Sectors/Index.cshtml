@@ -87,6 +87,12 @@
                             <input type="checkbox" class="form-check-input" id="input-Medico" name="inputMedico">
                             <label class="form-check-label" for="input-Medico">Es Sector Medico?</label>
                         </div>
+
+                        <div class="form-group">
+                            <label>Color identificador en el turnero</label>
+                            <input id="input-Color" type="text"   name="inputColor" class="form-control input-Color" autocomplete="off">
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -122,6 +128,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label>Color identificador en el turnero</label>
+                            <input id="input-Color" type="text" name="inputColor" class="form-control input-Color-Edit" autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
                             <input type="checkbox" class="form-check-input" id="input-Medico" name="inputMedico">
                             <label class="form-check-label" for="input-Medico">Es Sector Medico?</label>
                         </div>
@@ -139,11 +150,20 @@
 
 
 @section scripts {
-
-
     <script>
 
     $(document).ready(function () {
+
+        var picker = new CP(document.querySelector('.input-Color'));
+        var pickerEdit = new CP(document.querySelector('.input-Color-Edit'));
+        
+        picker.on("change", function (color) {
+            this.source.value = '#' + color;
+        });
+
+        pickerEdit.on("change", function (color) {
+            this.source.value = '#' + color;
+        });
 
 
         habilitaBotones(false);
@@ -246,6 +266,7 @@
             var object = new Object();
             object.Descripcion = $("#input-Descripcion").val();
             object.Medico = $("#input-Medico").prop('checked');
+            object.Color = $("#input-Color").val();
             var data = JSON.stringify(object);
 
 
@@ -318,6 +339,7 @@
             object.Id = $('#editarModal').find('input#input-Id').val();
             object.Descripcion = $('#editarModal').find('input#input-Descripcion').val();
             object.Medico = $('#editarModal').find("input#input-Medico").prop('checked');
+            object.Color = $('#editarModal').find("#input-Color").val();
             var data = JSON.stringify(object);
 
             //Antes de editar, verifico que no este duplicando el Rol
@@ -387,6 +409,7 @@
                 $('#editarModal').find('input#input-Id').val(result.Id);
                 $('#editarModal').find('input#input-Descripcion').val(result.Descripcion);
                 $('#editarModal').find('input#input-Medico').prop('checked', result.Medico);
+                $('#editarModal').find('input#input-Color').val(result.Color);
             },
             error: function (response) {
                     Lobibox.notify('error', {
@@ -405,7 +428,7 @@
     $('.modal').on('hidden.bs.modal', function (e) {
         $(".modal-body input").val(""),
             $(this).removeData('bs.modal');
-        $(".form-check-input").prop('checked', false); 
+        $(".form-check-input").prop('checked', false);
         $("form").validate().resetForm();
     });
 

@@ -76,16 +76,16 @@ namespace GestionDeTurnos.Controllers
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             List<Setting> setting = db.Settings.ToList();
-            ViewBag.Video = db.Settings.Where(x => x.Clave == "VIDEO").Select(x => x.Texto1).FirstOrDefault();
+           // ViewBag.Video = db.Settings.Where(x => x.Clave == "VIDEO").Select(x => x.Texto1).FirstOrDefault();
             //  int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
             int[] statusOrden = { 2, 3,4,5,6 };
 
-                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Terminal!=null && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderBy(x => new { x.Status.Orden, x.FechaIngreso }).Take(10).ToList();
+                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Terminal!=null && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderBy(x => new { x.FechaUltimoLlamado }).Take(8).ToList();//x.Status.Orden
 
 
 
 
-                return View(trackings);
+            return View(trackings);
 
 
         }
@@ -127,7 +127,7 @@ namespace GestionDeTurnos.Controllers
             
             try
             {
-                List<Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderByDescending(x => x.FechaCreacion).Take(10).ToList();
+                List<Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderByDescending(x => x.FechaUltimoLlamado).Take(8).ToList();
 
                 return Json(trackings, JsonRequestBehavior.AllowGet);
             }
@@ -206,6 +206,7 @@ namespace GestionDeTurnos.Controllers
                     tracking.TerminalID = terminal.Id;
                     tracking.UsuarioID = SessionHelper.GetUser();
                     tracking.CantidadDeLlamados = tracking.CantidadDeLlamados + 1;
+                    tracking.FechaUltimoLlamado = DateTime.Now;
                     tracking.Alerta = true;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();
@@ -251,6 +252,7 @@ namespace GestionDeTurnos.Controllers
                     //Actualizo 
                     tracking.CantidadDeLlamados = tracking.CantidadDeLlamados + 1;
                     tracking.Alerta = true;
+                    tracking.FechaUltimoLlamado = DateTime.Now;
                     db.Entry(tracking).State = EntityState.Modified;
                     db.SaveChanges();
                     if (tracking.CantidadDeLlamados >= CantidadDeLlamadosPosibles.Value)

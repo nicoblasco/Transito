@@ -22,7 +22,7 @@ namespace GestionDeTurnos.Models
 
         public DateTime? FechaIngreso { get; set; }
         public DateTime? FechaSalida { get; set; }
-
+        public DateTime? FechaUltimoLlamado { get; set; }
         public DateTime FechaCreacion { get; set; }
 
         public TimeSpan? Tiempo { get; set; }

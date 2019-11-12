@@ -16,35 +16,50 @@
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
+
+        .navbar {
+            position:fixed!important;
+        }
+
         .sidebar ul li a.active {
-            background-color: darkgreen !important;
+            background-color: white !important;
         }
 
         .sidebar ul li a:hover {
-            background-color: darkgreen;
+            background-color: white !important;
+            
         }
 
         .sidebar ul li a:focus {
-            background-color: darkgreen;
+            background-color: white !important;
+            
         }
 
         .navbar-top-links li a:hover {
-            background-color: darkgreen !important;
+            background-color: white !important;
         }
 
         .navbar-top-links li a:focus {
-            background-color: darkgreen !important;
+            background-color: white !important;
         }
+
+        .navbar-default {
+            background-color: white !important;
+            border-color: white !important;
+            
+        }
+
+
     </style>
 
 </head>
 
 <body>
 
-    <div id="wrapper">
+    <div id="wrapper" style="width: 99%;">
         <div class="">
             <!-- Navigation -->
-            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; ">
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; " id="navbar">
                 @*background-color: white;*@
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -54,13 +69,13 @@
                         <span class="icon-bar"></span>
                     </button>
                     @*<img class="img_logo" src="../../Images/logo_muni.png" />*@
-                    <img class="img_logo" src="~/Images/logo_muni.png" runat="server" />
+                    @*<img class="img_logo" src="~/Images/logo_muni.png" runat="server" />*@
                 </div>
                 <!-- /.navbar-header -->
 
-                <ul class="nav navbar-top-links navbar-right">
+                <ul class="nav navbar-top-links navbar-left">
                     <li class="dropdown">
-                        <a style="color: whitesmoke" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <a style="color: forestgreen" class="dropdown-toggle" data-toggle="dropdown" href="#">
                             @*@SessionHelper.GetUserName()*@
                             <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                         </a>
@@ -88,6 +103,8 @@
         @Scripts.Render("~/bundles/jqueryval")
         @Scripts.Render("~/bundles/js")
         @RenderSection("scripts", required: false)
+
+
 
         @*<script>
 

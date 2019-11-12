@@ -32,6 +32,7 @@ namespace GestionDeTurnos
                       "~/Scripts/metisMenu.js",
                       "~/Scripts/jquery.dataTables.js",
                       "~/Scripts/dataTables.bootstrap.min.js",
+                      "~/Scripts/color-picker.min.js",
                       "~/Scripts/sb-admin-2.js",
                       "~/Scripts/respond.js",
                       "~/Scripts/multipartInAjaxBegin.js"
@@ -70,6 +71,7 @@ namespace GestionDeTurnos
                       "~/Content/font-awesome.min.css",
                       "~/Content/lobibox.css",
                       "~/Content/bootstrap-datetimepicker.css",
+                      "~/Content/color-picker.min.css",
                       "~/Content/jquery.datetimepicker.min.css",
                       "~/Content/select2.css"
                       ));
