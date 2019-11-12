@@ -30,12 +30,14 @@ namespace GestionDeTurnos.Controllers
             int intTiempoMaximoEspera = db.Settings.Where(x => x.Clave == "TIEMPO_MAXIMO_ESPERA").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             int intCantidadDeLlamados = db.Settings.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             int intNumeroInicialTurno = db.Settings.Where(x => x.Clave == "NUMERO_INICIAL_TURNO").Select(x => x.Numero1).FirstOrDefault() ?? 0;
+            int intTurneroMaxiamCantidadDeTurnos = db.Settings.Where(x => x.Clave == "TURNERO_MAXIMA_CANTIDAD_DE_TURNOS_PASADOS").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             string strVideo = db.Settings.Where(x => x.Clave == "VIDEO").Select(x => x.Texto1).FirstOrDefault();
             SettingsViewModel settingsViewModel = new SettingsViewModel
             {
                 CantidadLlamadosPermitidos = intCantidadDeLlamados,
                 NumeroInicialTurno = intNumeroInicialTurno,
                 TiempoMaximoEspera = intTiempoMaximoEspera,
+                TurneroCantidaMaximaDeTurnosPasados= intTurneroMaxiamCantidadDeTurnos,
                 VideoBorrado = false,
                 Video = strVideo
             };
@@ -48,7 +50,7 @@ namespace GestionDeTurnos.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TiempoMaximoEspera, NumeroInicialTurno, CantidadLlamadosPermitidos,VideoBorrado")] SettingsViewModel setting, HttpPostedFileBase fileVideo)
+        public ActionResult Edit([Bind(Include = "TiempoMaximoEspera, NumeroInicialTurno, CantidadLlamadosPermitidos,TurneroCantidaMaximaDeTurnosPasados,VideoBorrado")] SettingsViewModel setting, HttpPostedFileBase fileVideo)
         {
             if (ModelState.IsValid)
             {
@@ -77,6 +79,15 @@ namespace GestionDeTurnos.Controllers
                 {
                     settingNumeroInicial.Numero1 = setting.NumeroInicialTurno;
                     db.Entry(settingNumeroInicial).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                Setting settingTurnero = db.Settings.Where(x => x.Clave == "TURNERO_MAXIMA_CANTIDAD_DE_TURNOS_PASADOS").FirstOrDefault();
+
+                if (settingTurnero != null)
+                {
+                    settingTurnero.Numero1 = setting.TurneroCantidaMaximaDeTurnosPasados;
+                    db.Entry(settingTurnero).State = EntityState.Modified;
                     db.SaveChanges();
                 }
 

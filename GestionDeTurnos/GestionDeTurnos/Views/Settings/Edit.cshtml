@@ -83,11 +83,19 @@
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <label>Máxima cantidad de llamados por contribuyete</label>
-                                    @Html.EditorFor(model => model.CantidadLlamadosPermitidos, new { htmlAttributes = new { @type = "number", @min = 1, @max = 100000, @class = "form-control input-sm input_ancho", placeholder = "Tiempo Maximo De Espera" } })
+                                    @Html.EditorFor(model => model.CantidadLlamadosPermitidos, new { htmlAttributes = new { @type = "number", @min = 1, @max = 100000, @class = "form-control input-sm input_ancho", placeholder = "Máxima cantidad de llamados por contribuyete" } })
                                     @Html.ValidationMessageFor(model => model.CantidadLlamadosPermitidos, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Máxima cantidad de turnos visibles en el turnero</label>
+                                    @Html.EditorFor(model => model.TurneroCantidaMaximaDeTurnosPasados, new { htmlAttributes = new { @type = "number", @min = 1, @max = 20, @class = "form-control input-sm input_ancho", placeholder = "Máxima cantidad de turnos visibles en el turnero" } })
+                                    @Html.ValidationMessageFor(model => model.TurneroCantidaMaximaDeTurnosPasados, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="display:none">
                                 <div class="col-sm-4" id="divArchivo">
                                     <label id="divLabelExtension">Video de Pagina Principal <div id="divExtension"> @extension </div> </label>
                                     @Html.HiddenFor(m => m.VideoBorrado, new { id = "hiddenArchivoBorrado" })

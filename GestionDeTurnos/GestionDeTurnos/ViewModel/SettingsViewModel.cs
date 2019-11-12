@@ -13,6 +13,8 @@ namespace GestionDeTurnos.ViewModel
 
         public int CantidadLlamadosPermitidos { get; set; }
 
+        public int TurneroCantidaMaximaDeTurnosPasados { get; set; }
+
         public string Video { get; set; }
         public bool VideoBorrado { get; set; }
     }
