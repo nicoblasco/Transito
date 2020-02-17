@@ -1356,11 +1356,14 @@ $("#form-create").validate({
         rules: {
             inputDNI: { required: true, minlength: 7, maxlength: 8 },
             inputApellido: { required: true, minlength: 2, maxlength: 64 },
-            inputNombre: { required: true, minlength: 2, maxlength: 64 }
-            //inputFechaDeNacimiento: { required: true },
-            //inputDomicilio: { required: true },
-            //inputOtorgamiendo: { required: true },
-            //inputVencimiento: { required: true }
+            inputNombre: { required: true, minlength: 2, maxlength: 64 },
+            inputOtorgamiendo: { required: true },
+            inputVencimiento: { required: true },
+            inputDomicilio: { required: true },
+            inputBarrio: { required: true },
+            SelectedClases: { required: true },
+            inputTelParticular: { required: true },
+            inputNroRegistro: { required: true },
         },
         messages: {
             inputDNI: {
@@ -1377,19 +1380,28 @@ $("#form-create").validate({
                 required: "Requerido.",
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
+            },
+            inputTelParticular: {
+                required: "Requerido."
+            },
+            inputDomicilio: {
+                required: "Requerido."
+            },
+            inputBarrio: {
+                required: "Requerido."
+            },
+            inputOtorgamiendo: {
+                required: "Requerido."
+            },
+            inputVencimiento: {
+                required: "Requerido."
+            },
+            SelectedClases: {
+                required: "Requerido."
+            },
+            inputNroRegistro: {
+                required: "Requerido."
             }
-            //inputFechaDeNacimiento: {
-            //    required: "Requerido."
-            //},
-            //inputDomicilio: {
-            //    required: "Requerido."
-            //},
-            //inputOtorgamiendo: {
-            //    required: "Requerido."
-            //},
-            //inputVencimiento: {
-            //    required: "Requerido."
-            //}
         },
         submitHandler: function (form) {
             var object = new Object();

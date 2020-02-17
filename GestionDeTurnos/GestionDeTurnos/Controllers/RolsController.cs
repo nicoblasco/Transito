@@ -19,7 +19,7 @@ namespace GestionDeTurnos.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         public string ModuleDescription = "Configuración";
-        public string WindowDescription = "Roles";
+        public string WindowDescription = "Perfiles";
 
         // GET: Rols
         public ActionResult Index()
@@ -161,7 +161,7 @@ namespace GestionDeTurnos.Controllers
             db.SaveChanges();
 
             //Audito
-            AuditHelper.Auditar("Alta", rol.RolId.ToString(), "Rol", ModuleDescription, WindowDescription);
+            AuditHelper.Auditar("Alta", rol.RolId.ToString(), "Perfil", ModuleDescription, WindowDescription);
 
             var responseObject = new
             {
@@ -183,7 +183,7 @@ namespace GestionDeTurnos.Controllers
             db.SaveChanges();
 
             //Audito
-            AuditHelper.Auditar("Modificacion", rol.RolId.ToString(), "Rol", ModuleDescription, WindowDescription);
+            AuditHelper.Auditar("Modificacion", rol.RolId.ToString(), "Perfil", ModuleDescription, WindowDescription);
 
             var responseObject = new
             {
@@ -273,7 +273,7 @@ namespace GestionDeTurnos.Controllers
             db.SaveChanges();
 
             //Audito
-            AuditHelper.Auditar("Alta", id.ToString(), "Rol", ModuleDescription, WindowDescription);
+            AuditHelper.Auditar("Alta", id.ToString(), "Perfil", ModuleDescription, WindowDescription);
 
             var responseObject = new
             {

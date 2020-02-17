@@ -46,7 +46,7 @@
                                 <th>Usuario</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
-                                <th>Rol</th>
+                                <th>Perfil</th>
                             </tr>
                         </thead>
                     </table>
@@ -102,7 +102,7 @@
                             <input id="input-Apellido-Create" name="inputApellido" class="form-control" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label>Rol</label>
+                            <label>Perfil</label>
                             @Html.DropDownList("selectRolCreate", new SelectList(ViewBag.listaRoles, "RolId", "Nombre"), new { @class = "form-control" })
 
                         </div>
@@ -151,7 +151,7 @@
                             <input id="input-Apellido-Edit" name="inputApellido" class="form-control" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label>Rol</label>
+                            <label>Perfil</label>
                             @Html.DropDownList("selectRolEdit", new SelectList(ViewBag.listaRoles, "RolId", "Nombre"), new { @class = "form-control" })
 
                         </div>

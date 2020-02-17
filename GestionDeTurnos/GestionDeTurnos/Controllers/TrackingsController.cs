@@ -19,7 +19,7 @@ namespace GestionDeTurnos.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         public string ModuleDescription = "Menu Principal";
-        public string WindowDescription = "Atencion al cliente";
+        public string WindowDescription = "Atencion al vecino";
 
 
         // GET: Trackings

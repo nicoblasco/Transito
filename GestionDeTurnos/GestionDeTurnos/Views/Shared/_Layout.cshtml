@@ -102,7 +102,7 @@
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "Turns")">Monitoreo</a>
                                     </li>
                                 }
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Atencion al cliente")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Menu Principal", "Atencion al vecino")))
                                 {
                                     <li>
                                         <a style="color: whitesmoke" href="@Url.Action("Index", "Trackings")">Atención al Vecino</a>
@@ -163,7 +163,7 @@
                                         <a style="color: whitesmoke" href="#">Sectores <span class="fa arrow"></span></a>
                                         <ul class="nav nav-third-level">
                                             <li>
-                                                <a style="color: whitesmoke" href="@Url.Action("Index", "Sectors")">Alta</a>
+                                                <a style="color: whitesmoke" href="@Url.Action("Index", "Sectors")">ABM de Sectores</a>
                                             </li>
                                             <li>
                                                 <a style="color: whitesmoke" href="@Url.Action("Index", "Workflows")">Flujo de trabajo</a>
@@ -190,10 +190,10 @@
                         <li>
                             <a style="color: whitesmoke" href="#"><i class="fa fa-wrench fa-fw"></i> Configuracion<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Configuración", "Roles")))
+                                @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Configuración", "Perfiles")))
                                 {
                                     <li>
-                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Rols")">Roles</a>
+                                        <a style="color: whitesmoke" href="@Url.Action("Index", "Rols")">Perfiles</a>
                                     </li>
                                 }
                                 @if (PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId("Configuración", "Usuarios")))

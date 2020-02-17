@@ -62,6 +62,18 @@
         else
             Action = "@Url.Action("GetTurnsSearchByTurn", new { NroTurno = "_Switch" })".replace("_Switch", ViewBagNroTurno);
 
+
+        //Limpio los filtros
+        $('#Turno').val('');
+        $('#ddlTipo').val('').change();
+        $('#DNI').val('');
+        $('#Apellido').val('');
+        $('#Nombre').val('');
+        $('#fecha-inicio').val('');
+        $('#fecha-fin').val('');
+        $('#ddlEstado').val('').change();
+
+
             var table = $('#dataTables-Index').DataTable({
                 "ajax":
                 {
