@@ -30,11 +30,16 @@ namespace GestionDeTurnos.Controllers
             //Obtengo el numero de sector de esta maquina
             //string IP = Request.UserHostName;
             //string terminalName = CompNameHelper.DetermineCompName(IP);
-            string terminalName = Request.UserHostName;
+            //string terminalName = Request.UserHostName;
+            int userId = SessionHelper.GetUser();
+            //string terminalName = db.Usuarios.Where(x => x.UsuarioId == userId).Select(x => x.Nombreusuario).FirstOrDefault();
+
             List<Setting> setting = db.Settings.ToList();
             int[] statusOrden = { 2,3 };
             int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
-            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName && x.Enable==true).FirstOrDefault();
+            Terminal terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable==true).FirstOrDefault();
+
+
             ViewBag.HabilitaLlamarNuevamente = true;
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
@@ -100,18 +105,19 @@ namespace GestionDeTurnos.Controllers
             List<Tracking> list = new List<Tracking>();
             //string IP = Request.UserHostName;
             //string terminalName = CompNameHelper.DetermineCompName(IP);
-            string terminalName = Request.UserHostName;
-            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName && x.Enable==true ).FirstOrDefault();
+            //string terminalName = Request.UserHostName;
+            int userId = SessionHelper.GetUser();
+            Terminal terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable==true ).FirstOrDefault();
             try
             {
                 list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
 
@@ -182,8 +188,9 @@ namespace GestionDeTurnos.Controllers
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             Tracking tracking = new Tracking();
             Status status= db.Status.Where(x => x.Orden == 2).FirstOrDefault();
+            int userId = SessionHelper.GetUser();
 
-            Terminal terminal = db.Terminals.Where(x => x.IP == terminalName && x.Enable == true).FirstOrDefault();
+            Terminal terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable == true).FirstOrDefault();
             
 
             if (terminal == null)

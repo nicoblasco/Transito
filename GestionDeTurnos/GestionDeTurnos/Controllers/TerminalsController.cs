@@ -32,19 +32,35 @@ namespace GestionDeTurnos.Controllers
             {
                 //string IP = Request.UserHostName;
                 //string terminalName = CompNameHelper.DetermineCompName(IP);
-                string terminalName = Request.UserHostName;
+                //string terminalName;// = Request.UserHostAddress;  //Request.UserHostName;
+
+                //string clientIP;
+                //string ip = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                //if (!string.IsNullOrEmpty(ip))
+                //{
+                //    string[] ipRange = ip.Trim().Split(',');
+                //    int le = ipRange.Length - 1;
+                //    clientIP = ipRange[le];
+                //}
+                //else
+                //    clientIP = Request.ServerVariables["REMOTE_ADDR"];
+                int userId = SessionHelper.GetUser();
+                string strUserName = db.Usuarios.Where(x => x.UsuarioId == userId).Select(x => x.Nombreusuario).FirstOrDefault();
+
+                //terminalName = clientIP;
+
                 List<Terminal> list = db.Terminals.ToList();
                 List<Sector> lSectores = new List<Sector>();
                 lSectores = db.Sectors.ToList();
                 ViewBag.listaSectores = lSectores;
-                ViewBag.terminalName = terminalName;
+                ViewBag.terminalName = strUserName;
 
                 return View(list);
             }
             catch (Exception e)
             {
 
-                string terminalName = "Prueba";
+                string terminalName = "Terminal - ERR";
                 List<Terminal> list = db.Terminals.ToList();
                 List<Sector> lSectores = new List<Sector>();
                 lSectores = db.Sectors.ToList();
@@ -127,7 +143,9 @@ namespace GestionDeTurnos.Controllers
                 return Json(new { responseCode = "-10" });
             }
 
+            terminal.UsuarioId = SessionHelper.GetUser();
             terminal.Enable = true;
+            
 
             db.Terminals.Add(terminal);
             db.SaveChanges();

@@ -16,5 +16,7 @@ namespace GestionDeTurnos.Models
         public virtual Sector Sector { get; set; }
 
         public bool Enable { get; set; }
+
+        public int? UsuarioId { get; set; }
     }
 }
