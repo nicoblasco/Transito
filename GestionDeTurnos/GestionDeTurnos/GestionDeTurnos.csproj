@@ -249,6 +249,7 @@
     <Compile Include="ViewModel\TurnoWSViewModel.cs" />
     <Compile Include="ViewModel\TurnPendientesViewModel.cs" />
     <Compile Include="ViewModel\TurnPromedioViewModel.cs" />
+    <Compile Include="ViewModel\UsuarioViewModel.cs" />
     <Compile Include="ViewModel\WorkflowIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

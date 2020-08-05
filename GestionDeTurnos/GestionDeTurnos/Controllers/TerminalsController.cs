@@ -30,6 +30,31 @@ namespace GestionDeTurnos.Controllers
             ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             try
             {
+                List<Usuario> lUsuarios = new List<Usuario>();
+                List<UsuarioViewModel> lUsuariosViewModel = new List<UsuarioViewModel>();
+                int userId = SessionHelper.GetUser();
+                //string strUserName = db.Usuarios.Where(x => x.UsuarioId == userId).Select(x => x.Nombreusuario).FirstOrDefault();
+                Usuario usuario = db.Usuarios.Where(x => x.UsuarioId == userId).Include(x => x.Rol).FirstOrDefault();
+                //if (usuario.Rol.IsAdmin)
+                    lUsuarios = db.Usuarios.OrderBy(x => x.Nombreusuario).ToList();
+                //else
+                //    lUsuarios = db.Usuarios.Where(x=>x.UsuarioId==userId).OrderBy(x => x.Nombreusuario).ToList();
+
+                foreach (var item in lUsuarios)
+                {
+                    UsuarioViewModel vm = new UsuarioViewModel
+                    {
+                        UsuarioId = item.UsuarioId,
+                        NombreUsuario = item.Nombreusuario + " - " + item.Apellido + "  " + item.Nombre
+                    };
+                    lUsuariosViewModel.Add(vm);
+                }
+
+                ViewBag.listaUsuarios = lUsuariosViewModel;
+                ViewBag.UserDefault = userId;
+
+                ViewBag.isAdmin = usuario.Rol.IsAdmin;
+
                 //string IP = Request.UserHostName;
                 //string terminalName = CompNameHelper.DetermineCompName(IP);
                 //string terminalName;// = Request.UserHostAddress;  //Request.UserHostName;
@@ -44,8 +69,8 @@ namespace GestionDeTurnos.Controllers
                 //}
                 //else
                 //    clientIP = Request.ServerVariables["REMOTE_ADDR"];
-                int userId = SessionHelper.GetUser();
-                string strUserName = db.Usuarios.Where(x => x.UsuarioId == userId).Select(x => x.Nombreusuario).FirstOrDefault();
+
+
 
                 //terminalName = clientIP;
 
@@ -53,7 +78,7 @@ namespace GestionDeTurnos.Controllers
                 List<Sector> lSectores = new List<Sector>();
                 lSectores = db.Sectors.ToList();
                 ViewBag.listaSectores = lSectores;
-                ViewBag.terminalName = strUserName;
+                //ViewBag.terminalName = strUserName;
 
                 return View(list);
             }
@@ -81,7 +106,7 @@ namespace GestionDeTurnos.Controllers
             List<Terminal> list = new List<Terminal>();
             try
             {
-                list = db.Terminals.Where(x=>x.Enable==true).ToList();
+                list = db.Terminals.Where(x=>x.Enable==true).Include(x=>x.Usuario).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
@@ -112,14 +137,19 @@ namespace GestionDeTurnos.Controllers
 
 
         [HttpGet]
-        public JsonResult GetDuplicates(int id, string IP)
+        public JsonResult GetDuplicates(int id, int IP)
         {
 
             try
             {
+                //var result = from c in db.Terminals
+                //             where c.Id != id
+                //             && c.IP.ToUpper() == IP.ToUpper() && c.Enable==true
+                //             select c;
+
                 var result = from c in db.Terminals
                              where c.Id != id
-                             && c.IP.ToUpper() == IP.ToUpper() && c.Enable==true
+                             && c.UsuarioId == IP && c.Enable == true
                              select c;
 
                 var responseObject = new
@@ -143,7 +173,16 @@ namespace GestionDeTurnos.Controllers
                 return Json(new { responseCode = "-10" });
             }
 
-            terminal.UsuarioId = SessionHelper.GetUser();
+            int userId = SessionHelper.GetUser();
+            Usuario usuario = db.Usuarios.Where(x => x.UsuarioId == userId).Include(x => x.Rol).FirstOrDefault();
+            if (usuario.Rol.IsAdmin)
+                terminal.UsuarioId = terminal.UsuarioId;
+            else
+                terminal.UsuarioId = userId;
+
+
+
+                //terminal.UsuarioId = SessionHelper.GetUser();
             terminal.Enable = true;
             
 
@@ -167,6 +206,11 @@ namespace GestionDeTurnos.Controllers
             {
                 return Json(new { responseCode = "-10" });
             }
+
+            int userId = SessionHelper.GetUser();
+            Usuario usuario = db.Usuarios.Where(x => x.UsuarioId == userId).Include(x => x.Rol).FirstOrDefault();
+            if (usuario.Rol.IsAdmin)
+                terminal.UsuarioId = terminal.UsuarioId;
 
             terminal.Enable = true;
             db.Entry(terminal).State = EntityState.Modified;

@@ -31,13 +31,14 @@ namespace GestionDeTurnos.Controllers
             //string IP = Request.UserHostName;
             //string terminalName = CompNameHelper.DetermineCompName(IP);
             //string terminalName = Request.UserHostName;
+            Terminal terminal = new Terminal();
             int userId = SessionHelper.GetUser();
             //string terminalName = db.Usuarios.Where(x => x.UsuarioId == userId).Select(x => x.Nombreusuario).FirstOrDefault();
 
             List<Setting> setting = db.Settings.ToList();
             int[] statusOrden = { 2,3 };
             int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
-            Terminal terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable==true).FirstOrDefault();
+            terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable==true).FirstOrDefault();
 
 
             ViewBag.HabilitaLlamarNuevamente = true;
