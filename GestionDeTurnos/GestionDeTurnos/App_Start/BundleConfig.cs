@@ -43,7 +43,8 @@ namespace GestionDeTurnos
                       ));
 
             bundles.Add(new ScriptBundle("~/bundles/sound").Include(
-                      "~/Scripts/jquery.playSound.js"
+                      "~/Scripts/jquery.playSound.js",
+                      "~/Scripts/jquery.blink.js"
                       ));
 
             bundles.Add(new ScriptBundle("~/bundles/js").Include(

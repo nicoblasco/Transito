@@ -40,11 +40,15 @@ namespace GestionDeTurnos.Controllers
         [HttpPost]
         public JsonResult GetTurnsSearch()
         {
+
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+
             try
             {
 
                 List<CallCenterIndexViewModel> turnsSeachViews = new List<CallCenterIndexViewModel>();
-                List<CallCenterTurn> turns = db.CallCenterTurns.ToList();
+                List<CallCenterTurn> turns = db.CallCenterTurns.Where(x=> x.FechaTurno>= startDateTime && x.FechaTurno <= endDateTime ).ToList();
 
                 foreach (var item in turns)
                 {
@@ -65,7 +69,7 @@ namespace GestionDeTurnos.Controllers
                     turnsSeachViews.Add(viewModel);
                 }
 
-                return Json(turnsSeachViews.OrderByDescending(x => x.FechaTurno).Take(1000), JsonRequestBehavior.AllowGet);
+                return Json(turnsSeachViews.OrderBy(x => x.FechaTurno).Take(1000), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -101,11 +105,11 @@ namespace GestionDeTurnos.Controllers
 
         private List<CallCenterIndexViewModel> ArmarConsulta(string Asignado, string DNI, string Apellido, string Nombre, string FechaTurnoDesde, string FechaTurnoHasta, string Tipo,string Multa)
         {
-
-
             List<CallCenterIndexViewModel> turns = new List<CallCenterIndexViewModel>();
             DateTime? dtFechaDesde = null;
             DateTime? dtFechaHasta = null;
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
             bool boolAsignado =false;
             if (Asignado == "SI")
                 boolAsignado = true;
@@ -116,9 +120,13 @@ namespace GestionDeTurnos.Controllers
 
             if (!String.IsNullOrEmpty(FechaTurnoDesde))
                 dtFechaDesde = Convert.ToDateTime(FechaTurnoDesde);
+            else
+                dtFechaDesde = startDateTime;
 
             if (!String.IsNullOrEmpty(FechaTurnoHasta))
                 dtFechaHasta = Convert.ToDateTime(FechaTurnoHasta).AddDays(1).AddTicks(-1);
+            else
+                dtFechaHasta = endDateTime;
 
 
             try
@@ -132,9 +140,9 @@ namespace GestionDeTurnos.Controllers
                 .Where(x => !string.IsNullOrEmpty(Apellido) ? (x.Apellido == Apellido && x.Apellido != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Nombre) ? (x.Nombre == Nombre && x.Nombre != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Tipo) ? (x.TipoTramite == Tipo && x.TipoTramite != null) : true)
-                .Where(x => !string.IsNullOrEmpty(FechaTurnoDesde) ? (x.FechaTurno >= dtFechaDesde && x.FechaTurno != null) : true)
-                .Where(x => !string.IsNullOrEmpty(FechaTurnoHasta) ? (x.FechaTurno <= dtFechaHasta && x.FechaTurno != null) : true)
-                .Select(c => new { c.Id, c.Asignado, c.FechaTurno, c.Apellido, c.Nombre, c.TipoTramite, c.DNI,c.UsuarioId, c.Llamado }).OrderByDescending(x => x.FechaTurno).Take(1000);
+                .Where(x => x.FechaTurno >= dtFechaDesde && x.FechaTurno != null)
+                .Where(x => x.FechaTurno <= dtFechaHasta && x.FechaTurno != null)
+                .Select(c => new { c.Id, c.Asignado, c.FechaTurno, c.Apellido, c.Nombre, c.TipoTramite, c.DNI,c.UsuarioId, c.Llamado }).OrderBy(x => x.FechaTurno).Take(1000);
                 ;
 
                 foreach (var item in lista)

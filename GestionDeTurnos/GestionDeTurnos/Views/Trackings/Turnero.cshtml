@@ -117,6 +117,13 @@
             color: white;
         }
 
+        .blink_me {
+            animation: blinker 1s linear infinite;
+            animation-iteration-count: 10;
+        }
+
+
+
         .SubTituloUltimosTurnos {
             font-size: 30px;
             color: #18A096;
@@ -162,7 +169,7 @@
             height: 200px;
         }
 
-        #divColumnaTurnoActualFooter {            
+        #divColumnaTurnoActualFooter {
             font-size: 50px;
             color: #3E3E3F;
             line-height: 70px;
@@ -194,6 +201,7 @@
             right: auto;
             left: auto;
         }
+
     </style>
 
 
@@ -250,12 +258,12 @@
                     </div>
 
                     <div class="row sinMargen turnos" id="divRowTurnoActualBodyTurno">
-                        <div class="col-lg-6 borde-columnas altoColumnasTurnoActual" id="divColumnaTurnoActualBodyTurnoTurno">
-                            <span id="spanTurno"></span>
-                            <div id="divTurnoId"></div>
+                        <div class="col-lg-6 borde-columnas altoColumnasTurnoActual " id="divColumnaTurnoActualBodyTurnoTurno">
+                            <span id="spanTurno" class="blink_me"></span>
+                            <div id="divTurnoId" ></div>
                         </div>
-                        <div class="col-lg-6 borde-columnas altoColumnasTurnoActual" id="divColumnaTurnoActualBodyTurnoBox">
-                            <span id="spanBox"></span>
+                        <div class="col-lg-6 borde-columnas altoColumnasTurnoActual " id="divColumnaTurnoActualBodyTurnoBox">
+                            <span id="spanBox" class=" blink_me"></span>
                         </div>
                     </div>
 
@@ -323,7 +331,7 @@
     </div>
 </body>
 
-<button id="btnSound" onclick='$.playSound("/Scripts/attachments/sounds/sound.mp3")' style="display:none">Prueba</button>
+<button id="btnSound" onclick='$.playSound("/Scripts/attachments/sounds/sound.mp3")' style="margin: -100px;">Sound</button>
 
 
 @section scripts {
@@ -338,6 +346,7 @@
 
         function refreshTurns() {
             var $input;
+            $('.blink_me').unblink();
              $.ajax({
                     url: '@Url.Action("GetTurnosTurnero")',
                     type: 'POST',
@@ -368,8 +377,11 @@
                          }
                          else {
                              if (v.Id != $('#divTurnoId').val()) {
-                                 $input = $("<div class='row sinMargen detalle' id='divRowTurnosPasadosBodyTurno'><div class='col-lg-4' id='divColumnaTurnosPasadosBodyTurno'><span class='spanUltimosTurnosTurno'>" + v.Turn.Turno + "</span><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodySector'><span class='spanUltimosTurnosSector' style='color: " + v.Sector.Color + "'>" + v.Sector.Descripcion + "</span></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodyBox'><span class='spanUltimosTurnosBox'>" + v.Terminal.Descripcion + "</span></div></div>");
-                                 $input.appendTo($("#divRowTurnosPasadosBody"));
+                                 if (v.Status.Orden === 2) {                                 
+                                     $input = $("<div class='row sinMargen detalle' id='divRowTurnosPasadosBodyTurno'><div class='col-lg-4' id='divColumnaTurnosPasadosBodyTurno'><span class='spanUltimosTurnosTurno'>" + v.Turn.Turno + "</span><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodySector'><span class='spanUltimosTurnosSector' style='color: " + v.Sector.Color + "'>" + v.Sector.Descripcion + "</span></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodyBox'><span class='spanUltimosTurnosBox'>" + v.Terminal.Descripcion + "</span></div></div>");
+                                     $input.appendTo($("#divRowTurnosPasadosBody"));
+                                 }
+
                              }
 
                             
@@ -383,6 +395,7 @@
 
 
                      window.setTimeout(refreshTurns, 5000);
+                     
                     // window.setTimeout(refreshTurns, 500000000);
 
                     }
@@ -410,18 +423,22 @@
         function suenaAlerta($input) {
             //$.playSound('/Scripts/attachments/sounds/sound.mp3');
             $('#btnSound').click();
+            //$('#divColumnaTurnoActualBodyTurnoTurno').removeClass("blink_me")
+            //$('#divColumnaTurnoActualBodyTurnoBox').removeClass("blink_me")
+            //$('#divColumnaTurnoActualBodyTurnoTurno').addClass("blink_me")            
+            //$('#divColumnaTurnoActualBodyTurnoBox').addClass("blink_me")
 
             //$input.each(function () {
             //    var elem = $(this);
             //    setInterval(function () {
-            //        if (elem.css('visibility') == 'hidden') {
-            //            elem.css('visibility', 'visible');
+            //        if (elem.css('blink_me') == 'hidden') {
+            //            elem.css('blink_me', 'visible');
             //        } else {
-            //            elem.css('visibility', 'hidden');
+            //            elem.css('blink_me', 'hidden');
             //        }
             //    }, 400);
             //});
-
+            $('.blink_me').blink(10);
 
         }
 
