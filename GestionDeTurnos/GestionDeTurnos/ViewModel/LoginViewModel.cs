@@ -13,5 +13,8 @@ namespace GestionDeTurnos.ViewModel
 
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        public int? TerminalId { get; set; }
     }
 }

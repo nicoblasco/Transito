@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GestionDeTurnos.Models;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -63,7 +65,7 @@ namespace GestionDeTurnos.Helpers
 
         public static void AddUserToSessionTicket(int id, string username, string rolid)
         {
-            var authTicket = new FormsAuthenticationTicket(id, username, DateTime.Now, DateTime.Now.AddHours(10), true, id.ToString());
+            var authTicket = new FormsAuthenticationTicket(id, username, DateTime.Now, DateTime.Now.AddMinutes(1), true, id.ToString());
             string cookieContents = FormsAuthentication.Encrypt(authTicket);
             var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, cookieContents)
             {
@@ -76,6 +78,16 @@ namespace GestionDeTurnos.Helpers
 
         public static void LogoutSession()
         {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var userId = SessionHelper.GetUser();
+            var terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable == true).FirstOrDefault();
+            if (terminal != null)
+            {
+                terminal.UsuarioId = null;
+                db.Entry(terminal).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+
             FormsAuthentication.SignOut();
             // Session.Abandon();
         }

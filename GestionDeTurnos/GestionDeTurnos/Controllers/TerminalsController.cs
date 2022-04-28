@@ -103,12 +103,24 @@ namespace GestionDeTurnos.Controllers
         [HttpPost]
         public JsonResult GetTerminales()
         {
-            List<Terminal> list = new List<Terminal>();
+            List<TerminalViewModel> listvm = new List<TerminalViewModel>();
             try
             {
-                list = db.Terminals.Where(x=>x.Enable==true).Include(x=>x.Usuario).ToList();
+               var terminales = db.Terminals.Where(x=>x.Enable==true).Include(x=>x.Usuario).ToList();
 
-                return Json(list, JsonRequestBehavior.AllowGet);
+                foreach (var item in terminales)
+                {
+                    TerminalViewModel terminalViewModel = new TerminalViewModel
+                    {
+                        Id = item.Id,
+                        Descripcion = item.Descripcion,
+                        SectorDescripcion = item.Sector.Descripcion
+                    };
+
+                    listvm.Add(terminalViewModel);
+                }
+
+                return Json(listvm, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
@@ -137,24 +149,48 @@ namespace GestionDeTurnos.Controllers
 
 
         [HttpGet]
-        public JsonResult GetDuplicates(int id, int IP)
+        public JsonResult GetDuplicates(int id, string name)
         {
 
             try
             {
-                //var result = from c in db.Terminals
-                //             where c.Id != id
-                //             && c.IP.ToUpper() == IP.ToUpper() && c.Enable==true
-                //             select c;
 
                 var result = from c in db.Terminals
                              where c.Id != id
-                             && c.UsuarioId == IP && c.Enable == true
+                             && c.Descripcion == name && c.Enable == true
                              select c;
 
                 var responseObject = new
                 {
                     responseCode = result.Count()
+                };
+
+                return Json(responseObject, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult GetTerminalAsigned(string usuario, int terminal)
+        {
+
+            try
+            {
+
+                var result = from c in db.Terminals
+                             where c.Usuario != null
+                             && c.Id == terminal && c.Enable == true
+                             select c;
+
+                var responseObject = new
+                {
+                    responseCode = result.Count(),
+                    usuario = result.FirstOrDefault()?.Usuario?.Nombreusuario
                 };
 
                 return Json(responseObject, JsonRequestBehavior.AllowGet);

@@ -60,6 +60,10 @@ namespace GestionDeTurnos
                       ));
 
 
+            bundles.Add(new ScriptBundle("~/bundles/login").Include(
+              "~/Scripts/login.js"
+              ));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.min.css",
                       //"~/Content/bootstrap-theme.min.css",

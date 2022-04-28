@@ -69,7 +69,8 @@ namespace GestionDeTurnos.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Turns");
+                SessionHelper.LogoutSession();
+                return RedirectToAction("Index", "Login");
             }
 
         }
@@ -111,6 +112,12 @@ namespace GestionDeTurnos.Controllers
             Terminal terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable==true ).FirstOrDefault();
             try
             {
+                if (terminal == null)
+                {
+                    SessionHelper.LogoutSession();
+                    return Json(new { responseCode = "-10" });
+                }
+
                 list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
@@ -196,6 +203,7 @@ namespace GestionDeTurnos.Controllers
 
             if (terminal == null)
             {
+                SessionHelper.LogoutSession();
                 return Json(new { responseCode = "-10" });
             }
 

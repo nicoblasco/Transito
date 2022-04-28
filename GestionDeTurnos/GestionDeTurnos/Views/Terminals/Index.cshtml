@@ -45,7 +45,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Descripcion</th>
-                                <th>Usuario</th>
+                                @*<th>Usuario</th>*@
                                 <th>Sector</th>
                             </tr>
                         </thead>
@@ -152,9 +152,8 @@
                             <label>Descripcion</label>
                             <input id="input-Descripcion-Edit" name="inputDescripcion" class="form-control" autocomplete="off">
                         </div>
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label>Usuario</label>
-                            @*<input id="input-IP-Edit" name="inputIP" class="form-control" autocomplete="off"  disabled>*@
                             @if (ViewBag.isAdmin)
                             {
                                 @Html.DropDownList("UsuarioIdEdit", new SelectList(ViewBag.listaUsuarios, "UsuarioId", "NombreUsuario"), htmlAttributes:
@@ -162,7 +161,6 @@
                                 {
                                     @class = "select-buscador form-control input-sm",
                                     @style= "width: 100%",
-                                   // @id = "input-Descripcion-Create"
                                 }
                                 )
                             }
@@ -173,12 +171,11 @@
                                 {
                                     @class = "select-buscador form-control input-sm",
                                     @style= "width: 100%",
-                                    //@id = "input-Descripcion-Create",
                                     @disabled = true
                                 }
                                 )
                             }
-                        </div>
+                        </div>*@
                         <div class="form-group">
                             <label>Sector</label>
                             @Html.DropDownList("selectSectorEdit", new SelectList(ViewBag.listaSectores, "Id", "Descripcion"), new { @class = "form-control" })
@@ -217,8 +214,8 @@
            "columns": [
                { "data": "Id" },
                { "data": "Descripcion" },
-               { "data": "Usuario.Nombreusuario" },
-               { "data": "Sector.Descripcion" }
+               //{ "data": "Usuario.Nombreusuario" },
+               { "data": "SectorDescripcion" }
 
            ],
            responsive: true
@@ -289,7 +286,7 @@
     $("#form-create").validate({
         rules: {
             inputDescripcion: { required: true, minlength: 2, maxlength: 64 },
-            UsuarioIdCreate: { required: true },
+            //UsuarioIdCreate: { required: true },
             selectSectorCreate: { required: true}
         },
         messages: {
@@ -298,24 +295,24 @@
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
             },
-            UsuarioIdCreate: {
+            selectSectorCreate: {
                 required: "Este campo es requerido."
             },
-            UsuarioIdCreate: {
-                required: "Este campo es requerido."
-            }
+            //UsuarioIdCreate: {
+            //    required: "Este campo es requerido."
+            //}
         },
         submitHandler: function (form) {
             $("#div-loader").show();
             var object = new Object();
             object.Descripcion = $("#input-Descripcion-Create").val();
-            object.UsuarioId = $("#UsuarioIdCreate option:selected").val();// $("#input-IP-Create").val();
+            //object.UsuarioId = $("#UsuarioIdCreate option:selected").val();
             object.SectorId = $("#selectSectorCreate option:selected").val();
             var data = JSON.stringify(object);
 
 
             //Antes de editar, verifico que no este duplicando la IP
-            var isDuplicate = getDuplicates(0, object.UsuarioId);
+            var isDuplicate = getDuplicates(0, object.Descripcion);
 
             if (isDuplicate) {
                 $("#div-loader").hide();
@@ -368,7 +365,7 @@
     $("#form-edit").validate({
         rules: {
             inputDescripcion: { required: true, minlength: 2, maxlength: 64 },
-            UsuarioIdEdit: { required: true },
+            //UsuarioIdEdit: { required: true },
             selectSectorEdit: { required: true }
         },
         messages: {
@@ -377,9 +374,9 @@
                 minlength: "Introduzca al menos 2 caracteres.",
                 maxlength: "La longitud máxima permtida es de 64 caracteres."
             },
-            UsuarioIdEdit: {
-                required: "Este campo es requerido."
-            },
+            //UsuarioIdEdit: {
+            //    required: "Este campo es requerido."
+            //},
             selectSectorEdit: {
                 required: "Este campo es requerido."
             }
@@ -390,13 +387,13 @@
             $("#div-loader").show();
             object.Id = $('#input-Id-Edit').val();
             object.Descripcion = $("#input-Descripcion-Edit").val();
-            object.UsuarioId = $("#UsuarioIdEdit option:selected").val();//$("#input-IP-Edit").val();
+            //object.UsuarioId = $("#UsuarioIdEdit option:selected").val();
             object.SectorId = $("#selectSectorEdit option:selected").val();
 
             var data = JSON.stringify(object);
 
             //Antes de editar, verifico que no este duplicando la IP
-            var isDuplicate = getDuplicates(object.Id, object.UsuarioId);
+            var isDuplicate = getDuplicates(object.Id, object.Descripcion);
 
             if (isDuplicate)
             {
@@ -461,7 +458,7 @@
             success: function (result) {
                 $('#editarModal').find('input#input-Id-Edit').val(result.Id);
                 $('#editarModal').find('input#input-Descripcion-Edit').val(result.Descripcion);
-                $('#editarModal').find('#UsuarioIdEdit').val(result.UsuarioId).change();
+                //$('#editarModal').find('#UsuarioIdEdit').val(result.UsuarioId).change();
                 $('#editarModal').find('#selectSectorEdit').val(result.Sector.Id);
             },
             error: function (response) {
@@ -493,7 +490,7 @@
             url: '@Url.Action("GetDuplicates", "Terminals")',
             data: {
                 id: pid,
-                IP: pParam
+                name: pParam
 
             },
             cache: false,

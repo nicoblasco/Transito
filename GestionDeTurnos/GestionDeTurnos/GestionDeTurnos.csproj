@@ -238,6 +238,7 @@
     <Compile Include="ViewModel\SectorViewModel.cs" />
     <Compile Include="ViewModel\SectorWorkflowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="ViewModel\TerminalViewModel.cs" />
     <Compile Include="ViewModel\TrackingViewModel.cs" />
     <Compile Include="ViewModel\TurnsSeachViewModel.cs" />
     <Compile Include="ViewModel\TurnChartViewModel.cs" />
@@ -505,6 +506,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jszip.min.js" />
     <Content Include="Scripts\lobibox.js" />
+    <Content Include="Scripts\login.js" />
     <Content Include="Scripts\messageboxes.js" />
     <Content Include="Scripts\metisMenu.js" />
     <Content Include="Scripts\metisMenu.min.js" />

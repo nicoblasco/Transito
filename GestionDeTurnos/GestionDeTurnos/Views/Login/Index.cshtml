@@ -4,6 +4,8 @@
     Layout = null;
 }
 
+    
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,10 +35,9 @@
                             <h3 class="panel-title">Inicie Sesión</h3>
                         </div>
                         <div class="panel-body">
-                            <form role="form">
+                            <form id="form-login" method="post" autocomplete="off" role="form">
                                 <fieldset>
                                     <div class="form-group">
-                                        @*<img src="../Images/Logo.png" />*@
                                         <img src="~/Images/Logo.png" runat="server" />
                                     </div>
                                     <div class="form-group">
@@ -44,11 +45,22 @@
                                         @Html.ValidationMessageFor(x => x.NombreDeUsuario, null, new { @class = "label label-danger" })
                                     </div>
                                     <div class="form-group">
-                                        <input class="form-control" placeholder="Password" name="Password" type="password" value="">
+                                        <input class="form-control" id="Password" placeholder="Password" name="Password" type="password" value="">
                                         @Html.ValidationMessageFor(x => x.Password, null, new { @class = "label label-danger" })
                                     </div>
-                                    <!-- Change this to a button or input when using this as a form -->
+                                    <div class="form-group">
+                                        @Html.DropDownList("TerminalId", new SelectList(ViewBag.listaTerminales, "Id", "Descripcion"), htmlAttributes:
+                                        new
+                                        {
+                                            @class = "select-buscador form-control input-sm",
+                                            @style= "width: 100%",
+                                           // @id = "input-Descripcion-Create"
+                                        }
+                                        )
+                                        @Html.ValidationMessageFor(x => x.TerminalId, null, new { @class = "label label-danger" })
+                                    </div>
                                     <button data-ajax="true" type="submit" class="btn btn-lg btn-success btn-block">Ingresar</button>
+                                    @*<button type="button" id="btnAutenticar" class="btn btn-lg btn-success btn-block">Ingresar</button>*@
                                 </fieldset>
                             </form>
                         </div>
@@ -60,26 +72,13 @@
 
 
     }
-    @*<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8; display: none">
-            <p style="position: absolute; color: White; top: 35%; left: 45%;">
-                <img src="~/Images/loading.gif" alt="Loading..." />
-            </p>
-        </div>*@
 
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/js")
-
-
-    @*<script>
-            $("#loginform").submit(function (e) {
-                $("#divLoading").show();
-            });
-        </script>*@
-
-
+    @Scripts.Render("~/bundles/login")
 
 </body>
 

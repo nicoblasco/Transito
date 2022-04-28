@@ -46,6 +46,9 @@ namespace GestionDeTurnos.Controllers
 
         public ActionResult Logout()
         {
+
+
+
             SessionHelper.LogoutSession();
 
             return RedirectToAction("Index", "Login");

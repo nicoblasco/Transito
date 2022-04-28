@@ -13,6 +13,8 @@ namespace GestionDeTurnos.Models
         public string href { get; set; }
         public string function { get; set; }
 
+        public int usuarioId { get; set; }
+
         public ResponseModel()
         {
             this.response = false;
