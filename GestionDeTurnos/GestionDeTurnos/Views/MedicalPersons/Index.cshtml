@@ -145,6 +145,11 @@
 
 
     $(document).ready(function () {
+
+        var Editar = '@ViewBag.Editar';
+        var Baja = '@ViewBag.Baja';
+        var Ver = '@ViewBag.Ver';
+
         var table = $('#dataTables-Index').DataTable({
             dom: 'Bfrtip',
             buttons: [
@@ -189,8 +194,14 @@
                     // Add a class to the cell in the first column
                     $(nRow).children(':nth-child(1)').addClass('td-btn');
 
+                    if (Ver == 'True') {
                         $('td:eq(0)', nRow).append("<span class='fa fa-eye span-btn' type='button' value='C' data-toggle='tooltip' data-placement='top' title='Ver' id='btn_Ver'/> ");
+                    }
 
+                    if (Editar == 'True') {
+                        //Modificar
+                        $('td:eq(0)', nRow).append("<span class='fa fa-pencil span-btn' type='button' value='E' data-toggle='tooltip' data-placement='top' title='Modificar' id='btn_Editar' />");
+                    }
 
                 }
 
@@ -219,7 +230,7 @@
                 $('#editarModal').find("#input-FechaNacimiento").val(result.FechaNacimiento).prop('disabled', true);
                 $('#editarModal').find("#Avoi").val(result.Avoi).prop('disabled', true);
                 $('#editarModal').find("#Avod").val(result.Avod).prop('disabled', true);
-                $('#nuevoModal').find("#Fuma").prop('checked', result.Fuma).prop('disabled', true);
+                $('#editarModal').find("#Fuma").prop('checked', result.Fuma).prop('disabled', true);
                 $('#editarModal').find("#Profesional").prop('checked', result.Profesional).prop('disabled', true);
                 $('#editarModal').find("#ConduceConAnteojos").prop('checked', result.ConduceConAnteojos).prop('disabled', true);
                 $('#editarModal').find("#VisionMonocular").prop('checked', result.VisionMonocular).prop('disabled', true);
@@ -243,6 +254,112 @@
         });
     });
 
+
+    $(document).on('click', '#btn_Editar', function () {
+        $('#editarModal').modal('toggle');
+
+        var idTurno = $(this).parents().closest('tr').attr('id')
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Get")',
+            data: {
+                id: idTurno
+            },
+            cache: false,
+            success: function (result) {
+                $('#editarModal').find('input#input-Id').val(result.Id).prop('disabled', true);
+                $('#editarModal').find("#input-FechaNacimiento").val(result.FechaNacimiento).prop('disabled', true);
+                $('#editarModal').find("#Avoi").val(result.Avoi).prop('disabled', false);
+                $('#editarModal').find("#Avod").val(result.Avod).prop('disabled', false);
+                $('#editarModal').find("#Fuma").prop('checked', result.Fuma).prop('disabled', false);
+                $('#editarModal').find("#Profesional").prop('checked', result.Profesional).prop('disabled', false);
+                $('#editarModal').find("#ConduceConAnteojos").prop('checked', result.ConduceConAnteojos).prop('disabled', false);
+                $('#editarModal').find("#VisionMonocular").prop('checked', result.VisionMonocular).prop('disabled', false);
+                $('#editarModal').find("#Discromatopsia").prop('checked', result.Discromatopsia).prop('disabled', false);
+                $('#editarModal').find("#HTA").prop('checked', result.HTA).prop('disabled', false);
+                $('#editarModal').find("#DBT").prop('checked', result.DBT).prop('disabled', false);
+                $('#editarModal').find("#GAA").prop('checked', result.GAA).prop('disabled', false);
+                $('#editarModal').find("#AcidoUrico").prop('checked', result.AcidoUrico).prop('disabled', false);
+                $('#editarModal').find("#Colesterol").prop('checked', result.Colesterol).prop('disabled', false);
+                $('#editarModal').find("#Observacion").val(result.Observacion).prop('disabled', false);
+                $('#editarModal').find('.btn-primary').prop('disabled', false);
+
+            },
+            error: function (response) {
+                    Lobibox.notify('error', {
+                        title: 'Error',
+                        msg: 'Ah ocurrido un error, intente nuevamente.'
+                });
+                    $('#editarModal').modal('hide');
+            }
+        });
+    });
+
+    $("#form-edit").validate({
+        rules: {
+            FechaNacimiento: { required: true }
+        },
+        messages: {
+            FechaNacimiento: {
+                required: "Este campo es requerido."
+            }
+        },
+        submitHandler: function (form) {
+            var object = new Object();
+
+            $("#div-loader").show();
+            object.Id = $("#input-Id").val();
+            object.Avoi = $("#Avoi").val();
+            object.Avod = $("#Avod").val();
+            object.Fuma = $('#editarModal').find("#Fuma").prop('checked');
+            object.Profesional = $('#editarModal').find("#Profesional").prop('checked');
+            object.ConduceConAnteojos = $('#editarModal').find("#ConduceConAnteojos").prop('checked');
+            object.VisionMonocular = $('#editarModal').find("#VisionMonocular").prop('checked'); 
+            object.Discromatopsia = $('#editarModal').find("#Discromatopsia").prop('checked');
+            object.HTA = $('#editarModal').find("#HTA").prop('checked');$
+            object.DBT = $('#editarModal').find("#DBT").prop('checked');
+            object.GAA = $('#editarModal').find("#GAA").prop('checked');
+            object.AcidoUrico = $('#editarModal').find("#AcidoUrico").prop('checked');
+            object.Colesterol = $('#editarModal').find("#Colesterol").prop('checked');
+            object.Observacion = $("#Observacion").val();
+
+            var data = JSON.stringify(object);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Edit")',
+                    data: data,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (dataResponse) {
+                        $("#dataTables-Index").dataTable().fnReloadAjax();//Recargo la grilla
+                        $('#editarModal').modal('hide');
+                        $("#div-loader").hide();
+                        if (dataResponse.responseCode == 0)
+                            {
+                            $("#div-loader").hide();
+                            Lobibox.notify('success', {
+                                title: 'Exito',
+                                msg: 'Los cambios se han grabado correctamente.'
+                            });
+                        } else {
+                                Lobibox.notify('error', {
+                                    title: 'Error',
+                                    msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        $("#div-loader").hide();
+                            Lobibox.notify('error', {
+                                title: 'Error',
+                                msg: 'Ah ocurrido un error, intente nuevamente.'
+                            });
+                    }
+                });
+            },
+            errorElement: "p"
+    });
 
         //Reinicio los modal
         $('.modal').on('hidden.bs.modal', function (e) {

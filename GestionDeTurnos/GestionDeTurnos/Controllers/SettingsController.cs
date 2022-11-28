@@ -31,6 +31,8 @@ namespace GestionDeTurnos.Controllers
             int intCantidadDeLlamados = db.Settings.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             int intNumeroInicialTurno = db.Settings.Where(x => x.Clave == "NUMERO_INICIAL_TURNO").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             int intTurneroMaxiamCantidadDeTurnos = db.Settings.Where(x => x.Clave == "TURNERO_MAXIMA_CANTIDAD_DE_TURNOS_PASADOS").Select(x => x.Numero1).FirstOrDefault() ?? 0;
+            int intDiasDeCorridoDeEspera = db.Settings.Where(x => x.Clave == "DIAS_DE_CORRIDO_DE_ESPERA").Select(x => x.Numero1).FirstOrDefault() ?? 0;
+            int intMaximoPermitidoParaIngresarAntes = db.Settings.Where(x => x.Clave == "MAXIMO_PERMITIDO_PARA_INGRESAR_ANTES").Select(x => x.Numero1).FirstOrDefault() ?? 0;
             string strVideo = db.Settings.Where(x => x.Clave == "VIDEO").Select(x => x.Texto1).FirstOrDefault();
             SettingsViewModel settingsViewModel = new SettingsViewModel
             {
@@ -38,6 +40,8 @@ namespace GestionDeTurnos.Controllers
                 NumeroInicialTurno = intNumeroInicialTurno,
                 TiempoMaximoEspera = intTiempoMaximoEspera,
                 TurneroCantidaMaximaDeTurnosPasados= intTurneroMaxiamCantidadDeTurnos,
+                DiasDeCorridoDeEspera = intDiasDeCorridoDeEspera,
+                MaximoPermitidoParaIngresarAntes = intMaximoPermitidoParaIngresarAntes,
                 VideoBorrado = false,
                 Video = strVideo
             };
@@ -50,7 +54,7 @@ namespace GestionDeTurnos.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TiempoMaximoEspera, NumeroInicialTurno, CantidadLlamadosPermitidos,TurneroCantidaMaximaDeTurnosPasados,VideoBorrado")] SettingsViewModel setting, HttpPostedFileBase fileVideo)
+        public ActionResult Edit([Bind(Include = "TiempoMaximoEspera, NumeroInicialTurno, CantidadLlamadosPermitidos,TurneroCantidaMaximaDeTurnosPasados,VideoBorrado, DiasDeCorridoDeEspera, MaximoPermitidoParaIngresarAntes")] SettingsViewModel setting, HttpPostedFileBase fileVideo)
         {
             if (ModelState.IsValid)
             {
@@ -91,58 +95,76 @@ namespace GestionDeTurnos.Controllers
                     db.SaveChanges();
                 }
 
-                Setting settingVideo = db.Settings.Where(x => x.Clave == "VIDEO").FirstOrDefault();
-                //Guardo los archivos
-                if (fileVideo == null)
+                Setting settingDiasDeCorrido = db.Settings.Where(x => x.Clave == "DIAS_DE_CORRIDO_DE_ESPERA").FirstOrDefault();
+
+                if (settingDiasDeCorrido != null)
                 {
-                    //puede venir nulo porque no hizo ningun cambio o porque lo borro
-
-                    //Si la borro
-                    if (setting.VideoBorrado)
-                    {
-                        //fisicamente
-                        var file = Path.Combine(settingVideo.Texto1);
-                        if (System.IO.File.Exists(file))
-                            System.IO.File.Delete(file);
-                        //logicamente
-                        setting.Video = null;
-
-                    }
-                    //Si no la borro, lo dejo como esta
-                }
-                else
-                {
-                    //Borro la anterior por si la reemplazo
-                    if (!String.IsNullOrEmpty(setting.Video))
-                    {
-                        //fisicamente
-                        var file = Path.Combine(setting.Video);
-                        if (System.IO.File.Exists(file))
-                            System.IO.File.Delete(file);
-                    }
-
-                    if (fileVideo.ContentLength > 0)
-                    {
-                        setting.Video = SaveFile(fileVideo, "video");
-                    }
-                    else
-                    {
-                        setting.Video = null;
-                    }
+                    settingDiasDeCorrido.Numero1 = setting.DiasDeCorridoDeEspera;
+                    db.Entry(settingDiasDeCorrido).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
 
+                Setting settingMaximoPermitido = db.Settings.Where(x => x.Clave == "MAXIMO_PERMITIDO_PARA_INGRESAR_ANTES").FirstOrDefault();
+
+                if (settingMaximoPermitido != null)
+                {
+                    settingMaximoPermitido.Numero1 = setting.MaximoPermitidoParaIngresarAntes;
+                    db.Entry(settingMaximoPermitido).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                //Setting settingVideo = db.Settings.Where(x => x.Clave == "VIDEO").FirstOrDefault();
+                ////Guardo los archivos
+                //if (fileVideo == null)
+                //{
+                //    //puede venir nulo porque no hizo ningun cambio o porque lo borro
+
+                //    //Si la borro
+                //    if (setting.VideoBorrado)
+                //    {
+                //        //fisicamente
+                //        var file = Path.Combine(settingVideo.Texto1);
+                //        if (System.IO.File.Exists(file))
+                //            System.IO.File.Delete(file);
+                //        //logicamente
+                //        setting.Video = null;
+
+                //    }
+                //    //Si no la borro, lo dejo como esta
+                //}
+                //else
+                //{
+                //    //Borro la anterior por si la reemplazo
+                //    if (!String.IsNullOrEmpty(setting.Video))
+                //    {
+                //        //fisicamente
+                //        var file = Path.Combine(setting.Video);
+                //        if (System.IO.File.Exists(file))
+                //            System.IO.File.Delete(file);
+                //    }
+
+                //    if (fileVideo.ContentLength > 0)
+                //    {
+                //        setting.Video = SaveFile(fileVideo, "video");
+                //    }
+                //    else
+                //    {
+                //        setting.Video = null;
+                //    }
+                //}
 
 
-               
 
 
-                    
-                    if  (settingVideo!=null)
-                    {
-                        settingVideo.Texto1 = setting.Video;
-                        db.Entry(settingVideo).State = EntityState.Modified;
-                        db.SaveChanges();
-                    }
+
+
+
+                //if  (settingVideo!=null)
+                //{
+                //    settingVideo.Texto1 = setting.Video;
+                //    db.Entry(settingVideo).State = EntityState.Modified;
+                //    db.SaveChanges();
+                //}
 
 
 

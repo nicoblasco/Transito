@@ -150,6 +150,9 @@
         var Editar = '@ViewBag.Editar';
         var Baja = '@ViewBag.Baja';
         var Ver = '@ViewBag.Ver';
+
+        $('#input-FechaTurno').val(getDateTime());
+
         var Action;
             Action = "@Url.Action("GetTurnsSearch")";
 
@@ -526,6 +529,7 @@ $("#form-create").validate({
         $(".modal-body input").val(""),
             $(this).removeData('bs.modal');
         $("form").validate().resetForm();
+        $('#input-FechaTurno').val(getDateTime());
     });
 
     </script>
@@ -563,8 +567,10 @@ $("#form-create").validate({
 
             $('#input-FechaTurno').datetimepicker({
                 locale: 'es',
-                sideBySide: true
-            //    date: new Date(Date.now())
+                sideBySide: true,
+                defaultDate: new Date(),
+                defaultTime: new Date(),
+                //date: new Date(Date.now())
             });
 
             $('.tags-group').find('.alert').hide();
@@ -771,6 +777,34 @@ $("#form-create").validate({
             }
 
 
+        function getDateTime() {
+            var today = new Date();
+            var day = today.getDate() + "";
+            var month = (today.getMonth() + 1) + "";
+            var year = today.getFullYear() + "";
+            var hour = today.getHours() + "";
+            var minutes = today.getMinutes() + "";
+            var seconds = today.getSeconds() + "";
+
+            day = checkZero(day);
+            month = checkZero(month);
+            year = checkZero(year);
+            hour = checkZero(hour);
+            minutes = checkZero(minutes);
+            seconds = checkZero(seconds);
+
+
+            function checkZero(data) {
+                if (data.length == 1) {
+                    data = "0" + data;
+                }
+                return data;
+            }
+
+            var formattedToday = day + "/" + month + "/" + year + " " + hour + ":" + minutes;
+
+            return formattedToday;
+        }
 
     </script>
 }

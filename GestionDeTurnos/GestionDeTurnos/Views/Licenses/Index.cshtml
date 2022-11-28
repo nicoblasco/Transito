@@ -220,11 +220,11 @@
                         <button type="button" id="btnDetalle" class="btn btn-primary" data-toggle="modal" data-target="#editarModal">
                             Detalle
                         </button>
-                        <button type="button" id="btnNuevo" class="btn btn-primary" data-toggle="modal" data-target="#createModal">
+                        <button type="button" id="btnNuevo" class="btn btn-primary" disabled="disabled" data-toggle="modal" data-target="#createModal">
                             Nuevo
                         </button>
                         <button type="button" id="btnRecibido" class="btn btn-primary" data-toggle="modal" data-target="#recibidoModal">
-                            Recibido
+                            Para Entregar
                         </button>
                         <button type="button" id="btnEntregado" class="btn btn-primary" data-toggle="modal" data-target="#entregadoModal">
                             Entregado
@@ -1592,12 +1592,12 @@ $("#form-create").validate({
         function habilitaBotones(boHabilita, estado) {
             if (boHabilita) {
                 switch (estado) {
-                    case 'NO RECIBIDA':
+                    case 'PARA IMPRIMIR':
                         $('#btnDetalle').removeAttr("disabled");
                         $('#btnRecibido').removeAttr("disabled");
                         $('#btnEntregado').attr("disabled", true)
                         break;
-                    case 'PARA ENTREGAR':
+                    case 'IMPRESA':
                         $('#btnDetalle').removeAttr("disabled");
                         $('#btnRecibido').attr("disabled", true);
                         $('#btnEntregado').removeAttr("disabled");

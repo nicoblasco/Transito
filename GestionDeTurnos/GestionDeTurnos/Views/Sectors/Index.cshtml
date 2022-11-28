@@ -44,6 +44,7 @@
                                 <th>ID</th>
                                 <th>Descripción</th>
                                 <th>Sector Medico</th>
+                                <th>Selección Turno Manual</th>
                             </tr>
                         </thead>
                     </table>
@@ -89,8 +90,13 @@
                         </div>
 
                         <div class="form-group">
+                            <input type="checkbox" class="form-check-input" id="input-TurnoManual" name="inputTurnoManual">
+                            <label class="form-check-label" for="input-TurnoManual">Seleccion Turno Manual</label>
+                        </div>
+
+                        <div class="form-group">
                             <label>Color identificador en el turnero</label>
-                            <input id="input-Color" type="text"   name="inputColor" class="form-control input-Color" autocomplete="off">
+                            <input id="input-Color" type="text" name="inputColor" class="form-control input-Color" autocomplete="off">
                         </div>
 
                     </form>
@@ -137,6 +143,11 @@
                             <label class="form-check-label" for="input-Medico">Es Sector Medico?</label>
                         </div>
 
+                        <div class="form-group">
+                            <input type="checkbox" class="form-check-input" id="input-TurnoManual" name="inputTurnoManual">
+                            <label class="form-check-label" for="input-TurnoManual">Seleccion Turno Manual</label>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -153,7 +164,7 @@
     <script>
 
     $(document).ready(function () {
-
+        
         var picker = new CP(document.querySelector('.input-Color'));
         var pickerEdit = new CP(document.querySelector('.input-Color-Edit'));
         
@@ -179,7 +190,8 @@
            "columns": [
                { "data": "Id" },
                { "data": "Descripcion" },
-               { "data": "Medico" }
+               { "data": "Medico" },
+               { "data": "SeleccionTurnoManual" }
            ],
            responsive: true
        });
@@ -267,6 +279,7 @@
             object.Descripcion = $("#input-Descripcion").val();
             object.Medico = $("#input-Medico").prop('checked');
             object.Color = $("#input-Color").val();
+            object.SeleccionTurnoManual = $("#input-TurnoManual").prop('checked');
             var data = JSON.stringify(object);
 
 
@@ -340,6 +353,7 @@
             object.Descripcion = $('#editarModal').find('input#input-Descripcion').val();
             object.Medico = $('#editarModal').find("input#input-Medico").prop('checked');
             object.Color = $('#editarModal').find("#input-Color").val();
+            object.SeleccionTurnoManual = $('#editarModal').find("input#input-TurnoManual").prop('checked');
             var data = JSON.stringify(object);
 
             //Antes de editar, verifico que no este duplicando el Rol
@@ -410,6 +424,7 @@
                 $('#editarModal').find('input#input-Descripcion').val(result.Descripcion);
                 $('#editarModal').find('input#input-Medico').prop('checked', result.Medico);
                 $('#editarModal').find('input#input-Color').val(result.Color);
+                $('#editarModal').find('input#input-TurnoManual').prop('checked', result.SeleccionTurnoManual);
             },
             error: function (response) {
                     Lobibox.notify('error', {

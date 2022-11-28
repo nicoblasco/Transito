@@ -38,10 +38,13 @@ namespace GestionDeTurnos.Controllers
             List<Setting> setting = db.Settings.ToList();
             int[] statusOrden = { 2,3 };
             int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
+            bool permiteSeleccionManual = setting.Where(x => x.Clave == "PERMITE_SELECCION_TURNO").FirstOrDefault().Logico1.Value;
             terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable==true).FirstOrDefault();
+            bool sectorHabilitadoParaSeleccionManual = terminal.Sector.SeleccionTurnoManual;
 
 
             ViewBag.HabilitaLlamarNuevamente = true;
+            ViewBag.HabilitaLlamadaManual = permiteSeleccionManual  && sectorHabilitadoParaSeleccionManual;
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
 
@@ -88,8 +91,8 @@ namespace GestionDeTurnos.Controllers
             //  int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
             int[] statusOrden = { 2, 3,4,5,6 };
 
-                List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Terminal!=null && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderBy(x => new { x.FechaUltimoLlamado }).Take(intTurneroMaxiamCantidadDeTurnos).ToList();//x.Status.Orden
-
+            //List< Tracking> trackings = db.Trackings.Where(x => statusOrden.Contains(x.Status.Orden) && x.Terminal!=null && x.Enable == true && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime).OrderBy(x => new { x.FechaUltimoLlamado }).Take(intTurneroMaxiamCantidadDeTurnos).ToList();//x.Status.Orden
+            List<Tracking> trackings = new List<Tracking>();
 
 
 
@@ -298,6 +301,76 @@ namespace GestionDeTurnos.Controllers
         }
 
 
+        public JsonResult LlamarSeleccionado(int id, int? oldTrackingId)
+        {
+            Tracking tracking = new Tracking();
+            List<Setting> setting = db.Settings.ToList();
+            string terminalName = Request.UserHostName;
+            Status status = db.Status.Where(x => x.Orden == 2).FirstOrDefault();
+            int userId = SessionHelper.GetUser();
+
+            Terminal terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable == true).FirstOrDefault();
+            int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
+
+            try
+            {
+                tracking = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.TurnID == id).FirstOrDefault();
+                if (tracking == null)
+                {
+                    //No hay ningun turno pendiente
+                    return Json(new { responseCode = "2" });
+                }
+                else
+                {
+                    //Actualizo 
+                    tracking.StatusID = status.Id;
+                    tracking.Status = status;
+                    tracking.TerminalID = terminal.Id;
+                    tracking.UsuarioID = SessionHelper.GetUser();
+                    tracking.CantidadDeLlamados = 1;
+                    tracking.FechaUltimoLlamado = DateTime.Now;
+                    tracking.Alerta = true;
+                    db.Entry(tracking).State = EntityState.Modified;
+
+                    if (oldTrackingId.HasValue)
+                    {
+                        Tracking tracking_old = db.Trackings.Find(oldTrackingId);
+                        tracking_old.StatusID = (int)StatusOrden.EN_ESPERA;
+                        tracking_old.TerminalID = null;
+                        tracking_old.UsuarioID = null;
+                        tracking_old.FechaIngreso = null;
+                        tracking_old.FechaSalida = null;
+                        tracking_old.Tiempo = null;
+                        tracking_old.CantidadDeLlamados = 0;
+                        tracking_old.FechaCreacion = DateTime.Now;
+                        db.Entry(tracking_old).State = EntityState.Modified;
+                    }
+
+
+                    db.SaveChanges();
+                    //Lo comento porque creo que lo deberia poder volver a llamar
+                    //if (tracking.CantidadDeLlamados >= CantidadDeLlamadosPosibles.Value)
+                    //    PuedeSeguirLlamando = false;
+                    //else
+                    //PuedeSeguirLlamando = true;
+                }
+
+                var responseObject = new
+                {
+                    responseCode = 0,
+                    tracking
+                };
+
+                return Json(responseObject);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { responseCode = "-10" });
+            };
+
+        }
+
 
         public JsonResult IniciarAtencion(int id)
         {
@@ -418,17 +491,23 @@ namespace GestionDeTurnos.Controllers
                         db.Entry(turn).State = EntityState.Modified;
                         db.SaveChanges();
 
-                        //Creo la licencia y la dejo en espera
-                        License license = new License
-                        {
-                            PersonId = turn.PersonID,
-                            TurnId = turn.Id,
-                            TypesLicenseId = turn.TypesLicenseID,
-                            Estado = estadoLicencia
-                        };
 
-                        db.Licenses.Add(license);
-                        db.SaveChanges();
+                        bool existeLicencia = db.Licenses.Where(x => x.TurnId == turn.Id).Any();
+                        if (!existeLicencia)
+                        {
+                            //Creo la licencia y la dejo en espera
+                            License license = new License
+                            {
+                                PersonId = turn.PersonID,
+                                TurnId = turn.Id,
+                                TypesLicenseId = turn.TypesLicenseID,
+                                Estado = estadoLicencia
+                            };
+
+                            db.Licenses.Add(license);
+                            db.SaveChanges();
+                        }
+
                     }
 
                 }
@@ -632,15 +711,21 @@ namespace GestionDeTurnos.Controllers
                         db.SaveChanges();
 
                         //Creo la licencia y la dejo en espera
-                        License license = new License
+                        bool existeLicencia = db.Licenses.Where(x => x.TurnId == turn.Id).Any();
+
+                        if (!existeLicencia)
                         {
-                            PersonId = turn.PersonID,
-                            TurnId = turn.Id,
-                            TypesLicenseId = turn.TypesLicenseID,
-                            Estado = estadoLicencia
-                        };
-                        db.Licenses.Add(license);
-                        db.SaveChanges();
+                            License license = new License
+                            {
+                                PersonId = turn.PersonID,
+                                TurnId = turn.Id,
+                                TypesLicenseId = turn.TypesLicenseID,
+                                Estado = estadoLicencia
+                            };
+                            db.Licenses.Add(license);
+                            db.SaveChanges();
+                        }
+
                     }
                 }
 

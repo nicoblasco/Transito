@@ -46,8 +46,9 @@ namespace GestionDeTurnos.Controllers
                     {
                         Descripcion = item.Descripcion,
                         Id = item.Id,
-                        Medico = item.Medico==false?"NO":"SI"
-                        
+                        Medico = item.Medico==false?"NO":"SI",
+                        SeleccionTurnoManual = item.SeleccionTurnoManual == false ? "NO" : "SI",
+
                     };
                     listvm.Add(sectorViewModel);
                 } 

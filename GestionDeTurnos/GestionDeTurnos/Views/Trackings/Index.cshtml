@@ -283,7 +283,9 @@
 @section scripts {
 
 
-    <script type="text/javascript">
+<script type="text/javascript">
+
+    var habilitaLlamadaManual = '@ViewBag.HabilitaLlamadaManual';
 
         refreshTurns();
 
@@ -294,9 +296,13 @@
                     contentType: 'application/json; charset=utf-8;',
                  success: function (result) {
                      $('#divTurnos').find('.btn-Turns').remove();
-                        $.each(result, function (k, v) {
-                            var $input = $("<button type='button'class='btn btn-primary btn-sm btn-Turns' style='border-radius: 15px'>" + v.Turn.Turno+"</button>");
-                            $input.appendTo($("#divTurnos"));
+                     $.each(result, function (k, v) {
+                         if (habilitaLlamadaManual == 'True')
+                             var $input = $("<button type='button'class='btn btn-primary btn-sm btn-Turns' style='border-radius: 15px' id='" + v.Turn.Id + "' onClick='llamarSeleccionado(this.id)'>" + v.Turn.Turno + "</button>");
+                         else
+                            var $input = $("<button type='button'class='btn btn-primary btn-sm btn-Turns' style='border-radius: 15px' id='" + v.Turn.Id + "'>" + v.Turn.Turno + "</button>");
+                         
+                        $input.appendTo($("#divTurnos"));
                      });
                      window.setTimeout(refreshTurns, 1000);
 
@@ -508,11 +514,11 @@
                         $('#btnNoEsta').hide();
                         $('#btnIncompleto').show();
                         $('#btnLlamarNuevamente').hide();
-                        
+
 
                         if ($('#MedicoHidden').val() == 'True' || $('#MedicoHidden').val() == 'true')
                             $('#btnMedico').show();
-                        
+
 
 
                     }
@@ -663,6 +669,8 @@
         });
 
 
+
+
        $(document).on('click', '#btnMedico', function () {
            var id = $('#TurnoId').val();
             var baseUrl = "@Url.Action("PersonByTurn", "MedicalPersons", new { id="ID"})";
@@ -692,8 +700,83 @@
             $('#Edad').text("");
         }
 
+                        //************************LLAMAR Boton Seleccionado
+    function llamarSeleccionado(clicked_id) {
+        var aplicaLlamar = $('#btnLlamar').is(":visible") || $('#btnLlamarNuevamente').is(":visible");
+
+        if (!aplicaLlamar)
+            return;
+        var old_TrackinId = $("#TurnId").val();
+
+        Lobibox.confirm({
+            title: 'Atención',
+            msg: "Si esta llamando a un vecino, el mismo volvera a la cola de turnos. ¿Desea continuar?",
+            callback: function ($this, type, ev) {
+                if (type === 'yes') {
+                     $.ajax({
+                            url: '@Url.Action("LlamarSeleccionado", "Trackings")',
+                            data: JSON.stringify({
+                                "id": clicked_id,
+                                "oldTrackingId": old_TrackinId
+                            }),
+                            type: 'POST',
+                            contentType: 'application/json; charset=utf-8;',
+                         success: function (result) {
+                             $("#div-loader").hide();
+                             if (result.responseCode == 0) {
+                                 Lobibox.notify('success', {
+                                     title: 'Exito',
+                                     msg: 'Se ha llamado con exito',
+                                     delay: 2000,
+                                     size: 'mini'
+                                 });
+
+                                 //Asigno Parcialmente
+                                 $("#TurnId").val(result.tracking.Id);
+                                 $('#TurnoId').val(result.tracking.Turn.Id);
+                                 $('#Turno').text(result.tracking.Turn.Turno);
+                                 $('#Estado').text(result.tracking.Status.Descripcion);
+                                 $('#Nombre').text(result.tracking.Turn.Person.Nombre);
+                                 $('#Apellido').text(result.tracking.Turn.Person.Apellido);
+                                 $('#MedicoHidden').val(result.tracking.Sector.Medico);
+                                 $('#btnLlamar').hide();
+                                 $('#btnLlamarNuevamente').show();
+                                 $('#btnIniciar').show();
+                                 $('#btnNoEsta').show();
 
 
-    </script>
+
+                             }
+                             if (result.responseCode == 2) {
+                                 Lobibox.notify('warning', {
+                                     title: 'Exito',
+                                     msg: 'No quedan turnos pendiente',
+                                     delay: 2000,
+                                     size: 'mini'
+                                 });
+                             }
+
+
+                         },
+                         error: function (response) {
+                             $("#div-loader").hide();
+                             Lobibox.notify('error', {
+                                 title: 'Error',
+                                 msg: 'Ah ocurrido un error, intente nuevamente.',
+                                 delay: 2000,
+                                 size: 'mini'
+                             });
+                         }
+                     });
+                };
+            }
+
+        });
+    }
+
+
+
+
+</script>
 
 }

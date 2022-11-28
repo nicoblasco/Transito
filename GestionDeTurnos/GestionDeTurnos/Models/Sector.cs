@@ -13,5 +13,7 @@ namespace GestionDeTurnos.Models
         public bool Medico { get; set; }
 
         public string Color { get; set; }
+
+        public bool SeleccionTurnoManual { get; set; }
     }
 }

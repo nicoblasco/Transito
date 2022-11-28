@@ -17,5 +17,9 @@ namespace GestionDeTurnos.ViewModel
 
         public string Video { get; set; }
         public bool VideoBorrado { get; set; }
+
+        public int DiasDeCorridoDeEspera { get; set; }
+
+        public int MaximoPermitidoParaIngresarAntes { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace GestionDeTurnos.Controllers
             List<LicenseClass> lClases = new List<LicenseClass>();
             lEstados = db.Settings.Where(x => x.Clave == "ESTADOS_LICENCIAS").ToList();
             lCountries = db.Countries.OrderByDescending(x=>x.Predeterminado).ToList();
-            lClases = db.LicenseClasses.Where(x => x.Enable == true).ToList();
+            lClases = db.LicenseClasses.Where(x => x.Enable == true).OrderBy(x=>x.Codigo).ToList();
             ViewBag.Estados = lEstados;
             ViewBag.Paises = lCountries;
             ViewBag.Clases = lClases;
@@ -147,7 +147,7 @@ namespace GestionDeTurnos.Controllers
                     FechaDeNacimiento = license.Person.FechaNacimiento?.ToString("dd/MM/yyyy"),
                     Id = license.Id,
                     Nacionalidad = license.Person.CountryId,
-                    Nombre= license.Person.Nombre,
+                    Nombre = license.Person.Nombre,
                     Otorgamiendo = license.FechaOtorgamiento?.ToString("dd/MM/yyyy"),
                     Vencimiento = license.FechaVencimiento?.ToString("dd/MM/yyyy"),
                     DomicilioNro = license.Person.CalleNro,
@@ -158,10 +158,10 @@ namespace GestionDeTurnos.Controllers
                     Sign = license.Firma,
                     Barrio = license.Person.Barrio,
                     BarrioId = license.Person.NighborhoodId,
-                    NroRegistro=license.NroRegistro
-                    
+                    NroRegistro = license.NroRegistro ?? license.Person.Dni
 
-            };
+
+                };
 
 
                 if (license.FechaRecibo != null)

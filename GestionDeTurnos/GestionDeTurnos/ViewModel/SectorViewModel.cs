@@ -11,5 +11,7 @@ namespace GestionDeTurnos.ViewModel
         public string Descripcion { get; set; }
 
         public string Medico { get; set; }
+
+        public string SeleccionTurnoManual { get; set; }
     }
 }

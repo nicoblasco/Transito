@@ -117,10 +117,10 @@
             color: white;
         }
 
-        .blink_me {
+        /*.blink_me {
             animation: blinker 1s linear infinite;
             animation-iteration-count: 10;
-        }
+        }*/
 
 
 
@@ -259,11 +259,13 @@
 
                     <div class="row sinMargen turnos" id="divRowTurnoActualBodyTurno">
                         <div class="col-lg-6 borde-columnas altoColumnasTurnoActual " id="divColumnaTurnoActualBodyTurnoTurno">
-                            <span id="spanTurno" class="blink_me"></span>
-                            <div id="divTurnoId" ></div>
+                            <span id="spanTurno"></span>
+                            @*class="blink_me"*@
+                            <div id="divTurnoId"></div>
                         </div>
                         <div class="col-lg-6 borde-columnas altoColumnasTurnoActual " id="divColumnaTurnoActualBodyTurnoBox">
-                            <span id="spanBox" class=" blink_me"></span>
+                            <span id="spanBox"></span>
+                             @*class=" blink_me"*@
                         </div>
                     </div>
 
@@ -292,17 +294,17 @@
                 </div>
 
                 @* SUB HEAD  *@
-                <div class="row sinMargen" id="divRowTurnosPasadosSubHead">
-                    <div class="col-lg-4" id="divColumnaTurnosPasadosSubHeadTurno">
+                @*<div class="row sinMargen" id="divRowTurnosPasadosSubHead">
+                    <div class="col-lg-6" id="divColumnaTurnosPasadosSubHeadTurno">
                         <span class="SubTituloUltimosTurnos">TURNO</span>
                     </div>
                     <div class="col-lg-4" id="divColumnaTurnosPasadosSubHeadSector">
                         <span class="SubTituloUltimosTurnos">SECTOR</span>
                     </div>
-                    <div class="col-lg-4" id="divColumnaTurnosPasadosSubHeadBox">
+                    <div class="col-lg-6" id="divColumnaTurnosPasadosSubHeadBox">
                         <span class="SubTituloUltimosTurnos">BOX</span>
                     </div>
-                </div>
+                </div>*@
 
                 @* BODY  *@
                 <div class="row sinMargen " id="divRowTurnosPasadosBody">
@@ -310,15 +312,15 @@
                     {
 
                         <div class="row sinMargen detalle" id="divRowTurnosPasadosBodyTurno">
-                            <div class="col-lg-4" id="divColumnaTurnosPasadosBodyTurno">
+                            <div class="col-lg-6" id="divColumnaTurnosPasadosBodyTurno">
                                 <span class="spanUltimosTurnosTurno">@item.Turn.Turno</span>
                                 <div class="oculto Id">@item.Id</div>
                                 <div class="oculto Cantidad">@item.CantidadDeLlamados</div>
                             </div>
-                            <div class="col-lg-4" id="divColumnaTurnosPasadosBodySector">
+                            @*<div class="col-lg-4" id="divColumnaTurnosPasadosBodySector">
                                 <span class="spanUltimosTurnosSector" style="color:@item.Sector.Color">@item.Sector.Descripcion</span>
-                            </div>
-                            <div class="col-lg-4" id="divColumnaTurnosPasadosBodyBox">
+                            </div>*@
+                            <div class="col-lg-6" id="divColumnaTurnosPasadosBodyBox">
                                 <span class="spanUltimosTurnosBox">@item.Terminal.Descripcion</span>
                             </div>
                         </div>
@@ -338,14 +340,12 @@
 
     @Scripts.Render("~/bundles/sound")
 
-    <script type="text/javascript">
-
-
+    <script type="text/javascript">        
 
         refreshTurns();
 
         function refreshTurns() {
-            var $input;
+            var $input;            
             $('.blink_me').unblink();
              $.ajax({
                     url: '@Url.Action("GetTurnosTurnero")',
@@ -362,6 +362,14 @@
                      //$('#spanSector').text('');
                      //var paso = 0;
 
+                     if (result.length === 0) {
+                         $('#spanTurno').text(null);
+                         $('#spanBox').text(null);
+                         $('#spanSector').text(null);
+                         $('#divTurnoId').val(null);
+                         $('#divColumnaTurnoActualFooter').css("background-color", "white");
+                     }
+
                      $.each(result, function (k, v) {
                          //v.Status.Orden === 2 && paso===0
                          if (k==0) {  
@@ -377,8 +385,9 @@
                          }
                          else {
                              if (v.Id != $('#divTurnoId').val()) {
-                                 if (v.Status.Orden === 2) {                                 
-                                     $input = $("<div class='row sinMargen detalle' id='divRowTurnosPasadosBodyTurno'><div class='col-lg-4' id='divColumnaTurnosPasadosBodyTurno'><span class='spanUltimosTurnosTurno'>" + v.Turn.Turno + "</span><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodySector'><span class='spanUltimosTurnosSector' style='color: " + v.Sector.Color + "'>" + v.Sector.Descripcion + "</span></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodyBox'><span class='spanUltimosTurnosBox'>" + v.Terminal.Descripcion + "</span></div></div>");
+                                 if (v.Status.Orden === 5 || v.Status.Orden === 2 ) {
+//                                     $input = $("<div class='row sinMargen detalle' id='divRowTurnosPasadosBodyTurno'><div class='col-lg-4' id='divColumnaTurnosPasadosBodyTurno'><span class='spanUltimosTurnosTurno'>" + v.Turn.Turno + "</span><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodySector'><span class='spanUltimosTurnosSector' style='color: " + v.Sector.Color + "'>" + v.Sector.Descripcion + "</span></div><div class='col-lg-4' id='divColumnaTurnosPasadosBodyBox'><span class='spanUltimosTurnosBox'>" + v.Terminal.Descripcion + "</span></div></div>");
+                                     $input = $("<div class='row sinMargen detalle' id='divRowTurnosPasadosBodyTurno'><div class='col-lg-6' id='divColumnaTurnosPasadosBodyTurno'><span class='spanUltimosTurnosTurno'>" + v.Turn.Turno + "</span><div class='oculto Id'>" + v.Id + "</div><div class='oculto Cantidad'>" + v.CantidadDeLlamados + "</div></div><div class='col-lg-6' id='divColumnaTurnosPasadosBodyBox'><span class='spanUltimosTurnosBox'>" + v.Terminal.Descripcion + "</span></div></div>");
                                      $input.appendTo($("#divRowTurnosPasadosBody"));
                                  }
 
@@ -394,9 +403,8 @@
                      });
 
 
-                     window.setTimeout(refreshTurns, 5000);
-                     
-                    // window.setTimeout(refreshTurns, 500000000);
+                       window.setTimeout(refreshTurns, 5000);
+                    
 
                     }
                 });
@@ -421,23 +429,7 @@
 
 
         function suenaAlerta($input) {
-            //$.playSound('/Scripts/attachments/sounds/sound.mp3');
             $('#btnSound').click();
-            //$('#divColumnaTurnoActualBodyTurnoTurno').removeClass("blink_me")
-            //$('#divColumnaTurnoActualBodyTurnoBox').removeClass("blink_me")
-            //$('#divColumnaTurnoActualBodyTurnoTurno').addClass("blink_me")            
-            //$('#divColumnaTurnoActualBodyTurnoBox').addClass("blink_me")
-
-            //$input.each(function () {
-            //    var elem = $(this);
-            //    setInterval(function () {
-            //        if (elem.css('blink_me') == 'hidden') {
-            //            elem.css('blink_me', 'visible');
-            //        } else {
-            //            elem.css('blink_me', 'hidden');
-            //        }
-            //    }, 400);
-            //});
             $('.blink_me').blink(10);
 
         }

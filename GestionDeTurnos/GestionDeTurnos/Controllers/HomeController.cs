@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace GestionDeTurnos.Controllers
 {
-    [AutenticadoAttribute]
+    //[AutenticadoAttribute]
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -69,6 +69,7 @@ namespace GestionDeTurnos.Controllers
             int? NumeroSecuencia;
             DateTime startDateTime = DateTime.Today; //Today at 00:00:00
             DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            DateTime startDateTimeAux = DateTime.Today;
             int EstadoInicial = db.Status.Where(x => x.Orden == 1).Select(x => x.Id).FirstOrDefault();
 
 
@@ -90,12 +91,27 @@ namespace GestionDeTurnos.Controllers
                 //CallCenterTurn callCenterTurn = db.CallCenterTurns.Where(x => x.DNI == model.DNI && x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime && x.Asignado == false).FirstOrDefault();
                 CallCenterTurn callCenterTurn = db.CallCenterTurns.Where(x => x.DNI == model.DNI && x.FechaTurno >= startDateTime && x.FechaTurno <= endDateTime).FirstOrDefault();
                 int? TiempoMaximoEspera = setting.Where(x => x.Clave == "TIEMPO_MAXIMO_ESPERA").FirstOrDefault().Numero1;
-
+                int? DiasDeCorridoDeEspera = setting.Where(x => x.Clave == "DIAS_DE_CORRIDO_DE_ESPERA").FirstOrDefault()?.Numero1;
+                int? MaximoPermitidoParaIngresarAntes = setting.Where(x => x.Clave == "MAXIMO_PERMITIDO_PARA_INGRESAR_ANTES").FirstOrDefault()?.Numero1;
+                if (DiasDeCorridoDeEspera != null)
+                    startDateTimeAux = DateTime.Today.AddDays(-1 * (DiasDeCorridoDeEspera.Value));
 
                 if (callCenterTurn == null)
                 {
-                    //No tiene turno
-                    return View("AccesoDenegado");
+                    //Puede ser que se le haya asignada turno en dias anteriores
+                    //Pregunto si desea que se le de turno igual
+                    if (DiasDeCorridoDeEspera != null)
+                    {
+                        callCenterTurn = db.CallCenterTurns.Where(x => x.DNI == model.DNI && x.FechaTurno >= startDateTimeAux && x.FechaTurno <= endDateTime).FirstOrDefault();
+
+                        if (callCenterTurn == null)
+                        {
+                            return View("AccesoDenegado");
+                        }
+                    }
+                    else
+                        //No tiene turno
+                        return View("AccesoDenegado");
                 }
 
                 else
@@ -124,6 +140,21 @@ namespace GestionDeTurnos.Controllers
                                 }
                             }
                         }
+
+                    if (MaximoPermitidoParaIngresarAntes != null)
+                    {
+                        //Si es 0 no lo tomo en cuenta
+                        if (MaximoPermitidoParaIngresarAntes != 0)
+                        {
+                            DateTime fechaMax = DateTime.Now.AddMinutes(MaximoPermitidoParaIngresarAntes.Value);
+                            DateTime fechaTurno = callCenterTurn.FechaTurno;
+                            if (fechaMax < fechaTurno)
+                            {
+                                //Se le paso el turno
+                                return View("AccesoDenegado");
+                            }
+                        }
+                    }
 
                     //Obtengo el tipo de turno
                     //La relacion entre como viene y como esta en el sistema

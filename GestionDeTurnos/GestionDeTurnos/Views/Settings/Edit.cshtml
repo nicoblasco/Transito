@@ -68,8 +68,8 @@
                         <div class="panel-body">
                             <div class="form-group">
                                 <div class="col-sm-12">
-                                    <label>Minutos Máximos Expera</label>
-                                    @Html.EditorFor(model => model.TiempoMaximoEspera, new { htmlAttributes = new { @type = "number", @min = 0, @max = 120, @class = "form-control input-sm input_ancho", placeholder = "Tiempo Maximo De Espera" } })
+                                    <label>Tolerancia llegada tarde (en min)</label>
+                                    @Html.EditorFor(model => model.TiempoMaximoEspera, new { htmlAttributes = new { @type = "number", @min = 0, @max = 10000000, @class = "form-control input-sm input_ancho", placeholder = "Tiempo Maximo De Espera" } })
                                     @Html.ValidationMessageFor(model => model.TiempoMaximoEspera, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -90,8 +90,24 @@
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <label>Máxima cantidad de turnos visibles en el turnero</label>
-                                    @Html.EditorFor(model => model.TurneroCantidaMaximaDeTurnosPasados, new { htmlAttributes = new { @type = "number", @min = 1, @max = 20, @class = "form-control input-sm input_ancho", placeholder = "Máxima cantidad de turnos visibles en el turnero" } })
+                                    @Html.EditorFor(model => model.TurneroCantidaMaximaDeTurnosPasados, new { htmlAttributes = new { @type = "number", @min = 1, @max = 30, @class = "form-control input-sm input_ancho", placeholder = "Máxima cantidad de turnos visibles en el turnero" } })
                                     @Html.ValidationMessageFor(model => model.TurneroCantidaMaximaDeTurnosPasados, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Máximo para Terminar Trámite (en días)</label>
+                                    @Html.EditorFor(model => model.DiasDeCorridoDeEspera, new { htmlAttributes = new { @type = "number", @min = 0, @max = 365, @class = "form-control input-sm input_ancho", placeholder = "Máximo para Terminar Trámite (en días)" } })
+                                    @Html.ValidationMessageFor(model => model.DiasDeCorridoDeEspera, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label>Máximo Permitido para Ingresar Antes (en minutos)</label>
+                                    @Html.EditorFor(model => model.MaximoPermitidoParaIngresarAntes, new { htmlAttributes = new { @type = "number", @min = 0, @max = 600, @class = "form-control input-sm input_ancho", placeholder = "Máximo Permitido para Ingresar Antes (en minutos)" } })
+                                    @Html.ValidationMessageFor(model => model.MaximoPermitidoParaIngresarAntes, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 

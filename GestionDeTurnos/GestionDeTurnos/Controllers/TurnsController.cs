@@ -92,11 +92,11 @@ namespace GestionDeTurnos.Controllers
 
             //Pendientes: Pendientes de ser atendidos por algun box
             //El cliente cuando ingresa se agredita y genera un primer regristro.
-                ViewBag.TurnosPendientes = trackings.Where(x => turns.Contains(x.Turn) && x.Status.Orden ==1 && x.Enable == true && x.FechaIngreso == null ).Count();
+                ViewBag.TurnosPendientes = trackings.Where(x => turns.Contains(x.Turn) && x.Status.Orden ==1 && x.Enable == true && x.FechaIngreso == null ).GroupBy(x=>x.TurnID).Count();
 
 
             //En proceso: Los que empezaron el ciclo (han sido llamados por algun box) y no finalizaron
-            ViewBag.TurnosEnProceso = trackings.Where(x => turns.Contains(x.Turn) && x.Enable == true && statusOrdenPendiente.Contains(x.Status.Orden)).Count();
+            ViewBag.TurnosEnProceso = trackings.Where(x => turns.Contains(x.Turn) && x.Enable == true && statusOrdenPendiente.Contains(x.Status.Orden)).GroupBy(x => x.TurnID).Count();
             //Completados: Los que han finalizado todo el ciclo
             ViewBag.TurnosCompletados = turns.Where(x => x.FechaSalida != null && x.Enable == true).Count();
 
@@ -147,11 +147,14 @@ namespace GestionDeTurnos.Controllers
         [HttpPost]
         public JsonResult GetTurnsSearch()
         {
+            DateTime startDateTime = DateTime.Today; //Today at 00:00:00
+            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+
             try
             {
 
                 List<TurnsSeachViewModel> turnsSeachViews = new List<TurnsSeachViewModel>();                
-                List<Turn> turns = db.Turns.Take(1000).Where(x=>x.Enable==true).ToList();
+                List<Turn> turns = db.Turns.Where(x=>x.Enable==true && x.FechaIngreso >= startDateTime && x.Enable == true && x.FechaIngreso <= endDateTime).ToList();
                  
 
 
@@ -309,7 +312,7 @@ namespace GestionDeTurnos.Controllers
 
         private Tracking getTrackingIncompletoNosePresento(int TurnId)
         {
-            int[] statusOrden = { (int)StatusOrden.INCOMPLETO, (int)StatusOrden.NO_SE_PRESENTO };
+            int[] statusOrden = {  (int)StatusOrden.NO_SE_PRESENTO };//(int)StatusOrden.INCOMPLETO,
             Tracking tracking = db.Trackings.Where(x => x.TurnID == TurnId && x.Enable == true && statusOrden.Contains(x.Status.Orden)).FirstOrDefault();
             return tracking;
         }
@@ -459,8 +462,8 @@ namespace GestionDeTurnos.Controllers
                 .Where(x => !string.IsNullOrEmpty(Apellido) ? (x.Person.Apellido == Apellido && x.Person.Apellido != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Nombre) ? (x.Person.Nombre == Nombre && x.Person.Nombre != null) : true)
                 .Where(x => !string.IsNullOrEmpty(Tipo) ? (x.TypesLicense.Id == TipoId && x.TypesLicense.Descripcion != null) : true)
-                .Where(x => !string.IsNullOrEmpty(FechaTurnoDesde) ? (x.FechaTurno >= dtFechaDesde && x.FechaTurno != null) : true)
-                .Where(x => !string.IsNullOrEmpty(FechaTurnoHasta) ? (x.FechaTurno <= dtFechaHasta && x.FechaTurno != null) : true)
+                .Where(x => !string.IsNullOrEmpty(FechaTurnoDesde) ? (x.FechaIngreso >= dtFechaDesde && x.FechaIngreso != null) : true)
+                .Where(x => !string.IsNullOrEmpty(FechaTurnoHasta) ? (x.FechaIngreso <= dtFechaHasta && x.FechaIngreso != null) : true)
                 .Select(c => new { c.Id, c.Turno, c.FechaTurno, c.FechaIngreso, c.FechaSalida, c.TypesLicense, c.Person, c.TypesLicenseID }).OrderByDescending(x => x.FechaTurno).Take(1000);
                 ;
 
@@ -470,25 +473,34 @@ namespace GestionDeTurnos.Controllers
                     string strEsIncompletoNosePresento = EsIncompleto(item.FechaIngreso, item.Id) == true ? "SI" : "NO";
                     TurnTrackingViewModel turnTrackingViewModel = GetTracking(item.Id, item.TypesLicenseID);
                     //string strEstado = GetEstado(item.Id);
-                    TurnsSeachViewModel turn = new TurnsSeachViewModel
+                    try
                     {
-                        Apellido = item.Person.Apellido,
-                        DNI = item.Person.Dni,
-                        FechaTurno = item.FechaTurno.ToString("dd/MM/yyyy HH:mm:ss"),
-                        Id = item.Id,
-                        Nombre = item.Person.Nombre,
-                        Ingreso = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
-                        Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
-                        Tipo = item.TypesLicense.Descripcion,
-                        Turno = item.Turno,
-                        IncompletoNoSePresento = strEsIncompletoNosePresento,
-                        Estado = turnTrackingViewModel.Estado,
-                        SectorActual = turnTrackingViewModel.SectorActual,
-                        SectorProximo = turnTrackingViewModel.SectorProximo
-                        //Estado = GetEstado(item.Id)
-                    };
+                        TurnsSeachViewModel turn = new TurnsSeachViewModel
+                        {
+                            Apellido = item.Person.Apellido,
+                            DNI = item.Person.Dni,
+                            FechaTurno = item.FechaTurno.ToString("dd/MM/yyyy HH:mm:ss"),
+                            Id = item.Id,
+                            Nombre = item.Person.Nombre,
+                            Ingreso = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                            Salida = item.FechaIngreso.ToString("dd/MM/yyyy HH:mm:ss"),
+                            Tipo = item.TypesLicense.Descripcion,
+                            Turno = item.Turno,
+                            IncompletoNoSePresento = strEsIncompletoNosePresento,
+                            Estado = turnTrackingViewModel.Estado,
+                            SectorActual = turnTrackingViewModel.SectorActual,
+                            SectorProximo = turnTrackingViewModel.SectorProximo
+                            //Estado = GetEstado(item.Id)
+                        };
 
-                    turns.Add(turn) ;
+                        turns.Add(turn);
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw;
+                    }
+
 
                 }
 
@@ -1062,16 +1074,21 @@ namespace GestionDeTurnos.Controllers
                 {
                     Status status = db.Status.Where(x => x.Orden == 7).FirstOrDefault();
                     Tracking tracking = db.Trackings.Where(x => x.TurnID == turn.Id && x.FechaSalida == null).FirstOrDefault();
-                    tracking.FechaIngreso = DateTime.Now;
-                    tracking.FechaSalida = DateTime.Now;
-                    tracking.Status = status;
-                    db.Entry(tracking).State = EntityState.Modified;
 
+                    if (tracking != null)
+                    {                    
+                        tracking.FechaIngreso = DateTime.Now;
+                        tracking.FechaSalida = DateTime.Now;
+                        tracking.Status = status;
+                        db.Entry(tracking).State = EntityState.Modified;
+                    }
                     //Genera el tramite inicial del nuevo tipo de tramite
                     CreateNextTrancking(turn);
+                    turno.TypesLicenseID = turn.TypesLicenseID;
+                    
                 }
 
-                turno.TypesLicenseID = turn.TypesLicenseID;
+                
 
 
                 db.Entry(turno).State = EntityState.Modified;
@@ -1099,7 +1116,8 @@ namespace GestionDeTurnos.Controllers
                 SectorID = sectorWorkflow.SectorID,
                 TurnID = turn.Id,
                 FechaCreacion = DateTime.Now,
-                StatusID = EstadoInicial
+                StatusID = EstadoInicial,
+                Enable = true
             };
 
             db.Trackings.Add(tracking);
