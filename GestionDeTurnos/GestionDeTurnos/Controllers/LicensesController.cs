@@ -118,7 +118,7 @@ namespace GestionDeTurnos.Controllers
                 }
                 
 
-                return Json(list, JsonRequestBehavior.AllowGet);
+                return Json(list.Take(500), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

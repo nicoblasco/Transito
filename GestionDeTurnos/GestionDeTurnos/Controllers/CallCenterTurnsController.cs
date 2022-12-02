@@ -30,9 +30,9 @@ namespace GestionDeTurnos.Controllers
             lTypesLicense = db.TypesLicenses.OrderBy(x => x.Descripcion).ToList();
             ViewBag.listaLicencias = lTypesLicense;
 
-            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Historial Medico", "Editar"));
-            ViewBag.Ver = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId("Historial Medico", "Ver"));
-            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId("Historial Medico", "Baja"));
+            ViewBag.Editar = PermissionViewModel.TienePermisoAlta(WindowHelper.GetWindowId(ModuleDescription,WindowDescription));
+            ViewBag.Ver = PermissionViewModel.TienePermisoAcesso(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
+            ViewBag.Baja = PermissionViewModel.TienePermisoBaja(WindowHelper.GetWindowId(ModuleDescription, WindowDescription));
             return View();
         }
 

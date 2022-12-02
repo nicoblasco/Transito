@@ -40,7 +40,7 @@ namespace GestionDeTurnos.Controllers
             int? CantidadDeLlamadosPosibles = setting.Where(x => x.Clave == "CANTIDAD_DE_LLAMADOS").FirstOrDefault().Numero1;
             bool permiteSeleccionManual = setting.Where(x => x.Clave == "PERMITE_SELECCION_TURNO").FirstOrDefault().Logico1.Value;
             terminal = db.Terminals.Where(x => x.UsuarioId == userId && x.Enable==true).FirstOrDefault();
-            bool sectorHabilitadoParaSeleccionManual = terminal.Sector.SeleccionTurnoManual;
+            bool sectorHabilitadoParaSeleccionManual = terminal ==null ? false : terminal.Sector.SeleccionTurnoManual;
 
 
             ViewBag.HabilitaLlamarNuevamente = true;
@@ -121,7 +121,7 @@ namespace GestionDeTurnos.Controllers
                     return Json(new { responseCode = "-10" });
                 }
 
-                list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime ).OrderBy(x => x.FechaCreacion).Take(20).ToList();
+                list = db.Trackings.Where(x => x.Status.Orden == 1 && x.Enable == true && x.SectorID == terminal.SectorID && x.Turn.FechaIngreso >= startDateTime && x.Turn.FechaIngreso <= endDateTime ).OrderBy(x => x.FechaCreacion).Take(100).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
@@ -492,7 +492,7 @@ namespace GestionDeTurnos.Controllers
                         db.SaveChanges();
 
 
-                        bool existeLicencia = db.Licenses.Where(x => x.TurnId == turn.Id).Any();
+                        bool existeLicencia = db.Licenses.Where(x => x.PersonId == turn.PersonID && x.Estado == estadoLicencia).Any();
                         if (!existeLicencia)
                         {
                             //Creo la licencia y la dejo en espera
@@ -711,7 +711,7 @@ namespace GestionDeTurnos.Controllers
                         db.SaveChanges();
 
                         //Creo la licencia y la dejo en espera
-                        bool existeLicencia = db.Licenses.Where(x => x.TurnId == turn.Id).Any();
+                        bool existeLicencia = db.Licenses.Where(x => x.PersonId == turn.PersonID && x.Estado == estadoLicencia).Any();
 
                         if (!existeLicencia)
                         {
